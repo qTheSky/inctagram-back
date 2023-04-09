@@ -10,16 +10,13 @@ import { LoginDto } from '../api/dto/input/login.dto';
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private usersRepository: UsersRepository) {
     super({
-      usernameField: 'userNameOrEmail',
+      usernameField: 'loginOrEmail',
     });
   }
 
-  async validate(
-    userNameOrEmail: string,
-    password: string
-  ): Promise<UserEntity> {
+  async validate(loginOrEmail: string, password: string): Promise<UserEntity> {
     return await this.checkAuthCredentials({
-      userNameOrEmail,
+      loginOrEmail,
       password,
     });
   }
@@ -27,9 +24,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async checkAuthCredentials(
     authCredentialsModel: LoginDto
   ): Promise<UserEntity> {
-    const { userNameOrEmail, password } = authCredentialsModel;
+    const { loginOrEmail, password } = authCredentialsModel;
     const user = await this.usersRepository.findUserByLoginOrEmail(
-      userNameOrEmail
+      loginOrEmail
     );
     if (!user) throw new UnauthorizedException('Incorrect credentials');
     if (!user.emailConfirmation.isConfirmed)

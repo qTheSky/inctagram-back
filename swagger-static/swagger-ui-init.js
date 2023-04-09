@@ -266,7 +266,7 @@ window.onload = function() {
                       "surName": "Kuzyberdin",
                       "aboutMe": "i am the best c# developer",
                       "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T19:58:31.886Z"
+                      "dateOfBirthday": "2023-04-09T20:00:02.858Z"
                     }
                   }
                 }
@@ -312,7 +312,7 @@ window.onload = function() {
                       "surName": "Kuzyberdin",
                       "aboutMe": "i am the best c# developer",
                       "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T19:58:31.886Z"
+                      "dateOfBirthday": "2023-04-09T20:00:02.858Z"
                     }
                   }
                 }
@@ -371,7 +371,7 @@ window.onload = function() {
         "LoginDto": {
           "type": "object",
           "properties": {
-            "userNameOrEmail": {
+            "loginOrEmail": {
               "type": "string"
             },
             "password": {
@@ -379,7 +379,7 @@ window.onload = function() {
             }
           },
           "required": [
-            "userNameOrEmail",
+            "loginOrEmail",
             "password"
           ]
         },
