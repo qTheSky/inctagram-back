@@ -9,9 +9,17 @@ import * as Joi from 'joi';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { NotificationModule } from './modules/notification/notification.module';
 import { SecurityModule } from './modules/security/security.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
+    //swagger
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'swagger-static'),
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
+    }),
+    //swagger
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
