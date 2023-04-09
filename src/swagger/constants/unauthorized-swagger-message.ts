@@ -1,0 +1,1 @@
+export const unauthorizedSwaggerMessage = 'Unauthorized';
