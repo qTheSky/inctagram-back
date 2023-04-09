@@ -266,7 +266,7 @@ window.onload = function() {
                       "surName": "Kuzyberdin",
                       "aboutMe": "i am the best c# developer",
                       "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T21:10:37.535Z"
+                      "dateOfBirthday": "2023-04-09T21:23:01.033Z"
                     }
                   }
                 }
@@ -312,7 +312,7 @@ window.onload = function() {
                       "surName": "Kuzyberdin",
                       "aboutMe": "i am the best c# developer",
                       "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T21:10:37.535Z"
+                      "dateOfBirthday": "2023-04-09T21:23:01.033Z"
                     }
                   }
                 }

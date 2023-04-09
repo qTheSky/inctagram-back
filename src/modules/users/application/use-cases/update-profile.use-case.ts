@@ -18,9 +18,7 @@ export class UpdateProfileUseCase
     const profile = await this.usersProfilesRepository.getUserProfile(
       currentUserId
     );
-    console.log(profile);
     profile.update(dto);
-    console.log(profile);
     await this.usersProfilesRepository.save(profile);
   }
 }

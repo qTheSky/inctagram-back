@@ -20,6 +20,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TrimStrings());
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true, //forbid extra fields in body
       transform: true,
       forbidUnknownValues: false,
       stopAtFirstError: true,
