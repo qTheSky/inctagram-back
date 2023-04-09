@@ -28,7 +28,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     authCredentialsModel: LoginDto
   ): Promise<UserEntity> {
     const { userNameOrEmail, password } = authCredentialsModel;
-    const user = await this.usersRepository.findUserByUserNameOrEmail(
+    const user = await this.usersRepository.findUserByLoginOrEmail(
       userNameOrEmail
     );
     if (!user) throw new UnauthorizedException('Incorrect credentials');

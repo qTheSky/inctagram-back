@@ -18,10 +18,10 @@ export class RegistrationUseCase
     private authService: AuthService
   ) {}
   async execute(command: RegistrationCommand): Promise<void> {
-    const { password, userName, email } = command.dto;
+    const { password, login, email } = command.dto;
     const passwordHash = await this.authService.generatePasswordHash(password);
     const newUser = await this.usersRepository.create({
-      userName,
+      login,
       email,
       passwordHash,
       password,

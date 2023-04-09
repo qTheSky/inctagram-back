@@ -3,25 +3,30 @@ import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEmailConfirmation } from './user-email-confirmation.entity';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
+import { UserProfileEntity } from './user-profile.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
   @Column()
   email: string;
   @Column()
-  userName: string;
+  login: string;
   @Column()
   passwordHash: string;
   //по приколу
-  @Column({ nullable: true })
+  @Column()
   password: string;
   //по приколу
 
   @OneToOne(() => UserEmailConfirmation, (emailConfirm) => emailConfirm.user, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   emailConfirmation: UserEmailConfirmation;
+
+  @OneToOne(() => UserProfileEntity, (profile) => profile.user, {
+    cascade: true,
+  })
+  profile: UserProfileEntity;
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;
@@ -43,7 +48,7 @@ export class UserEntity extends BaseEntity {
   ): UserEntity {
     const user = new UserEntity();
 
-    user.userName = userName;
+    user.login = userName;
     user.email = email;
     user.passwordHash = passwordHash;
     user.createdAt = new Date();
@@ -51,6 +56,7 @@ export class UserEntity extends BaseEntity {
     user.password = password;
 
     user.createEmailConfirmation();
+    user.createProfile();
 
     return user;
   }
@@ -65,5 +71,12 @@ export class UserEntity extends BaseEntity {
     this.emailConfirmation = emailConfirmation;
 
     return emailConfirmation;
+  }
+
+  createProfile(): UserProfileEntity {
+    const profile = new UserProfileEntity();
+    profile.user = this;
+    this.profile = profile;
+    return profile;
   }
 }

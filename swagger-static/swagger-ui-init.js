@@ -237,6 +237,95 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/users/profile": {
+        "put": {
+          "operationId": "UsersController_updateUserProfile",
+          "summary": "Update current user profile",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "description": "Example request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns updated profile",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "userName": "dimych",
+                      "name": "Dmitry",
+                      "surName": "Kuzyberdin",
+                      "aboutMe": "i am the best c# developer",
+                      "city": "Minsk",
+                      "dateOfBirthday": "2023-04-09T19:58:31.886Z"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Users"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/users/{userId}/profile": {
+        "get": {
+          "operationId": "UsersController_getUserProfile",
+          "summary": "Get user profile by id of user",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Returns user profile",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "userName": "dimych",
+                      "name": "Dmitry",
+                      "surName": "Kuzyberdin",
+                      "aboutMe": "i am the best c# developer",
+                      "city": "Minsk",
+                      "dateOfBirthday": "2023-04-09T19:58:31.886Z"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Users"
+          ]
+        }
       }
     },
     "info": {
@@ -258,9 +347,9 @@ window.onload = function() {
               "example": "user@example.com",
               "format": "email"
             },
-            "userName": {
+            "login": {
               "type": "string",
-              "description": "User name",
+              "description": "User login",
               "example": "John",
               "minLength": 3,
               "maxLength": 10
@@ -275,7 +364,7 @@ window.onload = function() {
           },
           "required": [
             "email",
-            "userName",
+            "login",
             "password"
           ]
         },
@@ -307,6 +396,41 @@ window.onload = function() {
           "required": [
             "code"
           ]
+        },
+        "UserProfileDto": {
+          "type": "object",
+          "properties": {
+            "userName": {
+              "type": "string",
+              "description": "User display name.",
+              "example": "string"
+            },
+            "name": {
+              "type": "string",
+              "description": "user name",
+              "example": "string"
+            },
+            "surName": {
+              "type": "string",
+              "description": "user surname",
+              "example": "string"
+            },
+            "dateOfBirthday": {
+              "type": "string",
+              "description": "date of birthday user",
+              "example": "some date"
+            },
+            "city": {
+              "type": "string",
+              "description": "city of user",
+              "example": "string"
+            },
+            "aboutMe": {
+              "type": "string",
+              "description": "information about user",
+              "example": "string"
+            }
+          }
         }
       }
     }

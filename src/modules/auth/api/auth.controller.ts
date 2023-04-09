@@ -33,7 +33,7 @@ import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema
 import { LoginDto } from './dto/input/login.dto';
 import { RefreshTokenCommand } from '../application/use-cases/refresh-token.use-case';
 import { LogoutCommand } from '../application/use-cases/logout.use-case';
-import { AuthMeDto } from './dto/output/auth-me.dto';
+import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { GetAuthUserDataCommand } from '../application/use-cases/get-auth-user-data.use-case';

@@ -11,7 +11,7 @@ import {
 import { UsersRepository } from '../../../../users/infrastructure/users.repository';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Injectable()
+@Injectable() //if validation uses dependency injection it must be injectable and registered in the module
 @ValidatorConstraint({ async: true })
 export class IsEmailOrUserNameUniqueConstraint
   implements ValidatorConstraintInterface
@@ -19,7 +19,7 @@ export class IsEmailOrUserNameUniqueConstraint
   constructor(private usersRepository: UsersRepository) {}
 
   async validate(loginOrEmail: string) {
-    const user = await this.usersRepository.findUserByUserNameOrEmail(
+    const user = await this.usersRepository.findUserByLoginOrEmail(
       loginOrEmail
     );
     return !user;
@@ -41,17 +41,17 @@ export class RegisterDto {
   @Validate(IsEmailOrUserNameUniqueConstraint, {
     message: 'Login already exist',
   })
-  @Length(3, 10)
+  @Length(6, 30)
   @Matches('[a-zA-Z0-9_-]*$')
   @IsString()
   @ApiProperty({
-    description: 'User name',
+    description: 'User login',
     example: 'John',
     type: 'string',
     minLength: 3,
     maxLength: 10,
   })
-  userName: string;
+  login: string;
   @Length(6, 20)
   @IsString()
   @ApiProperty({
@@ -61,5 +61,11 @@ export class RegisterDto {
     minLength: 6,
     maxLength: 20,
   })
+  @Matches(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*[^\s])(?=.*[a-zA-Z])(?=.*[0-9]).{10,}$/gm,
+    {
+      message: 'Your password is too weak, dear frontender',
+    }
+  )
   password: string;
 }

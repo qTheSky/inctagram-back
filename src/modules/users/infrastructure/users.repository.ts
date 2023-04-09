@@ -14,13 +14,13 @@ export class UsersRepository extends AbstractRepository<UserEntity> {
   }
 
   async create(dto: {
-    userName: string;
+    login: string;
     email: string;
     passwordHash: string;
     password: string;
   }): Promise<UserEntity> {
     const newUser = UserEntity.create(
-      dto.userName,
+      dto.login,
       dto.email,
       dto.passwordHash,
       dto.password
@@ -31,17 +31,17 @@ export class UsersRepository extends AbstractRepository<UserEntity> {
   async findUserByEmailConfirmationCode(
     confirmationCode: string
   ): Promise<UserEntity | null> {
-    return this.usersRepository.findOne({
+    return await this.usersRepository.findOne({
       where: { emailConfirmation: { confirmationCode } },
       relations: { emailConfirmation: true },
     });
   }
 
-  async findUserByUserNameOrEmail(
-    userNameOrEmail: string
+  async findUserByLoginOrEmail(
+    loginOrEmail: string
   ): Promise<UserEntity | null> {
     return await this.usersRepository.findOne({
-      where: [{ userName: userNameOrEmail }, { email: userNameOrEmail }],
+      where: [{ login: loginOrEmail }, { email: loginOrEmail }],
       relations: { emailConfirmation: true },
     });
   }
