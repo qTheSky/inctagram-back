@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UsersProfilesRepository } from '../infrastructure/users.profiles.repository';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { UserProfileDto } from './dto/input/user-profile.dto';
@@ -19,6 +29,7 @@ import { unauthorizedSwaggerMessage } from '../../../swagger/constants/unauthori
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
 import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
 import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -71,4 +82,12 @@ export class UsersController {
   ): Promise<UserProfileViewModel> {
     return this.usersProfilesRepository.getUserProfile(userId);
   }
+
+  @Post(':userId/avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMainBlogImage(
+    @UploadedFile() avatar: Express.Multer.File,
+    @CurrentUserId() currentUserId: string,
+    @Param('userId') userId: string
+  ) {}
 }
