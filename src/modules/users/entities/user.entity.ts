@@ -13,6 +13,8 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { RegistrationCommand } from 'src/modules/auth/application/use-cases';
+import { RegisterDto } from 'src/modules/auth/api/dto/input';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -141,20 +143,24 @@ export class UserEntity extends BaseEntity {
     this.banInfo.banReason = null;
   }
 
-  static create(
-    login: string,
-    email: string,
-    passwordHash: string
-  ): UserEntity {
+  static create({ login, email, password }: RegisterDto): UserEntity {
     const user = new UserEntity();
-
+    user.id = randomUUID();
     user.login = login;
     user.email = email;
-    user.passwordHash = passwordHash;
+    user.passwordHash = password;
     user.createdAt = new Date();
 
     user.createEmailConfirmation();
     user.createProfile();
+
+    const banInfo = new UserBanInfoEntity();
+    banInfo.id = randomUUID();
+    banInfo.userId = user.id;
+    banInfo.isBanned = false;
+    banInfo.banReason = null;
+    banInfo.banDate = null;
+    user.banInfo = banInfo;
 
     return user;
   }

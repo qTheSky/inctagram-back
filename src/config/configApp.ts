@@ -4,6 +4,8 @@ import { pipesSetup } from './pipesSetup';
 import { exceptionFilterSetup } from './exceptionFilterSetup';
 import { corseSetup } from './originSetup';
 import { cookieParserSetup } from './cookieParserSetup';
+import { containerSetup } from './containerSetup';
+import { interceptorSetup } from './interceptorSetup';
 
 export function configApp(app: INestApplication) {
   pipesSetup(app);
@@ -11,4 +13,6 @@ export function configApp(app: INestApplication) {
   exceptionFilterSetup(app);
   corseSetup(app);
   cookieParserSetup(app);
+  containerSetup(app);
+  interceptorSetup(app);
 }
