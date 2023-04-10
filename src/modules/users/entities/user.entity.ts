@@ -168,6 +168,7 @@ export class UserEntity extends BaseEntity {
 
   createEmailConfirmation(): UserEmailConfirmation {
     const emailConfirmation = new UserEmailConfirmation();
+    emailConfirmation.confirmationCode = randomUUID();
     emailConfirmation.user = this;
     emailConfirmation.isConfirmed = false;
     emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
