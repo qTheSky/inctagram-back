@@ -1,5 +1,5 @@
 import { AbstractRepository } from '../../shared/classes/abstract.repository';
-import { UserProfileEntity } from '../entities/user-profile.entity';
+import { UserProfileEntity } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
@@ -32,7 +32,9 @@ export class UsersProfilesRepository extends AbstractRepository<UserProfileEntit
       surName: profile.surName,
       aboutMe: profile.aboutMe,
       dateOfBirthday: profile.dateOfBirthday,
-      avatarUrl: this.configService.get('FILES_URL') + profile.avatarPath,
+      avatarUrl: profile.avatarPath
+        ? this.configService.get('FILES_URL') + profile.avatarPath
+        : null,
     };
   }
 }
