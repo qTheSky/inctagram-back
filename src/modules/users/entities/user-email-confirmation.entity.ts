@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-@Entity('users_email_confrimation')
+@Entity('users_email_confirmation')
 export class UserEmailConfirmation {
   @PrimaryColumn()
   userId: number;

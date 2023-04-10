@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-@Entity('AUTH_UsersBanInfo')
+@Entity('users_ban_info')
 export class UserBanInfoEntity {
   @PrimaryColumn('uuid')
   userId: string;

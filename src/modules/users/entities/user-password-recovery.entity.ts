@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 
-@Entity('AUTH_UsersPasswordRecovery')
+@Entity('users_password_recovery')
 export class UserPasswordRecoveryEntity {
   @PrimaryColumn('uuid')
   userId: string;
