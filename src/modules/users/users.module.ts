@@ -1,15 +1,26 @@
 import { Module } from '@nestjs/common';
 import { UsersRepository } from './infrastructure/users.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
-import { UserEmailConfirmation } from './entities/user-email-confirmation.entity';
+
 import { UsersController } from './api/users.controller';
-import { UserProfileEntity } from './entities/user-profile.entity';
+
 import { UsersProfilesRepository } from './infrastructure/users.profiles.repository';
 import { UpdateProfileUseCase } from './application/use-cases/update-profile.use-case';
 import { CqrsModule } from '@nestjs/cqrs';
+import { UsersQueryRepository } from './infrastructure';
+import {
+  UserBanInfoEntity,
+  UserEmailConfirmation,
+  UserEntity,
+  UserPasswordRecoveryEntity,
+  UserProfileEntity,
+} from './entities';
 
-const adapters = [UsersRepository, UsersProfilesRepository];
+const adapters = [
+  UsersRepository,
+  UsersProfilesRepository,
+  UsersQueryRepository,
+];
 
 const useCases = [UpdateProfileUseCase];
 
@@ -20,10 +31,12 @@ const useCases = [UpdateProfileUseCase];
       UserEntity,
       UserEmailConfirmation,
       UserProfileEntity,
+      UserBanInfoEntity,
+      UserPasswordRecoveryEntity,
     ]),
   ],
   controllers: [UsersController],
   providers: [...adapters, ...useCases],
-  exports: [UsersRepository],
+  exports: [UsersRepository, UsersQueryRepository],
 })
 export class UsersModule {}

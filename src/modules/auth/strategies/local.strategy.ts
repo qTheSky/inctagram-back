@@ -3,12 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from '../../users/entities/user.entity';
-import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { LoginDto } from '../api/dto/input/login.dto';
+import { UsersQueryRepository } from '../../../modules/users/infrastructure';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private usersRepository: UsersRepository) {
+  constructor(private usersQueryRepository: UsersQueryRepository) {
     super({
       usernameField: 'loginOrEmail',
     });
@@ -25,7 +25,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     authCredentialsModel: LoginDto
   ): Promise<UserEntity> {
     const { loginOrEmail, password } = authCredentialsModel;
-    const user = await this.usersRepository.findUserByLoginOrEmail(
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(
       loginOrEmail
     );
     if (!user) throw new UnauthorizedException('Incorrect credentials');

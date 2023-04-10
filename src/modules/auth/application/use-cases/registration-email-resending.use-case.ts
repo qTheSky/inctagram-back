@@ -11,7 +11,7 @@ export class RegistrationEmailResendingCommand {
 }
 
 @CommandHandler(RegistrationEmailResendingCommand)
-export class RegistrationEmailResendingHandler
+export class RegistrationEmailResendingUseCase
   implements ICommandHandler<RegistrationEmailResendingCommand>
 {
   constructor(

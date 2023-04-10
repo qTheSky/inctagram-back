@@ -18,6 +18,11 @@ import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-c
 import { SecurityModule } from '../security/security.module';
 import { LogoutUseCase } from './application/use-cases/logout.use-case';
 import { GetAuthUserDataUseCase } from './application/use-cases/get-auth-user-data.use-case';
+import {
+  NewPasswordUseCase,
+  PasswordRecoveryUseCase,
+  RegistrationEmailResendingUseCase,
+} from './application/use-cases';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -31,6 +36,9 @@ const useCases = [
   RefreshTokenUseCase,
   LogoutUseCase,
   GetAuthUserDataUseCase,
+  NewPasswordUseCase,
+  PasswordRecoveryUseCase,
+  RegistrationEmailResendingUseCase,
 ];
 const services = [AuthService];
 const authStrategies = [JwtStrategy, LocalStrategy];
