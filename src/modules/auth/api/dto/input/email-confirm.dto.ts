@@ -6,18 +6,17 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../../../../users/infrastructure/users.repository';
+import { UsersQueryRepository } from 'src/modules/users/infrastructure';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsConfirmationCodeValidConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private usersQueryRepository: UsersQueryRepository) {}
   async validate(code: string) {
-    const user = await this.usersRepository.findUserByEmailConfirmationCode(
-      code
-    );
+    const user =
+      await this.usersQueryRepository.findUserByEmailConfirmationCode(code);
     if (!user) return false;
     return user.isEmailCanBeConfirmed(code);
   }

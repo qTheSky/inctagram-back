@@ -27,6 +27,8 @@ import {
   ApiTags,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
 import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
@@ -38,6 +40,16 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { GetAuthUserDataCommand } from '../application/use-cases/get-auth-user-data.use-case';
 import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
+import {
+  NewPasswordCommand,
+  PasswordRecoveryCommand,
+  RegistrationEmailResendingCommand,
+} from '../application/use-cases';
+import {
+  EmailResendModel,
+  PasswordRecoveryModel,
+  UpdatePasswordModel,
+} from './dto/input';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -194,5 +206,71 @@ export class AuthController {
     @CurrentUserId() currentUserId: string
   ): Promise<AuthMeDto> {
     return this.commandBus.execute(new GetAuthUserDataCommand(currentUserId));
+  }
+
+  @Post('registration-email-resending')
+  @HttpCode(204)
+  @ApiOperation({
+    summary: 'Resend confirmation registration Email if user exists',
+  })
+  @ApiResponse({
+    status: 204,
+    description:
+      'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+  })
+  @ApiBadRequestResponse({
+    description: 'If the inputModel has incorrect values',
+    schema: BadRequestApiExample,
+  })
+  @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
+  @Throttle(5, 10)
+  async resendEmailConfirmationCode(
+    @Body() emailResendModel: EmailResendModel
+  ): Promise<void> {
+    await this.commandBus.execute<RegistrationEmailResendingCommand, void>(
+      new RegistrationEmailResendingCommand(emailResendModel.email)
+    );
+  }
+
+  @Post('password-recovery')
+  @ApiOperation({
+    summary:
+      'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
+  })
+  @ApiResponse({
+    status: 204,
+    description:
+      "Even if current email is not registered (for prevent user's email detection)",
+  })
+  @ApiBadRequestResponse({
+    description:
+      'If the inputModel has invalid email (for example 222^gmail.com)',
+  })
+  @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
+  @Throttle(5, 10)
+  @HttpCode(204)
+  async sendPasswordRecoveryCode(
+    @Body() model: PasswordRecoveryModel
+  ): Promise<void> {
+    await this.commandBus.execute(new PasswordRecoveryCommand(model.email));
+  }
+
+  @Post('new-password')
+  @ApiOperation({ summary: 'Confirm password recovery' })
+  @ApiResponse({
+    status: 204,
+    description: 'If code is valid and new password is accepted',
+  })
+  @ApiForbiddenResponse({ description: 'If code is wrong' })
+  @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
+  @ApiNotFoundResponse({ description: 'If user with this code doesnt exist' })
+  @Throttle(5, 10)
+  @HttpCode(204)
+  async updateUserPassword(
+    @Body() { newPassword, recoveryCode }: UpdatePasswordModel
+  ): Promise<void> {
+    await this.commandBus.execute(
+      new NewPasswordCommand(recoveryCode, newPassword)
+    );
   }
 }
