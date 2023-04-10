@@ -19,6 +19,9 @@ export const validateImage = async (
 
   const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
+  /**
+   * if file extension isn`t jpeg or jpg or png
+   */
   if (!allowedMimeTypes.includes(image.mimetype)) {
     throw new BadRequestException([
       { field: 'file', message: 'file must be png, jpg or jpeg' },
@@ -27,15 +30,21 @@ export const validateImage = async (
 
   const imageMetaData = await sharp(image.buffer).metadata();
 
-  if (
-    imageMetaData.size > validateRules.maxFileSizeKB * 1000 ||
+  if (imageMetaData.size > validateRules.maxFileSizeKB * 1000) {
+    throw new BadRequestException([
+      {
+        field: 'file',
+        message: `image max size is ${validateRules.maxFileSizeKB}kb`,
+      },
+    ]);
+  } else if (
     imageMetaData.width > validateRules.width ||
     imageMetaData.height > validateRules.height
   ) {
     throw new BadRequestException([
       {
         field: 'file',
-        message: `image should be ${validateRules.width}x${validateRules.height} resolution and max size ${validateRules.maxFileSizeKB}kb`,
+        message: `image should be ${validateRules.width}x${validateRules.height} resolution`,
       },
     ]);
   }
