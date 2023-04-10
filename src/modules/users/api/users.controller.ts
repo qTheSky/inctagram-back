@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
@@ -16,6 +17,8 @@ import {
 import { userProfileExample } from '../../../swagger/schema/profile/user-profile-example';
 import { unauthorizedSwaggerMessage } from '../../../swagger/constants/unauthorized-swagger-message';
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
+import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
+import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
 
 @ApiTags('Users')
 @Controller('users')
@@ -27,7 +30,10 @@ export class UsersController {
 
   @Put('profile')
   @ApiOperation({ summary: 'Update current user profile' })
-  @ApiBody({ description: 'Example request body', type: UserProfileDto })
+  @ApiBody({
+    description: 'Example request body (all fields not required)',
+    type: UserProfileDto,
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns updated profile',
@@ -35,6 +41,10 @@ export class UsersController {
   })
   @ApiUnauthorizedResponse({
     description: unauthorizedSwaggerMessage,
+  })
+  @ApiBadRequestResponse({
+    description: badRequestSwaggerMessage,
+    schema: BadRequestApiExample,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

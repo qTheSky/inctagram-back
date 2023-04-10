@@ -37,6 +37,7 @@ import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { GetAuthUserDataCommand } from '../application/use-cases/get-auth-user-data.use-case';
+import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -54,8 +55,7 @@ export class AuthController {
       'Input data is accepted. Email with confirmation code will be send to passed email address',
   })
   @ApiBadRequestResponse({
-    description:
-      'If the inputModel has incorrect values (in particular if the user with the given email or login already exists)',
+    description: badRequestSwaggerMessage,
     schema: BadRequestApiExample,
   })
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
@@ -76,7 +76,7 @@ export class AuthController {
   })
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
   @ApiBadRequestResponse({
-    description: 'If the inputModel has incorrect values',
+    description: badRequestSwaggerMessage,
     schema: BadRequestApiExample,
   })
   @ApiUnauthorizedResponse({ description: 'If the password or login is wrong' })
@@ -108,8 +108,7 @@ export class AuthController {
     description: 'Email was verified. Account was activated',
   })
   @ApiBadRequestResponse({
-    description:
-      'If the confirmation code is incorrect, expired or already been applied',
+    description: badRequestSwaggerMessage,
     schema: BadRequestApiExample,
   })
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
