@@ -8,18 +8,18 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { UsersRepository } from '../../../../users/infrastructure/users.repository';
 import { ApiProperty } from '@nestjs/swagger';
+import { UsersQueryRepository } from '../../../../../modules/users/infrastructure';
 
 @Injectable() //if validation uses dependency injection it must be injectable and registered in the module
 @ValidatorConstraint({ async: true })
 export class IsEmailOrUserNameUniqueConstraint
   implements ValidatorConstraintInterface
 {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(private usersQueryRepository: UsersQueryRepository) {}
 
   async validate(loginOrEmail: string) {
-    const user = await this.usersRepository.findUserByLoginOrEmail(
+    const user = await this.usersQueryRepository.findUserByLoginOrEmail(
       loginOrEmail
     );
     return !user;

@@ -1,5 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import {
+  UsersQueryRepository,
+  UsersRepository,
+} from '../../../../modules/users/infrastructure';
 
 export class ConfirmEmailCommand {
   constructor(public code: string) {}
@@ -9,11 +12,15 @@ export class ConfirmEmailCommand {
 export class ConfirmEmailUseCase
   implements ICommandHandler<ConfirmEmailCommand>
 {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersQueryRepository: UsersQueryRepository,
+    private usersRepository: UsersRepository
+  ) {}
   async execute(command: ConfirmEmailCommand) {
-    const user = await this.usersRepository.findUserByEmailConfirmationCode(
-      command.code
-    );
+    const user =
+      await this.usersQueryRepository.findUserByEmailConfirmationCode(
+        command.code
+      );
     if (!user) return;
     if (!user.isEmailCanBeConfirmed(command.code)) return;
     user.confirmEmail(command.code);

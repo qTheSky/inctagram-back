@@ -12,37 +12,4 @@ export class UsersRepository extends AbstractRepository<UserEntity> {
   ) {
     super(usersRepository);
   }
-
-  async create(dto: {
-    login: string;
-    email: string;
-    passwordHash: string;
-    password: string;
-  }): Promise<UserEntity> {
-    const newUser = UserEntity.create(
-      dto.login,
-      dto.email,
-      dto.passwordHash,
-      dto.password
-    );
-    return await this.save(newUser);
-  }
-
-  async findUserByEmailConfirmationCode(
-    confirmationCode: string
-  ): Promise<UserEntity | null> {
-    return await this.usersRepository.findOne({
-      where: { emailConfirmation: { confirmationCode } },
-      relations: { emailConfirmation: true },
-    });
-  }
-
-  async findUserByLoginOrEmail(
-    loginOrEmail: string
-  ): Promise<UserEntity | null> {
-    return await this.usersRepository.findOne({
-      where: [{ login: loginOrEmail }, { email: loginOrEmail }],
-      relations: { emailConfirmation: true },
-    });
-  }
 }

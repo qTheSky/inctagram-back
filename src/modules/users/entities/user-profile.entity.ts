@@ -20,7 +20,7 @@ export class UserProfileEntity {
   @OneToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
-  @PrimaryColumn()
+  @PrimaryColumn('uuid')
   userId: string;
 
   update(dto: UserProfileDto) {

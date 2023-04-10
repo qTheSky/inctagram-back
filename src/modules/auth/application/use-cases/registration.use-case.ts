@@ -3,6 +3,7 @@ import { RegisterDto } from '../../api/dto/input/register.dto';
 import { AuthService } from '../auth.service';
 import { UsersRepository } from '../../../users/infrastructure/users.repository';
 import { EmailsManager } from '../../../notification/application/emails.manager';
+import { UserEntity } from 'src/modules/users/entities';
 
 export class RegistrationCommand {
   constructor(public dto: RegisterDto) {}
@@ -20,12 +21,8 @@ export class RegistrationUseCase
   async execute(command: RegistrationCommand): Promise<void> {
     const { password, login, email } = command.dto;
     const passwordHash = await this.authService.generatePasswordHash(password);
-    const newUser = await this.usersRepository.create({
-      login,
-      email,
-      passwordHash,
-      password,
-    });
+    const newUser = UserEntity.create(login, email, passwordHash);
     this.emailsManager.sendEmailConfirmationMessage(newUser);
+    await this.usersRepository.save(newUser);
   }
 }
