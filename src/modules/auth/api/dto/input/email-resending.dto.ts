@@ -7,11 +7,11 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { UsersQueryRepository } from 'src/modules/users/infrastructure';
+import { UsersQueryRepository } from '../../../../../modules/users/infrastructure';
 
 @Injectable()
 @ValidatorConstraint({ async: true })
-export class CheckIsEmailConfirmedConstraint
+export class IsCheckIsEmailConfirmedConstraint
   implements ValidatorConstraintInterface
 {
   constructor(private usersQueryRepository: UsersQueryRepository) {}
@@ -24,7 +24,7 @@ export class CheckIsEmailConfirmedConstraint
 }
 
 export class EmailResendModel {
-  @Validate(CheckIsEmailConfirmedConstraint, {
+  @Validate(IsCheckIsEmailConfirmedConstraint, {
     message: 'Email already confimed or doesnt exist',
   })
   @IsString()
