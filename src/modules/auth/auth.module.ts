@@ -23,10 +23,12 @@ import {
   PasswordRecoveryUseCase,
   RegistrationEmailResendingUseCase,
 } from './application/use-cases';
+import { IsCheckIsEmailConfirmedConstraint } from './api/dto/input';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
   IsConfirmationCodeValidConstraint,
+  IsCheckIsEmailConfirmedConstraint,
 ];
 
 const useCases = [
