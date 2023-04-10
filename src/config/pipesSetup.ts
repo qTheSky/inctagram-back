@@ -21,16 +21,23 @@ export const validationErrorsMapper = {
 export const pipesSetup = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
+      whitelist: true, //forbid extra fields in body
       transform: true,
-
+      forbidUnknownValues: false,
       stopAtFirstError: true,
-      exceptionFactory: (errors: ValidationError[]) => {
-        const err =
-          validationErrorsMapper.mapValidationErrorArrayToValidationPipeErrorTypeArray(
-            errors
-          );
-        throw new BadRequestException(err);
+      exceptionFactory: (errors) => {
+        const errorsForResponse = [];
+
+        errors.forEach((e) => {
+          const constraintsKeys = Object.keys(e.constraints);
+          constraintsKeys.forEach((ckey) => {
+            errorsForResponse.push({
+              message: e.constraints[ckey],
+              field: e.property,
+            });
+          });
+        });
+        throw new BadRequestException(errorsForResponse);
       },
     })
   );
@@ -45,23 +52,16 @@ export type ValidationPipeErrorType = {
 
 // app.useGlobalPipes(
 //   new ValidationPipe({
-//     whitelist: true, //forbid extra fields in body
+//     whitelist: true,
 //     transform: true,
-//     forbidUnknownValues: false,
+//
 //     stopAtFirstError: true,
-//     exceptionFactory: (errors) => {
-//       const errorsForResponse = [];
-
-//       errors.forEach((e) => {
-//         const constraintsKeys = Object.keys(e.constraints);
-//         constraintsKeys.forEach((ckey) => {
-//           errorsForResponse.push({
-//             message: e.constraints[ckey],
-//             field: e.property,
-//           });
-//         });
-//       });
-//       throw new BadRequestException(errorsForResponse);
+//     exceptionFactory: (errors: ValidationError[]) => {
+//       const err =
+//         validationErrorsMapper.mapValidationErrorArrayToValidationPipeErrorTypeArray(
+//           errors
+//         );
+//       throw new BadRequestException(err);
 //     },
 //   })
 // );

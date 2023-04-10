@@ -6,5 +6,5 @@ export const userProfileExample: UserProfileViewModel = {
   surName: 'string',
   aboutMe: 'string',
   city: 'string',
-  dateOfBirthday: new Date(),
+  dateOfBirthday: new Date('2023-04-10T16:20:10.847Z'),
 };

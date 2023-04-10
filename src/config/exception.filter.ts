@@ -32,13 +32,22 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
 
     if (status === 400) {
-      const resp: any = exception.getResponse();
-      if (resp instanceof ResultNotification) {
-        response.status(status).json(resp);
-        return;
-      }
-      const resultNotification = mapErorsToNotification(resp.message);
-      response.status(status).json(resultNotification);
+      // const resp: any = exception.getResponse();
+      // if (resp instanceof ResultNotification) {
+      //   response.status(status).json(resp);
+      //   return;
+      // }
+      // const resultNotification = mapErorsToNotification(resp.message);
+      // response.status(status).json(resultNotification);
+
+      const errorResponse = {
+        errorsMessages: [],
+      };
+      const responseBody: any = exception.getResponse();
+
+      responseBody.message.forEach((m) => errorResponse.errorsMessages.push(m));
+
+      response.status(status).json(errorResponse);
     } else {
       response.status(status).json({
         statusCode: status,

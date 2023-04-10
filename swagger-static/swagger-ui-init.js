@@ -31,7 +31,7 @@ window.onload = function() {
               "description": "Input data is accepted. Email with confirmation code will be send to passed email address"
             },
             "400": {
-              "description": "If the inputModel has incorrect values (in particular if the user with the given email or login already exists)",
+              "description": "If the inputModel has incorrect values",
               "content": {
                 "application/json": {
                   "schema": {
@@ -134,7 +134,7 @@ window.onload = function() {
               "description": "Email was verified. Account was activated"
             },
             "400": {
-              "description": "If the confirmation code is incorrect, expired or already been applied",
+              "description": "If the inputModel has incorrect values",
               "content": {
                 "application/json": {
                   "schema": {
@@ -238,6 +238,116 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/registration-email-resending": {
+        "post": {
+          "operationId": "AuthController_resendEmailConfirmationCode",
+          "summary": "Resend confirmation registration Email if user exists",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailResendModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere"
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "429": {
+              "description": "More than 5 attempts from one IP-address during 10 seconds"
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/password-recovery": {
+        "post": {
+          "operationId": "AuthController_sendPasswordRecoveryCode",
+          "summary": "Password recovery via Email confirmation. Email should be sent with RecoveryCode inside",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PasswordRecoveryModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "Even if current email is not registered (for prevent user's email detection)"
+            },
+            "400": {
+              "description": "If the inputModel has invalid email (for example 222^gmail.com)"
+            },
+            "429": {
+              "description": "More than 5 attempts from one IP-address during 10 seconds"
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/new-password": {
+        "post": {
+          "operationId": "AuthController_updateUserPassword",
+          "summary": "Confirm password recovery",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePasswordModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "If code is valid and new password is accepted"
+            },
+            "403": {
+              "description": "If code is wrong"
+            },
+            "404": {
+              "description": "If user with this code doesnt exist"
+            },
+            "429": {
+              "description": "More than 5 attempts from one IP-address during 10 seconds"
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/users/profile": {
         "put": {
           "operationId": "UsersController_updateUserProfile",
@@ -245,7 +355,7 @@ window.onload = function() {
           "parameters": [],
           "requestBody": {
             "required": true,
-            "description": "Example request body",
+            "description": "Example request body (all fields not required)",
             "content": {
               "application/json": {
                 "schema": {
@@ -261,12 +371,29 @@ window.onload = function() {
                 "application/json": {
                   "schema": {
                     "example": {
-                      "userName": "dimych",
-                      "name": "Dmitry",
-                      "surName": "Kuzyberdin",
-                      "aboutMe": "i am the best c# developer",
-                      "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T21:23:01.033Z"
+                      "userName": "string",
+                      "name": "string",
+                      "surName": "string",
+                      "aboutMe": "string",
+                      "city": "string",
+                      "dateOfBirthday": "2023-04-10T16:20:10.847Z"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
                     }
                   }
                 }
@@ -307,12 +434,12 @@ window.onload = function() {
                 "application/json": {
                   "schema": {
                     "example": {
-                      "userName": "dimych",
-                      "name": "Dmitry",
-                      "surName": "Kuzyberdin",
-                      "aboutMe": "i am the best c# developer",
-                      "city": "Minsk",
-                      "dateOfBirthday": "2023-04-09T21:23:01.033Z"
+                      "userName": "string",
+                      "name": "string",
+                      "surName": "string",
+                      "aboutMe": "string",
+                      "city": "string",
+                      "dateOfBirthday": "2023-04-10T16:20:10.847Z"
                     }
                   }
                 }
@@ -320,6 +447,29 @@ window.onload = function() {
             },
             "401": {
               "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Users"
+          ]
+        }
+      },
+      "/users/{userId}/avatar": {
+        "post": {
+          "operationId": "UsersController_uploadMainBlogImage",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "201": {
+              "description": ""
             }
           },
           "tags": [
@@ -395,6 +545,55 @@ window.onload = function() {
           },
           "required": [
             "code"
+          ]
+        },
+        "EmailResendModel": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "example": "user@example.com",
+              "format": "email"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        },
+        "PasswordRecoveryModel": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User email",
+              "example": "user@example.com",
+              "format": "email"
+            }
+          },
+          "required": [
+            "email"
+          ]
+        },
+        "UpdatePasswordModel": {
+          "type": "object",
+          "properties": {
+            "recoveryCode": {
+              "type": "string",
+              "description": "Recovery code",
+              "example": "uuid-from-email-message"
+            },
+            "newPassword": {
+              "type": "string",
+              "description": "New Password",
+              "example": "newpassword123",
+              "minLength": 6,
+              "maxLength": 20
+            }
+          },
+          "required": [
+            "recoveryCode",
+            "newPassword"
           ]
         },
         "UserProfileDto": {
