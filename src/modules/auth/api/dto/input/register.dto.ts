@@ -62,9 +62,10 @@ export class RegisterDto {
     maxLength: 20,
   })
   @Matches(
-    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=.*[^\s])(?=.*[a-zA-Z])(?=.*[0-9]).{10,}$/gm,
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+=])[A-Za-z\d@$!%*#?&^+=]{8,}$/,
     {
-      message: 'Your password is too weak, dear frontender',
+      message:
+        'passwords should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character',
     }
   )
   password: string;
