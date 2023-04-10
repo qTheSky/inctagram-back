@@ -376,7 +376,8 @@ window.onload = function() {
                       "surName": "string",
                       "aboutMe": "string",
                       "city": "string",
-                      "dateOfBirthday": "2023-04-10T16:20:10.847Z"
+                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
+                      "avatarUrl": "https://avavar.com"
                     }
                   }
                 }
@@ -439,7 +440,8 @@ window.onload = function() {
                       "surName": "string",
                       "aboutMe": "string",
                       "city": "string",
-                      "dateOfBirthday": "2023-04-10T16:20:10.847Z"
+                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
+                      "avatarUrl": "https://avavar.com"
                     }
                   }
                 }
@@ -454,26 +456,74 @@ window.onload = function() {
           ]
         }
       },
-      "/users/{userId}/avatar": {
+      "/users/avatar": {
         "post": {
           "operationId": "UsersController_uploadMainBlogImage",
-          "parameters": [
-            {
-              "name": "userId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
+          "summary": "Upload user avatar 512x512 (1mb)",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
               }
             }
-          ],
+          },
           "responses": {
             "201": {
-              "description": ""
+              "description": "Uploaded image information object",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "userName": "string",
+                      "name": "string",
+                      "surName": "string",
+                      "aboutMe": "string",
+                      "city": "string",
+                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
+                      "avatarUrl": "https://avavar.com"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If file format is incorrect",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
             }
           },
           "tags": [
             "Users"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
           ]
         }
       }

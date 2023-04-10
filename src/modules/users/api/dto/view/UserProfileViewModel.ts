@@ -5,4 +5,5 @@ export class UserProfileViewModel {
   dateOfBirthday: Date;
   city: string;
   aboutMe: string;
+  avatarUrl: string;
 }

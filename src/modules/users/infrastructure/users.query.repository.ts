@@ -35,11 +35,17 @@ export class UsersQueryRepository {
     });
   }
 
-  findUserByRecoveryCode(code: string): Promise<UserEntity | null> {
-    return this.usersQueryRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.passwordRecovery', 'passwordRecovery')
-      .where('passwordRecovery.recoveryCode = :code', { code })
-      .getOne();
+  async findUserByRecoveryCode(
+    recoveryCode: string
+  ): Promise<UserEntity | null> {
+    return await this.usersQueryRepository.findOne({
+      where: { passwordRecovery: { recoveryCode } },
+      relations: { passwordRecovery: true },
+    });
+    // return this.usersQueryRepository
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.passwordRecovery', 'passwordRecovery')
+    //   .where('passwordRecovery.recoveryCode = :code', { code })
+    //   .getOne();
   }
 }

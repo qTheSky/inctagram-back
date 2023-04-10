@@ -5,11 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import {
-  DomainError,
-  ResultNotification,
-  mapErorsToNotification,
-} from '../core/validation';
+import { DomainError } from '../core/validation';
 
 @Catch(DomainError)
 export class ErrorExceptionFilter implements ExceptionFilter {

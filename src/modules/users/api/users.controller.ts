@@ -19,7 +19,10 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
+  ApiForbiddenResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -30,6 +33,8 @@ import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
 import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
 import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadUserAvatarCommand } from '../application/use-cases/upload-user-avatar.use-case';
+import { fileSchemaExample } from '../../../swagger/schema/file-schema-example';
 
 @ApiTags('Users')
 @Controller('users')
@@ -64,7 +69,10 @@ export class UsersController {
     @Body() dto: UserProfileDto
   ): Promise<UserProfileViewModel> {
     await this.commandBus.execute(new UpdateProfileCommand(currentUserId, dto));
-    return this.usersProfilesRepository.getUserProfile(currentUserId);
+    const updatedProfile = await this.usersProfilesRepository.getUserProfile(
+      currentUserId
+    );
+    return this.usersProfilesRepository.buildProfileViewModel(updatedProfile);
   }
 
   @Get(':userId/profile')
@@ -80,14 +88,35 @@ export class UsersController {
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
-    return this.usersProfilesRepository.getUserProfile(userId);
+    const profile = await this.usersProfilesRepository.getUserProfile(userId);
+    return this.usersProfilesRepository.buildProfileViewModel(profile);
   }
 
-  @Post(':userId/avatar')
+  @Post('avatar')
+  @ApiOperation({
+    summary: 'Upload user avatar 512x512 (1mb)',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: fileSchemaExample })
+  @ApiResponse({
+    status: 201,
+    description: 'Uploaded image information object',
+    schema: { example: userProfileExample },
+  })
+  @ApiBadRequestResponse({
+    description: 'If file format is incorrect',
+    schema: BadRequestApiExample,
+  })
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse({ description: unauthorizedSwaggerMessage })
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadMainBlogImage(
     @UploadedFile() avatar: Express.Multer.File,
-    @CurrentUserId() currentUserId: string,
-    @Param('userId') userId: string
-  ) {}
+    @CurrentUserId() currentUserId: string
+  ): Promise<UserProfileViewModel> {
+    return this.commandBus.execute(
+      new UploadUserAvatarCommand(avatar, currentUserId)
+    );
+  }
 }

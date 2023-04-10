@@ -15,6 +15,8 @@ import {
   UserPasswordRecoveryEntity,
   UserProfileEntity,
 } from './entities';
+import { UploadUserAvatarUseCase } from './application/use-cases/upload-user-avatar.use-case';
+import { FilesModule } from '../files/files.module';
 
 const adapters = [
   UsersRepository,
@@ -22,11 +24,12 @@ const adapters = [
   UsersQueryRepository,
 ];
 
-const useCases = [UpdateProfileUseCase];
+const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
 
 @Module({
   imports: [
     CqrsModule,
+    FilesModule,
     TypeOrmModule.forFeature([
       UserEntity,
       UserEmailConfirmation,

@@ -31,6 +31,9 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
     const newPasswordHash = await this.authServiec.generatePasswordHash(
       newPassword
     );
+    //по приколу
+    user.password = newPassword;
+    //по приколу
 
     user.updatePasswordHash(newPasswordHash, recoveryCode);
     user.makePasswordRecoveryCodeUsed();

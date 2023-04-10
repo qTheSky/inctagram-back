@@ -270,7 +270,7 @@ export class AuthController {
     @Body() { newPassword, recoveryCode }: UpdatePasswordModel
   ): Promise<void> {
     await this.commandBus.execute(
-      new NewPasswordCommand(recoveryCode, newPassword)
+      new NewPasswordCommand(newPassword, recoveryCode)
     );
   }
 }

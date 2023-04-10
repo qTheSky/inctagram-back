@@ -7,4 +7,5 @@ export const userProfileExample: UserProfileViewModel = {
   aboutMe: 'string',
   city: 'string',
   dateOfBirthday: new Date('2023-04-10T16:20:10.847Z'),
+  avatarUrl: 'https://avavar.com',
 };

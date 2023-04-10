@@ -17,6 +17,9 @@ export class UserProfileEntity {
   @Column({ nullable: true })
   aboutMe: string | null;
 
+  @Column({ nullable: true })
+  avatarPath: string | null;
+
   @OneToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;

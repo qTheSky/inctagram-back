@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, BeforeInsert } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEmailConfirmation } from './user-email-confirmation.entity';
 import { randomUUID } from 'crypto';
@@ -13,7 +13,6 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { RegistrationCommand } from 'src/modules/auth/application/use-cases';
 import { RegisterDto } from 'src/modules/auth/api/dto/input';
 
 @Entity('users')
@@ -24,6 +23,8 @@ export class UserEntity extends BaseEntity {
   login: string;
   @Column()
   passwordHash: string;
+  @Column()
+  password: string;
 
   @OneToOne(() => UserEmailConfirmation, (emailConfirm) => emailConfirm.user, {
     cascade: true,
@@ -44,6 +45,7 @@ export class UserEntity extends BaseEntity {
 
   @OneToOne(() => UserProfileEntity, (profile) => profile.user, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   profile: UserProfileEntity;
 
@@ -145,9 +147,9 @@ export class UserEntity extends BaseEntity {
 
   static create({ login, email, password }: RegisterDto): UserEntity {
     const user = new UserEntity();
-    user.id = randomUUID();
     user.login = login;
     user.email = email;
+    user.password = password;
     user.passwordHash = password;
     user.createdAt = new Date();
 
@@ -155,7 +157,6 @@ export class UserEntity extends BaseEntity {
     user.createProfile();
 
     const banInfo = new UserBanInfoEntity();
-    banInfo.id = randomUUID();
     banInfo.userId = user.id;
     banInfo.isBanned = false;
     banInfo.banReason = null;
@@ -168,7 +169,6 @@ export class UserEntity extends BaseEntity {
   createEmailConfirmation(): UserEmailConfirmation {
     const emailConfirmation = new UserEmailConfirmation();
     emailConfirmation.user = this;
-    emailConfirmation.confirmationCode = randomUUID();
     emailConfirmation.isConfirmed = false;
     emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
 

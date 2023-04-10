@@ -11,6 +11,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { SecurityModule } from './modules/security/security.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -28,6 +29,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         DATABASEUSERNAME: Joi.string().required(),
         PASSWORD: Joi.string().required(),
         DATABASE: Joi.string().required(),
+        YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
+        YANDEX_ACCESS_KEY_ID: Joi.string().required(),
+        YANDEX_BUCKETNAME: Joi.string().required(),
+        FILES_URL: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -47,6 +52,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     SharedModule,
     NotificationModule,
     SecurityModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

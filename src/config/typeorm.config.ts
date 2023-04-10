@@ -13,8 +13,8 @@ export const getTypeOrmConfig = (
     username: configService.get('DATABASEUSERNAME'),
     password: configService.get('PASSWORD'),
     database: configService.get('DATABASE'),
-    autoLoadEntities: true,
-    synchronize: true,
+    autoLoadEntities: configService.get('NODE_ENV') !== 'production',
+    synchronize: configService.get('NODE_ENV') !== 'production',
     ssl,
   };
 };

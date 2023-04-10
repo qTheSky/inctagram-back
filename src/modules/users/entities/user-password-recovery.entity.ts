@@ -1,9 +1,8 @@
-import { BaseEntity } from 'src/modules/shared/classes/base.entity';
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 
 @Entity('AUTH_UsersPasswordRecovery')
-export class UserPasswordRecoveryEntity extends BaseEntity {
+export class UserPasswordRecoveryEntity {
   @PrimaryColumn('uuid')
   userId: string;
   @Column()
