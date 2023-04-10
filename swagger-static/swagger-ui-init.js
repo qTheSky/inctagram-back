@@ -459,7 +459,7 @@ window.onload = function() {
       "/users/avatar": {
         "post": {
           "operationId": "UsersController_uploadMainBlogImage",
-          "summary": "Upload user avatar 512x512 (1mb)",
+          "summary": "Upload user avatar (1mb)",
           "parameters": [],
           "requestBody": {
             "required": true,

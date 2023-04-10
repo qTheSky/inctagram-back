@@ -3,7 +3,11 @@ import sharp from 'sharp';
 
 export const validateImage = async (
   image: Express.Multer.File,
-  validateRules: { width: number; height: number; maxFileSizeKB: number }
+  validateRules: { width?: number; height?: number; maxFileSizeKB?: number } = {
+    width: 9999,
+    height: 9999,
+    maxFileSizeKB: 1000,
+  }
 ): Promise<{
   validatedImage: Buffer;
   // imageExtension: string;

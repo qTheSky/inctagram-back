@@ -22,8 +22,6 @@ export class UploadUserAvatarUseCase
       currentUserId
     );
     const { validatedImage } = await validateImage(avatar, {
-      width: 515,
-      height: 512,
       maxFileSizeKB: 1000,
     });
     const { url } = await this.filesManager.uploadFile(

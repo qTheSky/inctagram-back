@@ -94,7 +94,7 @@ export class UsersController {
 
   @Post('avatar')
   @ApiOperation({
-    summary: 'Upload user avatar 512x512 (1mb)',
+    summary: 'Upload user avatar (1mb)',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: fileSchemaExample })
