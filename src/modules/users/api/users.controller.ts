@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UsersProfilesRepository } from '../infrastructure/users.profiles.repository';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { UserProfileDto } from './dto/input/user-profile.dto';
@@ -6,6 +16,7 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CommandBus } from '@nestjs/cqrs';
 import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
@@ -16,6 +27,9 @@ import {
 import { userProfileExample } from '../../../swagger/schema/profile/user-profile-example';
 import { unauthorizedSwaggerMessage } from '../../../swagger/constants/unauthorized-swagger-message';
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
+import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
+import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -27,7 +41,10 @@ export class UsersController {
 
   @Put('profile')
   @ApiOperation({ summary: 'Update current user profile' })
-  @ApiBody({ description: 'Example request body', type: UserProfileDto })
+  @ApiBody({
+    description: 'Example request body (all fields not required)',
+    type: UserProfileDto,
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns updated profile',
@@ -35,6 +52,10 @@ export class UsersController {
   })
   @ApiUnauthorizedResponse({
     description: unauthorizedSwaggerMessage,
+  })
+  @ApiBadRequestResponse({
+    description: badRequestSwaggerMessage,
+    schema: BadRequestApiExample,
   })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -61,4 +82,12 @@ export class UsersController {
   ): Promise<UserProfileViewModel> {
     return this.usersProfilesRepository.getUserProfile(userId);
   }
+
+  @Post(':userId/avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMainBlogImage(
+    @UploadedFile() avatar: Express.Multer.File,
+    @CurrentUserId() currentUserId: string,
+    @Param('userId') userId: string
+  ) {}
 }
