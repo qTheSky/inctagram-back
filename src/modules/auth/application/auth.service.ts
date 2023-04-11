@@ -4,8 +4,9 @@ import { randomUUID } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { RefreshPayload } from '../interfaces/jwt.payloads.interface';
-import { UsersRepository } from '../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../users/infrastructure';
 import { BadRefreshTokensRepository } from '../../security/infrastructure/bad-refresh-tokens.repository';
+import { ILoginTokens } from '../interfaces/login-tokens.interface';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,10 @@ export class AuthService {
     private badRefreshTokensRepository: BadRefreshTokensRepository
   ) {}
 
-  async generateTokens(userId: string, deviceId?: string) {
+  async generateTokens(
+    userId: string,
+    deviceId?: string
+  ): Promise<ILoginTokens> {
     const accessToken = this.jwtService.sign({ userId });
     const refreshToken = this.jwtService.sign(
       { userId, deviceId: deviceId || randomUUID() },

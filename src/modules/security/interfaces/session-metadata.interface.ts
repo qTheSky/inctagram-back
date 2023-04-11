@@ -1,4 +1,4 @@
-export interface ISessionMetadata {
+export interface ISessionMetaData {
   ip: string;
   deviceName: string;
 }

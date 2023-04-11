@@ -35,6 +35,10 @@ export class UsersQueryRepository {
     });
   }
 
+  async findUserByEmail(email: string): Promise<UserEntity | null> {
+    return await this.usersQueryRepository.findOneBy({ email });
+  }
+
   async findUserByRecoveryCode(
     recoveryCode: string
   ): Promise<UserEntity | null> {
@@ -42,10 +46,5 @@ export class UsersQueryRepository {
       where: { passwordRecovery: { recoveryCode } },
       relations: { passwordRecovery: true },
     });
-    // return this.usersQueryRepository
-    //   .createQueryBuilder('user')
-    //   .leftJoinAndSelect('user.passwordRecovery', 'passwordRecovery')
-    //   .where('passwordRecovery.recoveryCode = :code', { code })
-    //   .getOne();
   }
 }

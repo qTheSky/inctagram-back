@@ -3,19 +3,18 @@ import { UserEntity } from './user.entity';
 
 @Entity('users_email_confirmation')
 export class UserEmailConfirmation {
-  @PrimaryColumn()
-  userId: number;
+  @Column()
+  confirmationCode: string;
+  @Column()
+  expirationDate: Date;
+  @Column()
+  isConfirmed: boolean;
+
   @OneToOne(() => UserEntity, (u) => u.emailConfirmation, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
   user: UserEntity;
-
-  @Column()
-  confirmationCode: string;
-  @Column()
-  expirationDate: Date;
-
-  @Column()
-  isConfirmed: boolean;
+  @PrimaryColumn()
+  userId: string;
 }

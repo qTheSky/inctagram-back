@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RegisterDto } from '../../api/dto/input/register.dto';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { RegisterDto } from '../../api/dto/input';
+import { UsersRepository } from '../../../users/infrastructure';
 import { EmailsManager } from '../../../notification/application/emails.manager';
 import { UserEntity } from 'src/modules/users/entities';
+import { AuthService } from '../auth.service';
 
 export class RegistrationCommand {
   constructor(public dto: RegisterDto) {}
@@ -14,10 +15,19 @@ export class RegistrationUseCase
 {
   constructor(
     private emailsManager: EmailsManager,
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
+    private authService: AuthService
   ) {}
-  async execute(command: RegistrationCommand): Promise<void> {
-    const newUser = UserEntity.create(command.dto);
+  async execute({ dto }: RegistrationCommand): Promise<void> {
+    const passwordHash = await this.authService.generatePasswordHash(
+      dto.password
+    );
+    const newUser = UserEntity.create({
+      login: dto.login,
+      email: dto.email,
+      password: dto.password,
+      passwordHash,
+    });
     this.emailsManager.sendEmailConfirmationMessage(newUser);
     await this.usersRepository.save(newUser);
   }
