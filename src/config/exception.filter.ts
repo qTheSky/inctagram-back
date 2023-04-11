@@ -21,7 +21,7 @@ export class ErrorExceptionFilter implements ExceptionFilter {
 @Catch(HttpException)
 export class ValidationExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    console.log('---HttpException', exception);
+    // console.log('---HttpException', exception);
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();

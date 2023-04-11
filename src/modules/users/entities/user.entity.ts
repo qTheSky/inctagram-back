@@ -1,19 +1,11 @@
-import { BeforeInsert, Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEmailConfirmation } from './user-email-confirmation.entity';
 import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
-import * as bcrypt from 'bcrypt';
-import { hash } from 'bcrypt';
 import { UserProfileEntity } from './user-profile.entity';
-import { UserBanInfoEntity } from './user-ban-info.entity';
 import { UserPasswordRecoveryEntity } from './user-password-recovery.entity';
-import {
-  ForbiddenException,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { RegisterDto } from 'src/modules/auth/api/dto/input';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -31,28 +23,15 @@ export class UserEntity extends BaseEntity {
   })
   emailConfirmation: UserEmailConfirmation;
 
-  @OneToOne(() => UserBanInfoEntity, (ban) => ban.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  banInfo: UserBanInfoEntity;
-
-  @OneToOne(() => UserPasswordRecoveryEntity, (password) => password.user, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
-  passwordRecovery: UserPasswordRecoveryEntity;
-
   @OneToOne(() => UserProfileEntity, (profile) => profile.user, {
     cascade: true,
-    onDelete: 'CASCADE',
   })
   profile: UserProfileEntity;
 
-  @BeforeInsert()
-  async hashPassword(): Promise<void> {
-    this.passwordHash = await hash(this.passwordHash, 10);
-  }
+  @OneToOne(() => UserPasswordRecoveryEntity, (password) => password.user, {
+    cascade: true,
+  })
+  passwordRecovery: UserPasswordRecoveryEntity;
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;
@@ -71,11 +50,11 @@ export class UserEntity extends BaseEntity {
     this.emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
   }
 
-  updatePasswordHash(passworHash: string, passwordRecoveryCode: string): void {
+  updatePasswordHash(passwordHash: string, passwordRecoveryCode: string): void {
     if (!this.isNewPasswordCanBeSet(passwordRecoveryCode)) {
       throw new InternalServerErrorException("This password hash can't be set");
     }
-    this.passwordHash = passworHash;
+    this.passwordHash = passwordHash;
   }
 
   isNewPasswordCanBeSet(recoveryCode: string): boolean {
@@ -83,39 +62,6 @@ export class UserEntity extends BaseEntity {
     if (this.passwordRecovery.recoveryCode !== recoveryCode) return false;
     if (this.passwordRecovery.expirationDate < new Date()) return false;
     return true;
-  }
-
-  checkIsCanBeLoggedIn() {
-    this.checkBan();
-    this.checkIsEmailConfirmed();
-  }
-
-  checkBan(): void {
-    if (this.isBanned) {
-      throw new ForbiddenException();
-    }
-  }
-
-  get isBanned(): boolean {
-    return this.banInfo.isBanned;
-  }
-
-  checkIsEmailConfirmed() {
-    if (!this.isEmailConfirmed) {
-      throw new ForbiddenException();
-    }
-  }
-
-  get isEmailConfirmed(): boolean {
-    return this.emailConfirmation.isConfirmed;
-  }
-
-  async isHashedEquals(password: string): Promise<{ userId: string }> {
-    const isEqual = await bcrypt.compare(password, this.passwordHash);
-    if (!isEqual) {
-      throw new UnauthorizedException();
-    }
-    return { userId: this.id };
   }
 
   makePasswordRecoveryCodeUsed() {
@@ -133,43 +79,10 @@ export class UserEntity extends BaseEntity {
     return passwordRecovery.recoveryCode;
   }
 
-  ban(banReason: string): void {
-    this.banInfo.isBanned = true;
-    this.banInfo.banDate = new Date();
-    this.banInfo.banReason = banReason;
-  }
-
-  unBan(): void {
-    this.banInfo.isBanned = false;
-    this.banInfo.banDate = null;
-    this.banInfo.banReason = null;
-  }
-
-  static create({ login, email, password }: RegisterDto): UserEntity {
-    const user = new UserEntity();
-    user.login = login;
-    user.email = email;
-    user.password = password;
-    user.passwordHash = password;
-    user.createdAt = new Date();
-
-    user.createEmailConfirmation();
-    user.createProfile();
-
-    const banInfo = new UserBanInfoEntity();
-    banInfo.userId = user.id;
-    banInfo.isBanned = false;
-    banInfo.banReason = null;
-    banInfo.banDate = null;
-    user.banInfo = banInfo;
-
-    return user;
-  }
-
   createEmailConfirmation(): UserEmailConfirmation {
     const emailConfirmation = new UserEmailConfirmation();
-    emailConfirmation.confirmationCode = randomUUID();
     emailConfirmation.user = this;
+    emailConfirmation.confirmationCode = randomUUID();
     emailConfirmation.isConfirmed = false;
     emailConfirmation.expirationDate = add(new Date(), { hours: 1 });
 
@@ -180,8 +93,33 @@ export class UserEntity extends BaseEntity {
 
   createProfile(): UserProfileEntity {
     const profile = new UserProfileEntity();
+
     profile.user = this;
     this.profile = profile;
+
     return profile;
+  }
+
+  static create(
+    dto: {
+      login: string;
+      email: string;
+      password: string;
+      passwordHash: string;
+    },
+    createEmailConfirmation = true
+  ): UserEntity {
+    const user = new UserEntity();
+    user.login = dto.login;
+    user.email = dto.email;
+    user.password = dto.password;
+    user.passwordHash = dto.password;
+
+    if (createEmailConfirmation) {
+      user.createEmailConfirmation();
+    }
+    user.createProfile();
+
+    return user;
   }
 }

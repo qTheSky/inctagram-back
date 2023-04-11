@@ -19,11 +19,13 @@ export class UserProfileEntity {
 
   @Column({ nullable: true })
   avatarPath: string | null;
+  @Column({ nullable: true })
+  avatarUrl: string | null;
 
-  @OneToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @OneToOne(() => UserEntity, (u) => u.profile, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
-  @PrimaryColumn('uuid')
+  @PrimaryColumn()
   userId: string;
 
   update(dto: UserProfileDto) {

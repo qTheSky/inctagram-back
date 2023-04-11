@@ -1,13 +1,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserEntity } from '../../../users/entities/user.entity';
+import { UserEntity } from '../../../users/entities';
 import { AuthService } from '../auth.service';
 import { SessionsService } from '../../../security/application/sessions.service';
+import { ISessionMetaData } from '../../../security/interfaces/session-metadata.interface';
+import { ILoginTokens } from '../../interfaces/login-tokens.interface';
 
 export class LoginCommand {
   constructor(
     public user: UserEntity,
-    public ip: string,
-    public deviceName: string
+    public sessionMetaData: ISessionMetaData
   ) {}
 }
 
@@ -18,9 +19,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
     private sessionsService: SessionsService
   ) {}
 
-  async execute(
-    command: LoginCommand
-  ): Promise<{ refreshToken: string; accessToken: string }> {
+  async execute(command: LoginCommand): Promise<ILoginTokens> {
     const { refreshToken, accessToken } = await this.authService.generateTokens(
       command.user.id
     );
@@ -28,8 +27,8 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
       command.user,
       {
         userId: command.user.id,
-        ip: command.ip,
-        deviceName: command.deviceName || 'unknown',
+        ip: command.sessionMetaData.ip,
+        deviceName: command.sessionMetaData.deviceName || 'unknown',
       },
       refreshToken
     );

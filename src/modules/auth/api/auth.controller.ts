@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -12,12 +13,12 @@ import {
 import { Response, Request } from 'express';
 import { Throttle } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
-import { RegisterDto } from './dto/input/register.dto';
-import { RegistrationCommand } from '../application/use-cases/registration.use-case';
+import { RegisterDto } from './dto/input';
+import { RegistrationCommand } from '../application/use-cases';
 import { LocalAuthGuard } from '../../shared/guards/local-auth.guard';
-import { LoginCommand } from '../application/use-cases/login.use-case';
-import { EmailConfirmDto } from './dto/input/email-confirm.dto';
-import { ConfirmEmailCommand } from '../application/use-cases/confirm-email.use-case';
+import { LoginCommand } from '../application/use-cases';
+import { EmailConfirmDto } from './dto/input';
+import { ConfirmEmailCommand } from '../application/use-cases';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -29,16 +30,17 @@ import {
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
+  ApiExcludeEndpoint,
 } from '@nestjs/swagger';
 import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
 import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
-import { LoginDto } from './dto/input/login.dto';
-import { RefreshTokenCommand } from '../application/use-cases/refresh-token.use-case';
-import { LogoutCommand } from '../application/use-cases/logout.use-case';
+import { LoginDto } from './dto/input';
+import { RefreshTokenCommand } from '../application/use-cases';
+import { LogoutCommand } from '../application/use-cases';
 import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
-import { GetAuthUserDataCommand } from '../application/use-cases/get-auth-user-data.use-case';
+import { GetAuthUserDataCommand } from '../application/use-cases';
 import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
 import {
   NewPasswordCommand,
@@ -50,6 +52,9 @@ import {
   PasswordRecoveryModel,
   UpdatePasswordModel,
 } from './dto/input';
+import { AuthGuard } from '@nestjs/passport';
+import { GoogleLoginCommand } from '../application/use-cases/google-login.use-case';
+import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -100,7 +105,10 @@ export class AuthController {
     @Res({ passthrough: true }) res
   ): Promise<{ accessToken: string }> {
     const { refreshToken, accessToken } = await this.commandBus.execute(
-      new LoginCommand(req.user, req.ip, req.headers['user-agent'])
+      new LoginCommand(req.user, {
+        ip: req.ip,
+        deviceName: req.headers['user-agent'],
+      })
     );
 
     res.cookie('refreshToken', refreshToken, {
@@ -272,5 +280,44 @@ export class AuthController {
     await this.commandBus.execute(
       new NewPasswordCommand(newPassword, recoveryCode)
     );
+  }
+
+  @Get('google')
+  @ApiOperation({ summary: 'Try login user to the system via google' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Returns JWT accessToken (expired after 10 minutes) in body and JWT refreshToken in cookie (http-only, secure) (expired after 30 days).',
+    schema: { example: { accessToken: 'string' } },
+  })
+  @UseGuards(GoogleAuthGuard)
+  async googleAuth() {
+    return;
+  }
+
+  @ApiExcludeEndpoint()
+  @Get('google/callback')
+  @Redirect('https://pornhub.com') //todo frontend url
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const { accessToken, refreshToken } = await this.commandBus.execute(
+      new GoogleLoginCommand(req.user, {
+        ip: req.ip,
+        deviceName: req.headers['user-agent'],
+      })
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true, //todo => if developing secure false otherwise true
+      maxAge: 180 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+    });
+
+    return {
+      accessToken,
+    };
   }
 }

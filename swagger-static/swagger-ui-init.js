@@ -348,6 +348,30 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/google": {
+        "get": {
+          "operationId": "AuthController_googleAuth",
+          "summary": "Try login user to the system via google",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns JWT accessToken (expired after 10 minutes) in body and JWT refreshToken in cookie (http-only, secure) (expired after 30 days).",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "accessToken": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/users/profile": {
         "put": {
           "operationId": "UsersController_updateUserProfile",

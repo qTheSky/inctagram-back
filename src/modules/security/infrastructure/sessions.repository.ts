@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
-import { RefreshPayload } from '../../auth/interfaces/jwt.payloads';
+import { RefreshPayload } from '../../auth/interfaces/jwt.payloads.interface';
 import { SessionEntity } from '../entities/session.entity';
 import { AbstractRepository } from '../../shared/classes/abstract.repository';
 
