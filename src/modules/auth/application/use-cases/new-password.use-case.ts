@@ -11,7 +11,7 @@ export class NewPasswordCommand {
 @CommandHandler(NewPasswordCommand)
 export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
   constructor(
-    private readonly authServiec: AuthService,
+    private readonly authService: AuthService,
     private readonly usersQueryRepository: UsersQueryRepository,
     private readonly usersRepository: UsersRepository
   ) {}
@@ -28,7 +28,7 @@ export class NewPasswordUseCase implements ICommandHandler<NewPasswordCommand> {
     if (!user.isNewPasswordCanBeSet(recoveryCode))
       throw new ForbiddenException();
 
-    const newPasswordHash = await this.authServiec.generatePasswordHash(
+    const newPasswordHash = await this.authService.generatePasswordHash(
       newPassword
     );
     //по приколу

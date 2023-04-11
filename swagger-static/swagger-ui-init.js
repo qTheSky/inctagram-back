@@ -348,6 +348,34 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/google": {
+        "get": {
+          "operationId": "AuthController_googleAuth",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
+      "/auth/google/callback": {
+        "get": {
+          "operationId": "AuthController_googleAuthCallback",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/users/profile": {
         "put": {
           "operationId": "UsersController_updateUserProfile",

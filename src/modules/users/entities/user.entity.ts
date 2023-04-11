@@ -92,7 +92,7 @@ export class UserEntity extends BaseEntity {
 
   checkBan(): void {
     if (this.isBanned) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('You are banned');
     }
   }
 
@@ -102,7 +102,7 @@ export class UserEntity extends BaseEntity {
 
   checkIsEmailConfirmed() {
     if (!this.isEmailConfirmed) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('Confirm email first');
     }
   }
 
@@ -155,15 +155,21 @@ export class UserEntity extends BaseEntity {
 
     user.createEmailConfirmation();
     user.createProfile();
+    user.createBanInfo();
 
+    return user;
+  }
+
+  createBanInfo(): UserBanInfoEntity {
     const banInfo = new UserBanInfoEntity();
-    banInfo.userId = user.id;
+
+    banInfo.userId = this.id;
     banInfo.isBanned = false;
     banInfo.banReason = null;
     banInfo.banDate = null;
-    user.banInfo = banInfo;
+    this.banInfo = banInfo;
 
-    return user;
+    return banInfo;
   }
 
   createEmailConfirmation(): UserEmailConfirmation {

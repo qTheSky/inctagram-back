@@ -31,8 +31,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (!user) throw new UnauthorizedException('Incorrect credentials');
     if (!user.emailConfirmation.isConfirmed)
       throw new UnauthorizedException('Confirm your email first');
-    // if (user.banInfo.isBanned)
-    //   throw new UnauthorizedException('You are banned');
+    if (user.banInfo.isBanned)
+      throw new UnauthorizedException('You are banned');
+    //todo move it to login use case
     const isHashesEquals = await bcrypt.compare(password, user.passwordHash);
     if (!isHashesEquals)
       throw new UnauthorizedException('Incorrect credentials');

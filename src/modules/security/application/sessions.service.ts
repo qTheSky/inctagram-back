@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from '../../users/entities/user.entity';
 import { SessionsRepository } from '../infrastructure/sessions.repository';
-import { RefreshPayload } from '../../auth/interfaces/jwt.payloads';
+import { RefreshPayload } from '../../auth/interfaces/jwt.payloads.interface';
 
 @Injectable()
 export class SessionsService {

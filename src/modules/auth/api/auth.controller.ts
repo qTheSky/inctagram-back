@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Redirect,
   Req,
   Res,
   UseGuards,
@@ -50,6 +51,8 @@ import {
   PasswordRecoveryModel,
   UpdatePasswordModel,
 } from './dto/input';
+import { AuthGuard } from '@nestjs/passport';
+import { GoogleLoginCommand } from '../application/use-cases/google-login.use-case';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -272,5 +275,28 @@ export class AuthController {
     await this.commandBus.execute(
       new NewPasswordCommand(newPassword, recoveryCode)
     );
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    return;
+  }
+
+  @Get('google/callback')
+  // @Redirect('https://nestjs.com') //todo frontend url
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req: any) {
+    // const { accessToken, refreshToken } =
+    await this.commandBus.execute(
+      new GoogleLoginCommand(req.user, {
+        ip: req.ip,
+        deviceName: req.headers['user-agent'],
+      })
+    );
+
+    return {
+      // accessToken,
+    };
   }
 }

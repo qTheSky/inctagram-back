@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { RefreshPayload } from '../interfaces/jwt.payloads';
+import { RefreshPayload } from '../interfaces/jwt.payloads.interface';
 import { UsersRepository } from '../../users/infrastructure/users.repository';
 import { BadRefreshTokensRepository } from '../../security/infrastructure/bad-refresh-tokens.repository';
 

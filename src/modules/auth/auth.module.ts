@@ -24,6 +24,8 @@ import {
   RegistrationEmailResendingUseCase,
 } from './application/use-cases';
 import { IsCheckIsEmailConfirmedConstraint } from './api/dto/input';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GoogleLoginUseCase } from './application/use-cases/google-login.use-case';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -41,9 +43,10 @@ const useCases = [
   NewPasswordUseCase,
   PasswordRecoveryUseCase,
   RegistrationEmailResendingUseCase,
+  GoogleLoginUseCase,
 ];
 const services = [AuthService];
-const authStrategies = [JwtStrategy, LocalStrategy];
+const authStrategies = [JwtStrategy, LocalStrategy, GoogleStrategy];
 
 @Module({
   imports: [
