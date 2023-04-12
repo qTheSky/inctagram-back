@@ -33,7 +33,6 @@ const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
       UserEntity,
       UserEmailConfirmation,
       UserProfileEntity,
-      // UserBanInfoEntity,
       UserPasswordRecoveryEntity,
     ]),
   ],
