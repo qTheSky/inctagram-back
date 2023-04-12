@@ -19,8 +19,6 @@ export class UserProfileEntity {
 
   @Column({ nullable: true })
   avatarPath: string | null;
-  @Column({ nullable: true })
-  avatarUrl: string | null; // if user uses google\github auth we can take his avatar
 
   @OneToOne(() => UserEntity, (u) => u.profile, { onDelete: 'CASCADE' })
   @JoinColumn()

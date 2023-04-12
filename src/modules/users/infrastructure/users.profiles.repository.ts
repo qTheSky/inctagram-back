@@ -34,7 +34,7 @@ export class UsersProfilesRepository extends AbstractRepository<UserProfileEntit
       dateOfBirthday: profile.dateOfBirthday,
       avatarUrl: profile.avatarPath
         ? this.configService.get('FILES_URL') + profile.avatarPath
-        : profile.avatarUrl,
+        : null,
     };
   }
 }
