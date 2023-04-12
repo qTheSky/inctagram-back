@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   IsEmail,
+  IsNotEmpty,
   IsString,
   Length,
   Matches,
@@ -69,4 +70,12 @@ export class RegisterDto {
     }
   )
   password: string;
+  @ApiProperty({
+    description: 'Link for email. this link will be send to user email',
+    example: 'http://localhost:8000/auth/email-verification',
+    type: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  frontendLink: string;
 }

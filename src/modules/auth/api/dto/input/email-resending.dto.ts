@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsNotEmpty,
   IsString,
   Validate,
   ValidatorConstraint,
@@ -36,4 +37,13 @@ export class EmailResendModel {
     format: 'email',
   })
   email: string;
+
+  @ApiProperty({
+    description: 'Link for email. this link will be send to user email',
+    example: 'http://localhost:8000/auth/email-verification',
+    type: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  frontendLink: string;
 }

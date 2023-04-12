@@ -28,7 +28,7 @@ export class RegistrationUseCase
       password: dto.password,
       passwordHash,
     });
-    this.emailsManager.sendEmailConfirmationMessage(newUser);
+    this.emailsManager.sendEmailConfirmationMessage(newUser, dto.frontendLink);
     await this.usersRepository.save(newUser);
   }
 }
