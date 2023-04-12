@@ -7,7 +7,7 @@ import { NotFoundException } from '@nestjs/common';
 import { EmailsManager } from '../../../../modules/notification/application/emails.manager';
 
 export class PasswordRecoveryCommand {
-  constructor(public email: string) {}
+  constructor(public email: string, public frontendUrl: string) {}
 }
 
 @CommandHandler(PasswordRecoveryCommand)
@@ -20,14 +20,21 @@ export class PasswordRecoveryUseCase
     private emailsManager: EmailsManager
   ) {}
 
-  async execute({ email }: PasswordRecoveryCommand): Promise<void> {
+  async execute({
+    email,
+    frontendUrl,
+  }: PasswordRecoveryCommand): Promise<void> {
     const user = await this.usersQueryRepository.findUserByLoginOrEmail(email);
     if (!user) {
       throw new NotFoundException();
     }
 
     const recoveryCode = user.createPasswordRecovery();
-    this.emailsManager.sendPasswordRecoveryCode(user.email, recoveryCode);
+    this.emailsManager.sendPasswordRecoveryCode(
+      user.email,
+      recoveryCode,
+      frontendUrl
+    );
 
     await this.usersRepository.save(user);
   }
