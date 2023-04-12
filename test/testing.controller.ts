@@ -1,7 +1,9 @@
 import { Controller, Delete } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller()
 export class TestingController {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
@@ -21,6 +23,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 SELECT truncate_tables('postgres');
+SELECT truncate_tables('qTheSky');
+SELECT truncate_tables('100CallsToEurop');
 SELECT truncate_tables('neondb'); 
         `);
       return;
