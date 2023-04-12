@@ -3,6 +3,7 @@ import { IGoogleUser } from '../../interfaces/google.user.interface';
 import { ISessionMetaData } from '../../../security/interfaces/session-metadata.interface';
 import { LoginCommand } from './login.use-case';
 import {
+  UsersProfilesRepository,
   UsersQueryRepository,
   UsersRepository,
 } from '../../../users/infrastructure';
@@ -22,7 +23,8 @@ export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
   constructor(
     private commandBus: CommandBus,
     private usersRepository: UsersRepository,
-    private usersQueryRepository: UsersQueryRepository
+    private usersQueryRepository: UsersQueryRepository,
+    private usersProfilesRepository: UsersProfilesRepository
   ) {}
 
   async execute({
@@ -62,7 +64,10 @@ export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
       false
     );
     const savedUser = await this.usersRepository.save(newUser);
-    //todo set google avatar to profile !!!IMPORTANT
+    const userProfile = await this.usersProfilesRepository.getUserProfile(
+      savedUser.id
+    );
+    userProfile.avatarUrl = googleUser.avatarUrl;
     return await this.commandBus.execute(
       new LoginCommand(savedUser, sessionMetadata)
     );
