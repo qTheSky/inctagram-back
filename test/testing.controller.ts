@@ -1,14 +1,13 @@
-import { Delete, Injectable } from '@nestjs/common';
+import { Controller, Delete } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
-@Injectable()
+@Controller()
 export class TestingController {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
   @Delete('delete-all-data')
   async deleteAllData() {
     try {
-      // await this.connection.db.dropDatabase();
       await this.dataSource.query(`
         CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
 DECLARE
