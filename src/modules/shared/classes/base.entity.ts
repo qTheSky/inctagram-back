@@ -13,5 +13,5 @@ export abstract class BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
   @DeleteDateColumn({ nullable: true })
-  public deleted_At: Date;
+  deleted_At: Date;
 }
