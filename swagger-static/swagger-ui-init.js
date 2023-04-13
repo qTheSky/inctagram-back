@@ -584,12 +584,18 @@ window.onload = function() {
               "example": "string",
               "minLength": 6,
               "maxLength": 20
+            },
+            "frontendLink": {
+              "type": "string",
+              "description": "Link for email. this link will be send to user email",
+              "example": "http://localhost:8000/auth/email-verification"
             }
           },
           "required": [
             "email",
             "login",
-            "password"
+            "password",
+            "frontendLink"
           ]
         },
         "LoginDto": {
@@ -629,10 +635,16 @@ window.onload = function() {
               "description": "User email",
               "example": "user@example.com",
               "format": "email"
+            },
+            "frontendLink": {
+              "type": "string",
+              "description": "Link for email. this link will be send to user email",
+              "example": "http://localhost:8000/auth/email-verification"
             }
           },
           "required": [
-            "email"
+            "email",
+            "frontendLink"
           ]
         },
         "PasswordRecoveryModel": {
@@ -643,10 +655,16 @@ window.onload = function() {
               "description": "User email",
               "example": "user@example.com",
               "format": "email"
+            },
+            "frontendLink": {
+              "type": "string",
+              "description": "Link for email. this link will be send to user email",
+              "example": "http://localhost:8000/auth/email-verification"
             }
           },
           "required": [
-            "email"
+            "email",
+            "frontendLink"
           ]
         },
         "UpdatePasswordModel": {

@@ -236,7 +236,10 @@ export class AuthController {
     @Body() emailResendModel: EmailResendModel
   ): Promise<void> {
     await this.commandBus.execute<RegistrationEmailResendingCommand, void>(
-      new RegistrationEmailResendingCommand(emailResendModel.email)
+      new RegistrationEmailResendingCommand(
+        emailResendModel.email,
+        emailResendModel.frontendLink
+      )
     );
   }
 
@@ -260,7 +263,9 @@ export class AuthController {
   async sendPasswordRecoveryCode(
     @Body() model: PasswordRecoveryModel
   ): Promise<void> {
-    await this.commandBus.execute(new PasswordRecoveryCommand(model.email));
+    await this.commandBus.execute(
+      new PasswordRecoveryCommand(model.email, model.frontendLink)
+    );
   }
 
   @Post('new-password')

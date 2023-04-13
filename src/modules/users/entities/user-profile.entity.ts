@@ -19,8 +19,6 @@ export class UserProfileEntity {
 
   @Column({ nullable: true })
   avatarPath: string | null;
-  @Column({ nullable: true })
-  avatarUrl: string | null;
 
   @OneToOne(() => UserEntity, (u) => u.profile, { onDelete: 'CASCADE' })
   @JoinColumn()

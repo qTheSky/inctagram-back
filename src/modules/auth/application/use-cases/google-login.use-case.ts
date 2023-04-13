@@ -62,7 +62,6 @@ export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
       false
     );
     const savedUser = await this.usersRepository.save(newUser);
-    //todo set google avatar to profile !!!IMPORTANT
     return await this.commandBus.execute(
       new LoginCommand(savedUser, sessionMetadata)
     );

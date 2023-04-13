@@ -33,12 +33,11 @@ const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
       UserEntity,
       UserEmailConfirmation,
       UserProfileEntity,
-      // UserBanInfoEntity,
       UserPasswordRecoveryEntity,
     ]),
   ],
   controllers: [UsersController],
   providers: [...adapters, ...useCases],
-  exports: [UsersRepository, UsersQueryRepository],
+  exports: [UsersRepository, UsersQueryRepository, UsersProfilesRepository],
 })
 export class UsersModule {}
