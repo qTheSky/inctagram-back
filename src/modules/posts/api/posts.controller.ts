@@ -36,7 +36,7 @@ export class PostsController {
   @Post()
   @ApiOperation({ summary: 'create post' })
   @ApiBody({
-    description: 'Example request body (all fields not required)',
+    description: 'Example request body',
     type: CreatePostDto,
   })
   @ApiResponse({
