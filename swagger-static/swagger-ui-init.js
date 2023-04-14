@@ -550,6 +550,64 @@ window.onload = function() {
             }
           ]
         }
+      },
+      "/posts": {
+        "post": {
+          "operationId": "PostsController_createPost",
+          "summary": "create post",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "description": "Example request body (all fields not required)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePostDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Returns created post",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostViewModel"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
       }
     },
     "info": {
@@ -722,6 +780,58 @@ window.onload = function() {
               "example": "string"
             }
           }
+        },
+        "CreatePostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "description",
+              "example": "some post description"
+            },
+            "file": {
+              "type": "object",
+              "description": "FILE!!",
+              "example": "MULTIPART FORM DATA",
+              "format": "binary"
+            }
+          },
+          "required": [
+            "description",
+            "file"
+          ]
+        },
+        "PostViewModel": {
+          "type": "object",
+          "properties": {
+            "photoUrl": {
+              "type": "string",
+              "description": "photo url",
+              "example": "https://url.com/photo.jpg",
+              "format": "url"
+            },
+            "description": {
+              "type": "string",
+              "description": "post description",
+              "example": "frontend noobs"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "date when post was created",
+              "example": "2023-04-10T16:20:10.847Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "date when post was created",
+              "example": "2023-04-10T16:20:10.847Z"
+            }
+          },
+          "required": [
+            "photoUrl",
+            "description",
+            "createdAt",
+            "updatedAt"
+          ]
         }
       }
     }

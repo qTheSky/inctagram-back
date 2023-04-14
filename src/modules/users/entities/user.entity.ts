@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEmailConfirmation } from './user-email-confirmation.entity';
 import { randomUUID } from 'crypto';
@@ -6,6 +6,7 @@ import { add } from 'date-fns';
 import { UserProfileEntity } from './user-profile.entity';
 import { UserPasswordRecoveryEntity } from './user-password-recovery.entity';
 import { InternalServerErrorException } from '@nestjs/common';
+import { PostEntity } from '../../posts/entities/post.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -24,16 +25,18 @@ export class UserEntity extends BaseEntity {
     cascade: true,
   })
   emailConfirmation: UserEmailConfirmation;
+  @OneToOne(() => UserPasswordRecoveryEntity, (password) => password.user, {
+    cascade: true,
+  })
+  passwordRecovery: UserPasswordRecoveryEntity;
 
   @OneToOne(() => UserProfileEntity, (profile) => profile.user, {
     cascade: true,
   })
   profile: UserProfileEntity;
 
-  @OneToOne(() => UserPasswordRecoveryEntity, (password) => password.user, {
-    cascade: true,
-  })
-  passwordRecovery: UserPasswordRecoveryEntity;
+  @OneToMany(() => PostEntity, (post) => post.user)
+  posts: PostEntity;
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;

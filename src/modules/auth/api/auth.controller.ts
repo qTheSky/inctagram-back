@@ -296,7 +296,7 @@ export class AuthController {
     schema: { example: { accessToken: 'string' } },
   })
   @UseGuards(GoogleAuthGuard)
-  async googleAuth() {
+  async googleAuth(): Promise<void> {
     return;
   }
 

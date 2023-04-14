@@ -15,6 +15,6 @@ export const getTypeOrmConfig = (
     database: configService.get('DATABASE'),
     autoLoadEntities: true,
     synchronize: true,
-    ssl: true,
+    ssl,
   };
 };

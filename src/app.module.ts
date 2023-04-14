@@ -3,7 +3,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getTypeOrmConfig } from './config/typeorm.config';
+import { getTypeOrmConfig } from './config';
 import { SharedModule } from './modules/shared/shared.module';
 import * as Joi from 'joi';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -13,6 +13,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
+import { PostsModule } from './modules/posts/posts.module';
 import { ForbiddenMiddleware } from './modules/shared/interceptors/trolling.interceptor';
 
 @Module({
@@ -51,6 +52,7 @@ import { ForbiddenMiddleware } from './modules/shared/interceptors/trolling.inte
     NotificationModule,
     SecurityModule,
     FilesModule,
+    PostsModule,
   ],
   controllers: [TestingController],
   providers: [],

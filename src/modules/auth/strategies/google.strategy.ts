@@ -21,13 +21,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback
   ) {
-    const user = {
+    const user: IGoogleUser = {
       email: profile.emails.find((e) => e.verified).value, // take first verified email
       displayName: profile.displayName,
       firstName: profile.name.givenName,
       lastName: profile.name.familyName,
       avatarUrl: profile.photos[0].value,
-    } as IGoogleUser;
+    };
     done(null, user);
   }
 }
