@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,7 +14,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
-import { ForbiddenMiddleware } from './modules/shared/interceptors/trolling.interceptor';
 
 @Module({
   imports: [
@@ -57,8 +56,4 @@ import { ForbiddenMiddleware } from './modules/shared/interceptors/trolling.inte
   controllers: [TestingController],
   providers: [],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ForbiddenMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
