@@ -72,7 +72,7 @@ export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
    */
   private async generateRandomUniqueLogin() {
     let login: string;
-    let user;
+    let user: UserEntity | null;
 
     // The 'do' block will be executed at least once and then the loop will continue
     // as long as the condition specified in the 'while' is true.
