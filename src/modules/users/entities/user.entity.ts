@@ -15,8 +15,10 @@ export class UserEntity extends BaseEntity {
   login: string;
   @Column()
   passwordHash: string;
+  //по приколу
   @Column()
   password: string;
+  //по приколу
 
   @OneToOne(() => UserEmailConfirmation, (emailConfirm) => emailConfirm.user, {
     cascade: true,
@@ -112,8 +114,8 @@ export class UserEntity extends BaseEntity {
     const user = new UserEntity();
     user.login = dto.login;
     user.email = dto.email;
-    user.password = dto.password;
-    user.passwordHash = dto.password;
+    user.password = dto.password; //по приколу
+    user.passwordHash = dto.passwordHash;
 
     if (createEmailConfirmation) {
       user.createEmailConfirmation();
