@@ -558,7 +558,7 @@ window.onload = function() {
           "parameters": [],
           "requestBody": {
             "required": true,
-            "description": "Example request body (all fields not required)",
+            "description": "Example request body",
             "content": {
               "application/json": {
                 "schema": {
