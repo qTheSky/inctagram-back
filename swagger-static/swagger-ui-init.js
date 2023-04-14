@@ -804,6 +804,11 @@ window.onload = function() {
         "PostViewModel": {
           "type": "object",
           "properties": {
+            "id": {
+              "type": "string",
+              "description": "id",
+              "example": "3123213123"
+            },
             "photoUrl": {
               "type": "string",
               "description": "photo url",
@@ -827,6 +832,7 @@ window.onload = function() {
             }
           },
           "required": [
+            "id",
             "photoUrl",
             "description",
             "createdAt",

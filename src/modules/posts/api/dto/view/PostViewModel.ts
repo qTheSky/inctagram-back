@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PostViewModel {
   @ApiProperty({
+    description: 'id',
+    example: '3123213123',
+    type: 'string',
+  })
+  id: string;
+  @ApiProperty({
     description: 'photo url',
     example: 'https://url.com/photo.jpg',
     type: 'string',
