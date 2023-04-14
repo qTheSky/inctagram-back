@@ -9,7 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UsersProfilesRepository } from '../infrastructure/users.profiles.repository';
+import { UsersProfilesRepository } from '../infrastructure';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { UserProfileDto } from './dto/input/user-profile.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
@@ -20,9 +20,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiForbiddenResponse,
   ApiOperation,
-  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,

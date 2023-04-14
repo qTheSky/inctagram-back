@@ -1,5 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
 import sharp from 'sharp';
+import { latinTranslateName } from './latin-translate-name';
+
+export const converFileNameToUtf8 = (fileName: string) => {
+  return Buffer.from(fileName, 'latin1').toString('utf-8');
+};
 
 export const validateImage = async (
   image: Express.Multer.File,
@@ -27,6 +32,9 @@ export const validateImage = async (
       { field: 'file', message: 'file must be png, jpg or jpeg' },
     ]);
   }
+
+  image.originalname = latinTranslateName(image.originalname);
+  image.originalname = converFileNameToUtf8(image.originalname);
 
   const imageMetaData = await sharp(image.buffer).metadata();
 

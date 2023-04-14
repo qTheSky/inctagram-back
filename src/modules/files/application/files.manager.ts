@@ -11,4 +11,8 @@ export class FilesManager {
   ): Promise<{ url: string }> {
     return await this.s3StorageAdapter.uploadFile(filePath, imageBuffer);
   }
+
+  async deleteFile(filePath: string) {
+    await this.s3StorageAdapter.deleteFile(filePath);
+  }
 }
