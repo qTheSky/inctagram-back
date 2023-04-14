@@ -31,10 +31,6 @@ import { ForbiddenMiddleware } from './modules/shared/interceptors/trolling.inte
         DATABASEUSERNAME: Joi.string().required(),
         PASSWORD: Joi.string().required(),
         DATABASE: Joi.string().required(),
-        YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
-        YANDEX_ACCESS_KEY_ID: Joi.string().required(),
-        YANDEX_BUCKETNAME: Joi.string().required(),
-        FILES_URL: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

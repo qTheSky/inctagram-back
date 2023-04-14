@@ -59,6 +59,9 @@ const authStrategies = [JwtStrategy, LocalStrategy, GoogleStrategy];
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
         ACCESS_TOKEN_TIME: Joi.string().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_CLIENT_SECRET: Joi.string().required(),
+        GOOGLE_CALLBACK_URL: Joi.string().required(),
       }),
     }),
     JwtModule.registerAsync({

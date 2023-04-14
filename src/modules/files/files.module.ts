@@ -9,9 +9,10 @@ import Joi from 'joi';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        GOOGLE_CLIENT_ID: Joi.string().required(),
-        GOOGLE_CLIENT_SECRET: Joi.string().required(),
-        GOOGLE_CALLBACK_URL: Joi.string().required(),
+        YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
+        YANDEX_ACCESS_KEY_ID: Joi.string().required(),
+        YANDEX_BUCKETNAME: Joi.string().required(),
+        FILES_URL: Joi.string().required(),
       }),
     }),
   ],
