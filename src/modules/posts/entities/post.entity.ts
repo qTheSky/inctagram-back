@@ -24,4 +24,8 @@ export class PostEntity extends BaseEntity {
     post.photoPath = null;
     return post;
   }
+
+  update(){
+    
+  }
 }

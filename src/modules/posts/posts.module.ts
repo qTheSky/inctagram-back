@@ -8,8 +8,10 @@ import { FilesModule } from '../files/files.module';
 import { UsersModule } from '../users/users.module';
 import { PostsRepository } from './infrastructure/posts.repository';
 import { PostsQueryRepository } from './infrastructure/posts.query.repository';
+import { UpdatePostUseCase } from './application/use-cases/update-post.use-case';
+import { DeletePostUseCase } from './application/use-cases/delete-post.use-case';
 
-const useCases = [CreatePostUseCase];
+const useCases = [CreatePostUseCase, UpdatePostUseCase, DeletePostUseCase];
 const adapters = [PostsRepository, PostsQueryRepository];
 
 @Module({
