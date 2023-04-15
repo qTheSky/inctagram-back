@@ -1,8 +1,8 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UpdatePostDto } from "../../api/dto/input/update-post.dto";
-import { PostsQueryRepository } from "../../infrastructure/posts.query.repository";
-import { PostsRepository } from "../../infrastructure/posts.repository";
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UpdatePostDto } from '../../api/dto/input/update-post.dto';
+import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
+import { PostsRepository } from '../../infrastructure/posts.repository';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 export class UpdatePostCommand {
   constructor(

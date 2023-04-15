@@ -1,8 +1,8 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { PostsQueryRepository } from "../../infrastructure/posts.query.repository";
-import { PostsRepository } from "../../infrastructure/posts.repository";
-import { ForbiddenException, NotFoundException } from "@nestjs/common";
-import { FilesManager } from "../../../../modules/files/application/files.manager";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { PostsQueryRepository } from '../../infrastructure/posts.query.repository';
+import { PostsRepository } from '../../infrastructure/posts.repository';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { FilesManager } from '../../../../modules/files/application/files.manager';
 
 export class DeletePostCommand {
   constructor(public currentUserId: string, public postId: string) {}

@@ -26,6 +26,8 @@ import {
 import { IsCheckIsEmailConfirmedConstraint } from './api/dto/input';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GoogleLoginUseCase } from './application/use-cases/google-login.use-case';
+import { GithubAuthGuard } from '../shared/guards/github-auth.guard';
+import { GitHubLoginUseCase } from './application/use-cases/github-login.use-case';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -44,9 +46,15 @@ const useCases = [
   PasswordRecoveryUseCase,
   RegistrationEmailResendingUseCase,
   GoogleLoginUseCase,
+  GitHubLoginUseCase,
 ];
 const services = [AuthService];
-const authStrategies = [JwtStrategy, LocalStrategy, GoogleStrategy];
+const authStrategies = [
+  JwtStrategy,
+  LocalStrategy,
+  GoogleStrategy,
+  GithubAuthGuard,
+];
 
 @Module({
   imports: [

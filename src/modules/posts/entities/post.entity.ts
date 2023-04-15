@@ -25,7 +25,5 @@ export class PostEntity extends BaseEntity {
     return post;
   }
 
-  update(){
-    
-  }
+  update() {}
 }

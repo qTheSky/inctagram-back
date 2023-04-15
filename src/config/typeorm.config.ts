@@ -7,12 +7,12 @@ export const getTypeOrmConfig = (
   const ssl = configService.get('NODE_ENV') === 'production';
 
   return {
-    type: "postgres",
-    host: configService.get("HOST"),
-    port: configService.get("PORT"),
-    username: configService.get("DATABASEUSERNAME"),
-    password: configService.get("PASSWORD"),
-    database: configService.get("DATABASE"),
+    type: 'postgres',
+    host: configService.get('HOST'),
+    port: configService.get('PORT'),
+    username: configService.get('DATABASEUSERNAME'),
+    password: configService.get('PASSWORD'),
+    database: configService.get('DATABASE'),
     autoLoadEntities: true,
     synchronize: true,
     ssl,

@@ -55,6 +55,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleLoginCommand } from '../application/use-cases/google-login.use-case';
 import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
+import { GithubAuthGuard } from '../../../modules/shared/guards/github-auth.guard';
+import { GitHubLoginCommand } from '../application/use-cases/github-login.use-case';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -310,6 +312,45 @@ export class AuthController {
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute(
       new GoogleLoginCommand(req.user, {
+        ip: req.ip,
+        deviceName: req.headers['user-agent'],
+      })
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true, //todo => if developing secure false otherwise true
+      maxAge: 180 * 24 * 60 * 60 * 1000,
+      sameSite: 'none',
+    });
+
+    return {
+      accessToken,
+    };
+  }
+
+  @Get('github')
+  @ApiOperation({ summary: 'Try login user to the system via github' })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Returns JWT accessToken (expired after 10 minutes) in body and JWT refreshToken in cookie (http-only, secure) (expired after 30 days).',
+    schema: { example: { accessToken: 'string' } },
+  })
+  @UseGuards(GithubAuthGuard)
+  async githubAuth(): Promise<void> {
+    return;
+  }
+
+  @ApiExcludeEndpoint()
+  @Get('github/callback')
+  @Redirect('https://pornhub.com') //todo frontend url
+  @UseGuards(AuthGuard('github'))
+  async githubAuthCallback(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const { accessToken, refreshToken } = await this.commandBus.execute(
+      new GitHubLoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })
