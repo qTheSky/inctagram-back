@@ -6,7 +6,10 @@ import { registerModel } from '../models/register.model';
 import { EmailsManager } from '../../src/modules/notification/application/emails.manager';
 import {
   EmailConfirmDto,
+  EmailResendModel,
   LoginDto,
+  PasswordRecoveryModel,
+  UpdatePasswordModel,
 } from '../../src/modules/auth/api/dto/input';
 import { AuthMeDto } from '../../src/modules/auth/api/dto/view/auth-me.dto';
 
@@ -20,7 +23,7 @@ describe('auth controller', () => {
     app.close();
   });
 
-  describe('registration, email confirmation and login(me)', () => {
+  describe('registration flow with emails and recovery password', () => {
     beforeAll(async () => {
       await cleanDb({ app });
     });
@@ -28,18 +31,34 @@ describe('auth controller', () => {
     let emailConfirmationCode: string;
     it('should register user', async function () {
       const emailsManager = await app.resolve(EmailsManager);
-      const sendEmailMock = jest
-        .spyOn(emailsManager, 'sendEmailConfirmationMessage')
-        .mockImplementation(async (email, code) => {
-          emailConfirmationCode = code;
-        });
+      const sendEmailMock = jest.spyOn(
+        emailsManager,
+        'sendEmailConfirmationMessage'
+      );
 
       await request(app.getHttpServer())
         .post('/auth/registration')
         .send(registerModel)
         .expect(HttpStatus.NO_CONTENT);
 
-      expect(sendEmailMock).toHaveBeenCalled();
+      expect(sendEmailMock).toHaveBeenCalledTimes(1);
+      sendEmailMock.mockRestore();
+    });
+    it('should resend confirmation email', async function () {
+      const emailsManager = await app.resolve(EmailsManager);
+      const sendEmailMock = jest
+        .spyOn(emailsManager, 'sendEmailConfirmationMessage')
+        .mockImplementation(async (email, code) => {
+          emailConfirmationCode = code;
+        });
+      await request(app.getHttpServer())
+        .post('/auth/registration-email-resending')
+        .send({
+          email: registerModel.email,
+          frontendLink: 'no matter',
+        } as EmailResendModel);
+
+      expect(sendEmailMock).toHaveBeenCalledTimes(1);
       sendEmailMock.mockRestore();
     });
     it('registered user can`t log in because he didnt confirm email', async function () {
@@ -88,6 +107,42 @@ describe('auth controller', () => {
             login: registerModel.login,
           } as AuthMeDto);
         });
+    });
+    let passwordRecoveryCode: string;
+    it('should send reset password email', async function () {
+      const emailsManager = await app.resolve(EmailsManager);
+      const sendEmailMock = jest
+        .spyOn(emailsManager, 'sendPasswordRecoveryCode')
+        .mockImplementation(async (email, code) => {
+          passwordRecoveryCode = code;
+        });
+
+      await request(app.getHttpServer())
+        .post('/auth/password-recovery')
+        .send({
+          frontendLink: 'no matter',
+          email: registerModel.email,
+        } as PasswordRecoveryModel);
+      expect(sendEmailMock).toHaveBeenCalledTimes(1);
+      sendEmailMock.mockRestore();
+    });
+    it('should set new password and login with new pass', async function () {
+      const newPassword = '777&&as8qQ?^';
+      await request(app.getHttpServer())
+        .post('/auth/new-password')
+        .send({
+          newPassword,
+          recoveryCode: passwordRecoveryCode,
+        } as UpdatePasswordModel)
+        .expect(204);
+
+      await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          loginOrEmail: registerModel.email,
+          password: newPassword,
+        } as LoginDto)
+        .expect(200);
     });
   });
 });

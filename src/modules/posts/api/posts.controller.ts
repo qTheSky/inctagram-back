@@ -103,11 +103,7 @@ export class PostsController {
   }
 
   @ApiOperation({ summary: 'get post' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Returns post by id',
-    type: PostViewModel,
-  })
+  @ApiResponse(apiResponse('get post by id', PostViewModel))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
   @Get(':postId')
