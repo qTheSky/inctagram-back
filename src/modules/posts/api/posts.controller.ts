@@ -81,7 +81,7 @@ export class PostsController {
     @Param('postId', ParseUUIDPipe) postId: string,
     @Body() dto: UpdatePostDto,
     @CurrentUserId() currentUserId: string
-  ) {
+  ): Promise<PostViewModel> {
     return await this.commandBus.execute(
       new UpdatePostCommand(dto, currentUserId, postId)
     );
@@ -98,7 +98,7 @@ export class PostsController {
   async deletePost(
     @Param('postId', ParseUUIDPipe) postId: string,
     @CurrentUserId() currentUserId: string
-  ) {
+  ): Promise<void> {
     await this.commandBus.execute(new DeletePostCommand(currentUserId, postId));
   }
 
