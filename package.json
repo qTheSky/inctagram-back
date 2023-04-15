@@ -65,6 +65,7 @@
     "@types/jest": "29.2.4",
     "@types/multer": "^1.4.7",
     "@types/node": "18.11.18",
+    "@types/passport-github2": "^1.2.5",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
@@ -82,7 +83,11 @@
     "typescript": "^4.7.4"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "test",
     "testEnvironment": "node",
     "testRegex": ".e2e-spec.ts$",

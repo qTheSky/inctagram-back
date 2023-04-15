@@ -47,18 +47,16 @@ export class GitHubLoginUseCase implements ICommandHandler<GitHubLoginCommand> {
     sessionMetadata: ISessionMetaData
   ): Promise<ILoginTokens> {
     const foundUserByLogin =
-      await this.usersQueryRepository.findUserByLoginOrEmail(
-        githubUser.displayName
-      );
+      await this.usersQueryRepository.findUserByLoginOrEmail(githubUser.login);
     const isGithubDisplayNameUnique = !foundUserByLogin;
     const newUser = UserEntity.create(
       {
         login: isGithubDisplayNameUnique
-          ? githubUser.displayName
+          ? githubUser.login
           : await this.generateRandomUniqueLogin(),
-        password: 'this user uses google oauth',
+        password: 'this user uses github oauth',
         email: githubUser.email,
-        passwordHash: 'this user uses google oauth',
+        passwordHash: 'this user uses github oauth',
       },
       false
     );

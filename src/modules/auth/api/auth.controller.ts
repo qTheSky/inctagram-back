@@ -330,7 +330,7 @@ export class AuthController {
 
   @ApiExcludeEndpoint()
   @Get('github/callback')
-  @Redirect('https://pornhub.com') //todo frontend url
+  //@Redirect('https://pornhub.com') //todo frontend url
   @UseGuards(AuthGuard('github'))
   async githubAuthCallback(
     @Req() req: any,
