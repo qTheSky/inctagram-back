@@ -39,7 +39,6 @@ import { DeletePostCommand } from '../application/use-cases/delete-post.use-case
 import { UpdatePostCommand } from '../application/use-cases/update-post.use-case';
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
 
-@ApiBearerAuth()
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
@@ -47,6 +46,7 @@ export class PostsController {
     private commandBus: CommandBus,
     private readonly postsQueryRepository: PostsQueryRepository
   ) {}
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'create post' })
@@ -78,6 +78,7 @@ export class PostsController {
     );
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'update post' })
   @ApiParam({
@@ -114,6 +115,7 @@ export class PostsController {
     );
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'delete post' })
   @ApiParam({
