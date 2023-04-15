@@ -8,9 +8,9 @@ import { IGitHubUser } from '../interfaces/github.user.interface';
 export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(private readonly configService: ConfigService) {
     super({
-      clientID: configService.get('GITHUB_CLIENT_ID'),
-      clientSecret: configService.get('GITHUB_CLIENT_SECRET'),
-      callbackURL: configService.get('GITHUB_CALLBACK_URL'),
+      clientID: configService.get('GOOGLE_CLIENT_ID'),
+      clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
+      callbackURL: configService.get('GOOGLE_CALLBACK_URL'),
       scope: ['email', 'profile'],
     });
   }
