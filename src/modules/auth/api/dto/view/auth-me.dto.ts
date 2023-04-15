@@ -1,5 +1,5 @@
 export class AuthMeDto {
   email: string;
-  userName: string;
+  login: string;
   userId: string;
 }

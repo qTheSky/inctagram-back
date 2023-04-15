@@ -217,7 +217,7 @@ window.onload = function() {
                   "schema": {
                     "example": {
                       "email": "string",
-                      "userName": "string",
+                      "login": "string",
                       "userId": "string"
                     }
                   }

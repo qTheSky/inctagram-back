@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from '../../users/entities/user.entity';
 import { EmailAdapter } from '../infrastructure/email.adapter';
 
 @Injectable()
 export class EmailsManager {
   constructor(private emailAdapter: EmailAdapter) {}
 
-  async sendEmailConfirmationMessage(user: UserEntity, frontendLink: string) {
+  async sendEmailConfirmationMessage(
+    email: string,
+    confirmationCode: string,
+    frontendLink: string
+  ) {
     await this.emailAdapter.sendEmail(
-      user.email,
+      email,
       'email confirmation',
       ` <h1>Thank for your registration</h1>
                      <p>To finish registration please follow the link below:
-                        <a href='${frontendLink}?code=${user.emailConfirmation.confirmationCode}'>complete registration</a>
-                        ${user.emailConfirmation.confirmationCode}
+                        <a href='${frontendLink}?code=${confirmationCode}'>complete registration</a>
+                        ${confirmationCode}
                       </p>`
     );
   }

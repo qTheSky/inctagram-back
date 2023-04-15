@@ -9,5 +9,8 @@
 	"moduleNameMapper": {
 		"^@app/shared(|/.*)$": "<rootDir>../../../libs/shared/src/$1"
 	},
+  "forceExit": true,
+  "maxConcurrency": 1,
+  "detectOpenHandles": true,
 	"testTimeout": 60000
 }

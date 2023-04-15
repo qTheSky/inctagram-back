@@ -3,8 +3,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   UsersQueryRepository,
   UsersRepository,
-} from '../../../../modules/users/infrastructure';
-import { EmailsManager } from '../../../../modules/notification/application/emails.manager';
+} from '../../../users/infrastructure';
+import { EmailsManager } from '../../../notification/application/emails.manager';
 
 export class RegistrationEmailResendingCommand {
   constructor(public email: string, public frontendLink: string) {}
@@ -29,7 +29,11 @@ export class RegistrationEmailResendingUseCase
       throw new NotFoundException();
     }
     user.updateConfirmationCode();
-    this.emailsManager.sendEmailConfirmationMessage(user, frontendLink);
+    this.emailsManager.sendEmailConfirmationMessage(
+      user.email,
+      user.emailConfirmation.confirmationCode,
+      frontendLink
+    );
     await this.usersRepository.save(user);
   }
 }

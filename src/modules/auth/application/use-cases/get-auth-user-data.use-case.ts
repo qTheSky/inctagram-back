@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersRepository } from '../../../users/infrastructure/users.repository';
+import { UsersRepository } from '../../../users/infrastructure';
 import { AuthMeDto } from '../../api/dto/view/auth-me.dto';
 import { InternalServerErrorException } from '@nestjs/common';
 
@@ -19,7 +19,7 @@ export class GetAuthUserDataUseCase
     return {
       userId: user.id,
       email: user.email,
-      userName: user.login,
+      login: user.login,
     };
   }
 }

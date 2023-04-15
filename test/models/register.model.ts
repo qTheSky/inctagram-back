@@ -1,8 +1,8 @@
 import { RegisterDto } from '../../src/modules/auth/api/dto/input';
 
 export const registerModel: RegisterDto = {
-  password: '123456789Qqqq>',
+  password: '123456789Qqq?',
   email: 'smirnov.mic@yandex.ru',
   login: 'thebestlogin',
-  frontendLink: 'no matter',
+  frontendLink: 'frontendLink no matter',
 };

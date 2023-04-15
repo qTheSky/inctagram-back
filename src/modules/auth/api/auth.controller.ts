@@ -197,7 +197,7 @@ export class AuthController {
     schema: {
       example: {
         email: 'string',
-        userName: 'string',
+        login: 'string',
         userId: 'string',
       } as AuthMeDto,
     },
