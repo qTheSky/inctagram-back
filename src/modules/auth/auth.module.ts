@@ -79,8 +79,8 @@ const authStrategies = [
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get("JWT_SECRET"),
-        signOptions: { expiresIn: configService.get("ACCESS_TOKEN_TIME") },
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: configService.get('ACCESS_TOKEN_TIME') },
       }),
     }),
   ],
