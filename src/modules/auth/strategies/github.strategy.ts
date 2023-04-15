@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
-import { IGitHubUser } from '../interfaces/github.user.interface';
 import { Strategy } from 'passport-github2';
+import { ISocialUser } from '../interfaces/social.user.interface';
 
 @Injectable()
 export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
@@ -19,13 +19,11 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
     accessToken: string,
     refreshToken: string,
     profile: any,
-    done: Function
+    done: (err?: Error | null, profile?: any) => void
   ) {
-    //console.log(profile);
-    const user: IGitHubUser = {
-      email: profile.emails[0].value, // take first verified email
+    const user: ISocialUser = {
+      email: profile.emails[0].value, // take first email
       login: profile.username,
-      avatarUrl: profile.photos[0].value,
     };
     done(null, user);
   }

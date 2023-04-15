@@ -53,12 +53,11 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { badRequestSwaggerMessage } from '../../../swagger/constants/api-bad-request-response/bad-request-swagger-message';
 import { AuthGuard } from '@nestjs/passport';
-import { GoogleLoginCommand } from '../application/use-cases/google-login.use-case';
 import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
 import { GithubAuthGuard } from '../../shared/guards/github-auth.guard';
-import { GitHubLoginCommand } from '../application/use-cases/github-login.use-case';
 import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
 import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
+import { SocialLoginCommand } from '../application/use-cases/social-login.use-case';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -298,7 +297,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute(
-      new GoogleLoginCommand(req.user, {
+      new SocialLoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })
@@ -337,7 +336,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute(
-      new GitHubLoginCommand(req.user, {
+      new SocialLoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })

@@ -25,9 +25,8 @@ import {
 } from './application/use-cases';
 import { IsCheckIsEmailConfirmedConstraint } from './api/dto/input';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { GoogleLoginUseCase } from './application/use-cases/google-login.use-case';
-import { GitHubLoginUseCase } from './application/use-cases/github-login.use-case';
 import { GitHubStrategy } from './strategies/github.strategy';
+import { SocialLoginUseCase } from './application/use-cases/social-login.use-case';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -45,8 +44,7 @@ const useCases = [
   NewPasswordUseCase,
   PasswordRecoveryUseCase,
   RegistrationEmailResendingUseCase,
-  GoogleLoginUseCase,
-  GitHubLoginUseCase,
+  SocialLoginUseCase,
 ];
 const services = [AuthService];
 const authStrategies = [

@@ -761,7 +761,7 @@ window.onload = function() {
           ],
           "responses": {
             "200": {
-              "description": "Returns post by id",
+              "description": "get post by id",
               "content": {
                 "application/json": {
                   "schema": {

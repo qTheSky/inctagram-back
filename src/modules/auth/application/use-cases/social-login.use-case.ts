@@ -1,24 +1,24 @@
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { IGoogleUser } from '../../interfaces/google.user.interface';
 import { ISessionMetaData } from '../../../security/interfaces/session-metadata.interface';
-import { LoginCommand } from './login.use-case';
+import { ISocialUser } from '../../interfaces/social.user.interface';
 import {
   UsersQueryRepository,
   UsersRepository,
 } from '../../../users/infrastructure';
-import { UserEntity } from '../../../users/entities';
 import { ILoginTokens } from '../../interfaces/login-tokens.interface';
+import { LoginCommand } from './login.use-case';
+import { UserEntity } from '../../../users/entities';
 import randomWords from 'random-words';
 
-export class GoogleLoginCommand {
+export class SocialLoginCommand {
   constructor(
-    public googleUser: IGoogleUser,
+    public socialUser: ISocialUser,
     public sessionMetadata: ISessionMetaData
   ) {}
 }
 
-@CommandHandler(GoogleLoginCommand)
-export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
+@CommandHandler(SocialLoginCommand)
+export class SocialLoginUseCase implements ICommandHandler<SocialLoginCommand> {
   constructor(
     private commandBus: CommandBus,
     private usersRepository: UsersRepository,
@@ -26,38 +26,36 @@ export class GoogleLoginUseCase implements ICommandHandler<GoogleLoginCommand> {
   ) {}
 
   async execute({
-    googleUser,
+    socialUser,
     sessionMetadata,
-  }: GoogleLoginCommand): Promise<ILoginTokens> {
+  }: SocialLoginCommand): Promise<ILoginTokens> {
     const user = await this.usersQueryRepository.findUserByEmail(
-      googleUser.email
+      socialUser.email
     );
     if (user) {
       return await this.commandBus.execute(
         new LoginCommand(user, sessionMetadata)
       );
     } else {
-      return await this.createUserAngLogHimIn(googleUser, sessionMetadata);
+      return await this.createUserAngLogHimIn(socialUser, sessionMetadata);
     }
   }
 
   private async createUserAngLogHimIn(
-    googleUser: IGoogleUser,
+    socialUser: ISocialUser,
     sessionMetadata: ISessionMetaData
   ): Promise<ILoginTokens> {
     const foundUserByLogin =
-      await this.usersQueryRepository.findUserByLoginOrEmail(
-        googleUser.displayName
-      );
-    const isGoogleDisplayNameUnique = !foundUserByLogin;
+      await this.usersQueryRepository.findUserByLoginOrEmail(socialUser.login);
+    const isSocialDisplayNameUnique = !foundUserByLogin;
     const newUser = UserEntity.create(
       {
-        login: isGoogleDisplayNameUnique
-          ? googleUser.displayName
+        login: isSocialDisplayNameUnique
+          ? socialUser.login
           : await this.generateRandomUniqueLogin(),
-        password: 'this user uses google oauth',
-        email: googleUser.email,
-        passwordHash: 'this user uses google oauth',
+        password: 'this user uses social oauth',
+        email: socialUser.email,
+        passwordHash: 'this user uses social oauth',
       },
       false
     );
