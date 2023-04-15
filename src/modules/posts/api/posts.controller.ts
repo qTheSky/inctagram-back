@@ -25,19 +25,20 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
-  ApiParam,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { unauthorizedSwaggerMessage } from '../../../swagger/constants/unauthorized-swagger-message';
-import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
-import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
 import { PostViewModel } from './dto/view/PostViewModel';
 import { UpdatePostDto } from './dto/input/update-post.dto';
 import { DeletePostCommand } from '../application/use-cases/delete-post.use-case';
 import { UpdatePostCommand } from '../application/use-cases/update-post.use-case';
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
+import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiUnauthorizedResponse } from '../../../swagger/constants/api-unauthorized-response/api-unauthorized-response';
+import { apiBody } from '../../../swagger/constants/api-body/api-body';
+import { apiResponse } from '../../../swagger/constants/api-response/api-response';
+import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -46,33 +47,22 @@ export class PostsController {
     private commandBus: CommandBus,
     private readonly postsQueryRepository: PostsQueryRepository
   ) {}
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+
   @Post()
   @ApiOperation({ summary: 'create post' })
-  @ApiBody({
-    description: 'Example request body',
-    type: CreatePostDto,
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Returns created post',
-    type: PostViewModel,
-  })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBody(apiBody(CreatePostDto))
+  @ApiResponse(apiResponse('Returns created post', PostViewModel, 201))
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   async createPost(
     @UploadedFile() photo: Express.Multer.File,
     @Body() dto: CreatePostDto,
     @CurrentUserId() currentUserId: string
-  ) {
+  ): Promise<PostViewModel> {
     return await this.commandBus.execute(
       new CreatePostCommand({ ...dto, file: photo }, currentUserId)
     );
@@ -81,28 +71,10 @@ export class PostsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'update post' })
-  @ApiParam({
-    name: 'postId',
-    required: true,
-    type: String,
-    description: 'Post identifier',
-  })
-  @ApiBody({
-    description: 'Example request body',
-    type: UpdatePostDto,
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Returns created post',
-    type: PostViewModel,
-  })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiBody(apiBody(UpdatePostDto))
+  @ApiResponse(apiResponse('Returns updated post', PostViewModel))
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiBadRequestResponse()
   @HttpCode(200)
   @Put(':postId')
   async updatePost(
@@ -118,22 +90,9 @@ export class PostsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'delete post' })
-  @ApiParam({
-    name: 'postId',
-    type: String,
-    required: true,
-    description: 'Post identifier',
-  })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-  })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiResponse(apiNoContentResponse())
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @HttpCode(204)
   @Delete(':postId')
   async deletePost(
@@ -144,24 +103,13 @@ export class PostsController {
   }
 
   @ApiOperation({ summary: 'get post' })
-  @ApiParam({
-    name: 'postId',
-    type: String,
-    required: true,
-    description: 'Post identifier',
-  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns post by id',
     type: PostViewModel,
   })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @Get(':postId')
   @HttpCode(200)
   async getPost(

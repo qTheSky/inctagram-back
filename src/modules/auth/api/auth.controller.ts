@@ -10,53 +10,55 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import { Request, Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
 import { CommandBus } from '@nestjs/cqrs';
-import { RegisterDto } from './dto/input';
-import { RegistrationCommand } from '../application/use-cases';
+import {
+  EmailConfirmDto,
+  EmailResendModel,
+  LoginDto,
+  PasswordRecoveryModel,
+  RegisterDto,
+  UpdatePasswordModel,
+} from './dto/input';
+import {
+  ConfirmEmailCommand,
+  GetAuthUserDataCommand,
+  LoginCommand,
+  LogoutCommand,
+  NewPasswordCommand,
+  PasswordRecoveryCommand,
+  RefreshTokenCommand,
+  RegistrationCommand,
+  RegistrationEmailResendingCommand,
+} from '../application/use-cases';
 import { LocalAuthGuard } from '../../shared/guards/local-auth.guard';
-import { LoginCommand } from '../application/use-cases';
-import { EmailConfirmDto } from './dto/input';
-import { ConfirmEmailCommand } from '../application/use-cases';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiExcludeEndpoint,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse,
-  ApiNotFoundResponse,
-  ApiExcludeEndpoint,
 } from '@nestjs/swagger';
 import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
 import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
-import { LoginDto } from './dto/input';
-import { RefreshTokenCommand } from '../application/use-cases';
-import { LogoutCommand } from '../application/use-cases';
 import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
-import { GetAuthUserDataCommand } from '../application/use-cases';
-import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
-import {
-  NewPasswordCommand,
-  PasswordRecoveryCommand,
-  RegistrationEmailResendingCommand,
-} from '../application/use-cases';
-import {
-  EmailResendModel,
-  PasswordRecoveryModel,
-  UpdatePasswordModel,
-} from './dto/input';
+import { badRequestSwaggerMessage } from '../../../swagger/constants/api-bad-request-response/bad-request-swagger-message';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleLoginCommand } from '../application/use-cases/google-login.use-case';
 import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
-import { GithubAuthGuard } from '../../../modules/shared/guards/github-auth.guard';
+import { GithubAuthGuard } from '../../shared/guards/github-auth.guard';
 import { GitHubLoginCommand } from '../application/use-cases/github-login.use-case';
+import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -73,10 +75,7 @@ export class AuthController {
     description:
       'Input data is accepted. Email with confirmation code will be send to passed email address',
   })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
   @Throttle(1, 5) // 1 request per 5 seconds
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -129,10 +128,7 @@ export class AuthController {
     status: 204,
     description: 'Email was verified. Account was activated',
   })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle(1, 5) // 1 request per 5 seconds
@@ -179,10 +175,7 @@ export class AuthController {
     summary:
       'In cookie client must send correct refreshToken that will be revoked',
   })
-  @ApiResponse({
-    status: 204,
-    description: 'No content',
-  })
+  @ApiResponse(apiNoContentResponse())
   @ApiUnauthorizedResponse({
     description:
       'If the JWT refreshToken inside cookie is missing, expired or incorrect',
@@ -228,10 +221,7 @@ export class AuthController {
     description:
       'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
   })
-  @ApiBadRequestResponse({
-    description: 'If the inputModel has incorrect values',
-    schema: BadRequestApiExample,
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
   @Throttle(5, 10)
   async resendEmailConfirmationCode(
@@ -255,10 +245,7 @@ export class AuthController {
     description:
       "Even if current email is not registered (for prevent user's email detection)",
   })
-  @ApiBadRequestResponse({
-    description:
-      'If the inputModel has invalid email (for example 222^gmail.com)',
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
   @Throttle(5, 10)
   @HttpCode(204)

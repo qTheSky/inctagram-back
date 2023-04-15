@@ -1,8 +1,10 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UsersQueryRepository } from 'src/modules/users/infrastructure';
-import { UsersRepository } from 'src/modules/users/infrastructure/users.repository';
 import { AuthService } from '../auth.service';
+import {
+  UsersQueryRepository,
+  UsersRepository,
+} from '../../../users/infrastructure';
 
 export class NewPasswordCommand {
   constructor(public newPassword: string, public recoveryCode: string) {}

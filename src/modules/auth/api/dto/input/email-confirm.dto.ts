@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Injectable } from '@nestjs/common';
-import { UsersQueryRepository } from 'src/modules/users/infrastructure';
+import { UsersQueryRepository } from '../../../../users/infrastructure';
 
 @Injectable()
 @ValidatorConstraint({ async: true })

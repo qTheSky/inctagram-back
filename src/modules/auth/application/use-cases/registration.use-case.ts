@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { RegisterDto } from '../../api/dto/input';
 import { UsersRepository } from '../../../users/infrastructure';
 import { EmailsManager } from '../../../notification/application/emails.manager';
-import { UserEntity } from 'src/modules/users/entities';
 import { AuthService } from '../auth.service';
+import { UserEntity } from '../../../users/entities';
 
 export class RegistrationCommand {
   constructor(public dto: RegisterDto) {}

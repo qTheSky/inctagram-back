@@ -26,13 +26,13 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { userProfileExample } from '../../../swagger/schema/profile/user-profile-example';
-import { unauthorizedSwaggerMessage } from '../../../swagger/constants/unauthorized-swagger-message';
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
-import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
-import { badRequestSwaggerMessage } from '../../../swagger/constants/bad-request-swagger-message';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadUserAvatarCommand } from '../application/use-cases/upload-user-avatar.use-case';
 import { fileSchemaExample } from '../../../swagger/schema/file-schema-example';
+import { apiBody } from '../../../swagger/constants/api-body/api-body';
+import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiUnauthorizedResponse } from '../../../swagger/constants/api-unauthorized-response/api-unauthorized-response';
 
 @ApiTags('Users')
 @Controller('users')
@@ -44,22 +44,14 @@ export class UsersController {
 
   @Put('profile')
   @ApiOperation({ summary: 'Update current user profile' })
-  @ApiBody({
-    description: 'Example request body (all fields not required)',
-    type: UserProfileDto,
-  })
+  @ApiBody(apiBody(UserProfileDto))
   @ApiResponse({
     status: 200,
     description: 'Returns updated profile',
     schema: { example: userProfileExample },
   })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async updateUserProfile(
@@ -80,9 +72,7 @@ export class UsersController {
     description: 'Returns user profile',
     schema: { example: userProfileExample },
   })
-  @ApiUnauthorizedResponse({
-    description: unauthorizedSwaggerMessage,
-  })
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
@@ -101,12 +91,9 @@ export class UsersController {
     description: 'Uploaded image information object',
     schema: { example: userProfileExample },
   })
-  @ApiBadRequestResponse({
-    description: 'If file format is incorrect',
-    schema: BadRequestApiExample,
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
-  @ApiUnauthorizedResponse({ description: unauthorizedSwaggerMessage })
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   async uploadMainBlogImage(

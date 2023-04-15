@@ -193,7 +193,7 @@ window.onload = function() {
           "parameters": [],
           "responses": {
             "204": {
-              "description": "No content"
+              "description": ""
             },
             "401": {
               "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
@@ -303,7 +303,21 @@ window.onload = function() {
               "description": "Even if current email is not registered (for prevent user's email detection)"
             },
             "400": {
-              "description": "If the inputModel has invalid email (for example 222^gmail.com)"
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
             },
             "429": {
               "description": "More than 5 attempts from one IP-address during 10 seconds"
@@ -372,6 +386,30 @@ window.onload = function() {
           ]
         }
       },
+      "/auth/github": {
+        "get": {
+          "operationId": "AuthController_githubAuth",
+          "summary": "Try login user to the system via github",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Returns JWT accessToken (expired after 10 minutes) in body and JWT refreshToken in cookie (http-only, secure) (expired after 30 days).",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "accessToken": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/users/profile": {
         "put": {
           "operationId": "UsersController_updateUserProfile",
@@ -379,7 +417,7 @@ window.onload = function() {
           "parameters": [],
           "requestBody": {
             "required": true,
-            "description": "Example request body (all fields not required)",
+            "description": "Example request body",
             "content": {
               "application/json": {
                 "schema": {
@@ -521,7 +559,7 @@ window.onload = function() {
               }
             },
             "400": {
-              "description": "If file format is incorrect",
+              "description": "If the inputModel has incorrect values",
               "content": {
                 "application/json": {
                   "schema": {
@@ -606,6 +644,155 @@ window.onload = function() {
             {
               "bearer": []
             }
+          ]
+        }
+      },
+      "/posts/{postId}": {
+        "put": {
+          "operationId": "PostsController_updatePost",
+          "summary": "update post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "description": "Example request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePostDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Returns updated post",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostViewModel"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": ""
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "delete": {
+          "operationId": "PostsController_deletePost",
+          "summary": "delete post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": ""
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "get": {
+          "operationId": "PostsController_getPost",
+          "summary": "get post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Returns post by id",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PostViewModel"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Posts"
           ]
         }
       }
@@ -837,6 +1024,19 @@ window.onload = function() {
             "description",
             "createdAt",
             "updatedAt"
+          ]
+        },
+        "UpdatePostDto": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "post description",
+              "example": "frontend noobs"
+            }
+          },
+          "required": [
+            "description"
           ]
         }
       }
