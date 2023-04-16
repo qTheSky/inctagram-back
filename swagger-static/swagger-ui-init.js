@@ -432,15 +432,7 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "example": {
-                      "userName": "string",
-                      "name": "string",
-                      "surName": "string",
-                      "aboutMe": "string",
-                      "city": "string",
-                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
-                      "avatarUrl": "https://avavar.com"
-                    }
+                    "$ref": "#/components/schemas/UserProfileViewModel"
                   }
                 }
               }
@@ -496,21 +488,13 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "example": {
-                      "userName": "string",
-                      "name": "string",
-                      "surName": "string",
-                      "aboutMe": "string",
-                      "city": "string",
-                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
-                      "avatarUrl": "https://avavar.com"
-                    }
+                    "$ref": "#/components/schemas/UserProfileViewModel"
                   }
                 }
               }
             },
-            "401": {
-              "description": "Unauthorized"
+            "404": {
+              "description": "Not found"
             }
           },
           "tags": [
@@ -540,20 +524,12 @@ window.onload = function() {
             }
           },
           "responses": {
-            "201": {
-              "description": "Uploaded image information object",
+            "200": {
+              "description": "Returns user profile",
               "content": {
                 "application/json": {
                   "schema": {
-                    "example": {
-                      "userName": "string",
-                      "name": "string",
-                      "surName": "string",
-                      "aboutMe": "string",
-                      "city": "string",
-                      "dateOfBirthday": "2023-04-10T16:20:10.847Z",
-                      "avatarUrl": "https://avavar.com"
-                    }
+                    "$ref": "#/components/schemas/UserProfileViewModel"
                   }
                 }
               }
@@ -967,6 +943,48 @@ window.onload = function() {
               "example": "string"
             }
           }
+        },
+        "UserProfileViewModel": {
+          "type": "object",
+          "properties": {
+            "userName": {
+              "type": "string",
+              "example": "string"
+            },
+            "name": {
+              "type": "string",
+              "example": "string"
+            },
+            "surName": {
+              "type": "string",
+              "example": "string"
+            },
+            "dateOfBirthday": {
+              "type": "string",
+              "example": "2023-04-10T16:20:10.847Z"
+            },
+            "city": {
+              "type": "string",
+              "example": "string"
+            },
+            "aboutMe": {
+              "type": "string",
+              "example": "string"
+            },
+            "avatarUrl": {
+              "type": "string",
+              "example": "string"
+            }
+          },
+          "required": [
+            "userName",
+            "name",
+            "surName",
+            "dateOfBirthday",
+            "city",
+            "aboutMe",
+            "avatarUrl"
+          ]
         },
         "CreatePostDto": {
           "type": "object",

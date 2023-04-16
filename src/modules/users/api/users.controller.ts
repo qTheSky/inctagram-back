@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -20,19 +21,21 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { userProfileExample } from '../../../swagger/schema/profile/user-profile-example';
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadUserAvatarCommand } from '../application/use-cases/upload-user-avatar.use-case';
-import { fileSchemaExample } from '../../../swagger/schema/file-schema-example';
+import { fileSchemaExample } from '../../../swagger/constants/file-schema-example';
 import { apiBody } from '../../../swagger/constants/api-body/api-body';
 import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
 import { apiUnauthorizedResponse } from '../../../swagger/constants/api-unauthorized-response/api-unauthorized-response';
+import { apiResponse } from '../../../swagger/constants/api-response/api-response';
+import { apiNotFoundResponseMessage } from '../../../swagger/constants/api-not-found-response/api-not-found-response-message';
 
 @ApiTags('Users')
 @Controller('users')
@@ -45,11 +48,7 @@ export class UsersController {
   @Put('profile')
   @ApiOperation({ summary: 'Update current user profile' })
   @ApiBody(apiBody(UserProfileDto))
-  @ApiResponse({
-    status: 200,
-    description: 'Returns updated profile',
-    schema: { example: userProfileExample },
-  })
+  @ApiResponse(apiResponse('Returns updated profile', UserProfileViewModel))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
@@ -67,16 +66,13 @@ export class UsersController {
 
   @Get(':userId/profile')
   @ApiOperation({ summary: 'Get user profile by id of user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returns user profile',
-    schema: { example: userProfileExample },
-  })
-  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  @ApiResponse(apiResponse('Returns user profile', UserProfileViewModel))
+  @ApiNotFoundResponse(apiNotFoundResponseMessage)
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
     const profile = await this.usersProfilesRepository.getUserProfile(userId);
+    if (!profile) throw new NotFoundException('Profile not found');
     return this.usersProfilesRepository.buildProfileViewModel(profile);
   }
 
@@ -86,11 +82,7 @@ export class UsersController {
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: fileSchemaExample })
-  @ApiResponse({
-    status: 201,
-    description: 'Uploaded image information object',
-    schema: { example: userProfileExample },
-  })
+  @ApiResponse(apiResponse('Returns user profile', UserProfileViewModel))
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)

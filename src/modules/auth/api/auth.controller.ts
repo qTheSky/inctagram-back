@@ -47,7 +47,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
-import { BadRequestApiExample } from '../../../swagger/schema/bad-request-schema-example';
+import { BadRequestApiExample } from '../../../swagger/constants/api-bad-request-response/bad-request-schema-example';
 import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
