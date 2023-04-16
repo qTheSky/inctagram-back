@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePostDto {
@@ -7,6 +7,8 @@ export class UpdatePostDto {
     example: 'frontend noobs',
     type: String,
   })
+  @Length(1, 500)
   @IsString()
+  @IsNotEmpty()
   description: string;
 }
