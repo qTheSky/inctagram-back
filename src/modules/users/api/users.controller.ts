@@ -77,9 +77,7 @@ export class UsersController {
   }
 
   @Post('avatar')
-  @ApiOperation({
-    summary: 'Upload user avatar (1mb)',
-  })
+  @ApiOperation({ summary: 'Upload user avatar (1mb)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: fileSchemaExample })
   @ApiResponse(apiResponse('Returns user profile', UserProfileViewModel))

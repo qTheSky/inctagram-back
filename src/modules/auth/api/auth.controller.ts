@@ -103,7 +103,7 @@ export class AuthController {
     @Req() req,
     @Res({ passthrough: true }) res
   ): Promise<{ accessToken: string }> {
-    return await this.login(
+    return await this.loginOrRefreshToken(
       res,
       new LoginCommand(req.user, {
         ip: req.ip,
@@ -146,18 +146,10 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ): Promise<{ accessToken: string }> {
-    const { refreshToken, accessToken } = await this.commandBus.execute(
+    return await this.loginOrRefreshToken(
+      res,
       new RefreshTokenCommand(req.cookies.refreshToken)
     );
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: this.configService.get('NODE_ENV') === 'production',
-      maxAge: 180 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-    });
-
-    return { accessToken };
   }
 
   @Post('logout')
@@ -209,7 +201,9 @@ export class AuthController {
   @ApiResponse({
     status: 204,
     description:
-      'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+      'Input data is accepted.Email with confirmation code will be send ' +
+      'to passed email address.Confirmation code should be inside link as query param,' +
+      ' for example: https://some-front.com/confirm-registration?code=youtcodehere',
   })
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
@@ -287,7 +281,7 @@ export class AuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response
   ): Promise<{ accessToken: string }> {
-    return await this.login(
+    return await this.loginOrRefreshToken(
       res,
       new SocialLoginCommand(req.user, {
         ip: req.ip,
@@ -317,7 +311,7 @@ export class AuthController {
     @Req() req: any,
     @Res({ passthrough: true }) res: Response
   ): Promise<{ accessToken: string }> {
-    return await this.login(
+    return await this.loginOrRefreshToken(
       res,
       new SocialLoginCommand(req.user, {
         ip: req.ip,
@@ -326,7 +320,7 @@ export class AuthController {
     );
   }
 
-  private async login(
+  private async loginOrRefreshToken(
     res: Response,
     command: any
   ): Promise<{ accessToken: string }> {
