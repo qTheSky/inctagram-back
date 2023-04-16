@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  HttpStatus,
   NotFoundException,
   Param,
   ParseUUIDPipe,
@@ -34,11 +33,11 @@ import { UpdatePostDto } from './dto/input/update-post.dto';
 import { DeletePostCommand } from '../application/use-cases/delete-post.use-case';
 import { UpdatePostCommand } from '../application/use-cases/update-post.use-case';
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
-import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
-import { apiUnauthorizedResponse } from '../../../swagger/constants/api-unauthorized-response/api-unauthorized-response';
-import { apiBody } from '../../../swagger/constants/api-body/api-body';
-import { apiResponse } from '../../../swagger/constants/api-response/api-response';
-import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
+import { apiBadRequestResponse } from '../../../config/swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-unauthorized-response/api-unauthorized-response';
+import { apiBody } from '../../../config/swagger/constants/api-body/api-body';
+import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
+import { apiNoContentResponse } from '../../../config/swagger/constants/api-response/api-no-content-response';
 
 @ApiTags('Posts')
 @Controller('posts')

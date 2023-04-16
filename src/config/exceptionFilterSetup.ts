@@ -1,12 +1,6 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import {
-  ErrorExceptionFilter,
-  ValidationExceptionFilter,
-} from './exception.filter';
+import { INestApplication } from '@nestjs/common';
+import { ExceptionsFilter } from './exception.filter';
 
 export const exceptionFilterSetup = (app: INestApplication) => {
-  app.useGlobalFilters(
-    new ErrorExceptionFilter(),
-    new ValidationExceptionFilter()
-  );
+  app.useGlobalFilters(new ExceptionsFilter());
 };

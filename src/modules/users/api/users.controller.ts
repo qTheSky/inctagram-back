@@ -30,12 +30,12 @@ import {
 import { UserProfileViewModel } from './dto/view/UserProfileViewModel';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadUserAvatarCommand } from '../application/use-cases/upload-user-avatar.use-case';
-import { fileSchemaExample } from '../../../swagger/constants/file-schema-example';
-import { apiBody } from '../../../swagger/constants/api-body/api-body';
-import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
-import { apiUnauthorizedResponse } from '../../../swagger/constants/api-unauthorized-response/api-unauthorized-response';
-import { apiResponse } from '../../../swagger/constants/api-response/api-response';
-import { apiNotFoundResponseMessage } from '../../../swagger/constants/api-not-found-response/api-not-found-response-message';
+import { fileSchemaExample } from '../../../config/swagger/constants/file-schema-example';
+import { apiBody } from '../../../config/swagger/constants/api-body/api-body';
+import { apiBadRequestResponse } from '../../../config/swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-unauthorized-response/api-unauthorized-response';
+import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
+import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/api-not-found-response/api-not-found-response-message';
 
 @ApiTags('Users')
 @Controller('users')

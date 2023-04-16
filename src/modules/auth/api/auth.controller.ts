@@ -45,19 +45,19 @@ import {
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
+import { tooManyRequestsMessage } from '../../../config/swagger/constants/too-many-requests-message';
 import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
 import { GithubAuthGuard } from '../../shared/guards/github-auth.guard';
-import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
-import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
+import { apiBadRequestResponse } from '../../../config/swagger/constants/api-bad-request-response/api-bad-request-response';
+import { apiNoContentResponse } from '../../../config/swagger/constants/api-response/api-no-content-response';
 import { SocialLoginCommand } from '../application/use-cases/social-login.use-case';
 import { ConfigService } from '@nestjs/config';
-import { apiBody } from '../../../swagger/constants/api-body/api-body';
-import { apiResponse } from '../../../swagger/constants/api-response/api-response';
+import { apiBody } from '../../../config/swagger/constants/api-body/api-body';
+import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
 
 @ApiTags('Auth')
 @Controller('auth')

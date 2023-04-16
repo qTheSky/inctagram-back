@@ -5,20 +5,9 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { DomainError } from '../core/validation';
-
-@Catch(DomainError)
-export class ErrorExceptionFilter implements ExceptionFilter {
-  catch(exception: DomainError, host: ArgumentsHost) {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-
-    response.status(400).send(exception.resultNotification);
-  }
-}
 
 @Catch(HttpException)
-export class ValidationExceptionFilter implements ExceptionFilter {
+export class ExceptionsFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
