@@ -215,11 +215,7 @@ window.onload = function() {
               "content": {
                 "application/json": {
                   "schema": {
-                    "example": {
-                      "email": "string",
-                      "login": "string",
-                      "userId": "string"
-                    }
+                    "$ref": "#/components/schemas/AuthMeDto"
                   }
                 }
               }
@@ -846,6 +842,25 @@ window.onload = function() {
           },
           "required": [
             "code"
+          ]
+        },
+        "AuthMeDto": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "login": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "login",
+            "userId"
           ]
         },
         "EmailResendModel": {

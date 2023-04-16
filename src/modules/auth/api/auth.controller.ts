@@ -57,6 +57,7 @@ import { apiNoContentResponse } from '../../../swagger/constants/api-response/ap
 import { SocialLoginCommand } from '../application/use-cases/social-login.use-case';
 import { ConfigService } from '@nestjs/config';
 import { apiBody } from '../../../swagger/constants/api-body/api-body';
+import { apiResponse } from '../../../swagger/constants/api-response/api-response';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -173,17 +174,7 @@ export class AuthController {
 
   @Get('me')
   @ApiOperation({ summary: 'Get information about current user' })
-  @ApiResponse({
-    status: 200,
-    description: 'Success',
-    schema: {
-      example: {
-        email: 'string',
-        login: 'string',
-        userId: 'string',
-      } as AuthMeDto,
-    },
-  })
+  @ApiResponse(apiResponse('Success', AuthMeDto))
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
