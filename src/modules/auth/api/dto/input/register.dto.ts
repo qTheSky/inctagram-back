@@ -10,7 +10,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { UsersQueryRepository } from '../../../../../modules/users/infrastructure';
+import { UsersQueryRepository } from '../../../../users/infrastructure';
 
 @Injectable() //if validation uses dependency injection it must be injectable and registered in the module
 @ValidatorConstraint({ async: true })
@@ -63,7 +63,7 @@ export class RegisterDto {
     maxLength: 20,
   })
   @Matches(
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+=])[A-Za-z\d@$!%*#?&^+=]{8,}$/,
+    /^(?=.*[A-Za-zА-Яа-я])(?=.*\d)(?=.*[@$!%*#?&^+=])[A-Za-zА-Яа-я\d@$!%*#?&^+=]{8,}$/,
     {
       message:
         'passwords should be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character',
