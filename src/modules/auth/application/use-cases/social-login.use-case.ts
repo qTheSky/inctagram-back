@@ -53,7 +53,6 @@ export class SocialLoginUseCase implements ICommandHandler<SocialLoginCommand> {
         login: isSocialDisplayNameUnique
           ? socialUser.login
           : await this.generateRandomUniqueLogin(),
-        password: 'this user uses social oauth',
         email: socialUser.email,
         passwordHash: 'this user uses social oauth',
       },

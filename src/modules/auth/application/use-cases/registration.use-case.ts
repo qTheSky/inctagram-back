@@ -25,7 +25,6 @@ export class RegistrationUseCase
     const newUser = UserEntity.create({
       login: dto.login,
       email: dto.email,
-      password: dto.password,
       passwordHash,
     });
     this.emailsManager.sendEmailConfirmationMessage(
