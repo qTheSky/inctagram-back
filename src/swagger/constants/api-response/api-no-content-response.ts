@@ -1,3 +1,1 @@
-export const apiNoContentResponse = () => ({
-  status: 204,
-});
+export const apiNoContentResponse = { status: 204 };

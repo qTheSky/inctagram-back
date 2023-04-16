@@ -56,7 +56,6 @@ export class PostsController {
   @ApiResponse(apiResponse('Returns created post', PostViewModel, 201))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
-  @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   async createPost(
     @UploadedFile() photo: Express.Multer.File,
@@ -90,7 +89,7 @@ export class PostsController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'delete post' })
-  @ApiResponse(apiNoContentResponse())
+  @ApiResponse(apiNoContentResponse)
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
   @HttpCode(204)

@@ -58,7 +58,7 @@ window.onload = function() {
       },
       "/auth/login": {
         "post": {
-          "operationId": "AuthController_login",
+          "operationId": "AuthController_localLogin",
           "summary": "Try login user to the system",
           "parameters": [],
           "requestBody": {

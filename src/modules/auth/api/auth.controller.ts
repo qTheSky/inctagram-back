@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Redirect,
   Req,
   Res,
   UseGuards,
@@ -47,22 +46,25 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { tooManyRequestsMessage } from '../../../swagger/constants/too-many-requests-message';
-import { BadRequestApiExample } from '../../../swagger/constants/api-bad-request-response/bad-request-schema-example';
 import { AuthMeDto } from './dto/view/auth-me.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
-import { badRequestSwaggerMessage } from '../../../swagger/constants/api-bad-request-response/bad-request-swagger-message';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleAuthGuard } from '../../shared/guards/google-auth.guard';
 import { GithubAuthGuard } from '../../shared/guards/github-auth.guard';
 import { apiBadRequestResponse } from '../../../swagger/constants/api-bad-request-response/api-bad-request-response';
 import { apiNoContentResponse } from '../../../swagger/constants/api-response/api-no-content-response';
 import { SocialLoginCommand } from '../application/use-cases/social-login.use-case';
+import { ConfigService } from '@nestjs/config';
+import { apiBody } from '../../../swagger/constants/api-body/api-body';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private configService: ConfigService
+  ) {}
 
   @Post('registration')
   @ApiOperation({
@@ -84,7 +86,7 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Try login user to the system' })
-  @ApiBody({ description: 'Example request body', type: LoginDto })
+  @ApiBody(apiBody(LoginDto))
   @ApiResponse({
     status: 200,
     description:
@@ -92,33 +94,22 @@ export class AuthController {
     schema: { example: { accessToken: 'string' } },
   })
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
-  @ApiBadRequestResponse({
-    description: badRequestSwaggerMessage,
-    schema: BadRequestApiExample,
-  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiUnauthorizedResponse({ description: 'If the password or login is wrong' })
   @Throttle(1, 5) // 1 request per 5 seconds
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(
+  async localLogin(
     @Req() req,
     @Res({ passthrough: true }) res
   ): Promise<{ accessToken: string }> {
-    const { refreshToken, accessToken } = await this.commandBus.execute(
+    return await this.login(
+      res,
       new LoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })
     );
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true, //todo => if developing secure false otherwise true
-      maxAge: 180 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-    });
-
-    return { accessToken };
   }
 
   @Post('confirm-email')
@@ -161,7 +152,7 @@ export class AuthController {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true, //todo => if developing secure false otherwise true
+      secure: this.configService.get('NODE_ENV') === 'production',
       maxAge: 180 * 24 * 60 * 60 * 1000,
       sameSite: 'none',
     });
@@ -174,7 +165,7 @@ export class AuthController {
     summary:
       'In cookie client must send correct refreshToken that will be revoked',
   })
-  @ApiResponse(apiNoContentResponse())
+  @ApiResponse(apiNoContentResponse)
   @ApiUnauthorizedResponse({
     description:
       'If the JWT refreshToken inside cookie is missing, expired or incorrect',
@@ -290,28 +281,19 @@ export class AuthController {
 
   @ApiExcludeEndpoint()
   @Get('google/callback')
-  @Redirect('https://pornhub.com') //todo frontend url
+  // @Redirect('https://pornhub.com') //todo frontend url
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(
     @Req() req: any,
     @Res({ passthrough: true }) res: Response
-  ) {
-    const { accessToken, refreshToken } = await this.commandBus.execute(
+  ): Promise<{ accessToken: string }> {
+    return await this.login(
+      res,
       new SocialLoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })
     );
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true, //todo => if developing secure false otherwise true
-      maxAge: 180 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-    });
-
-    return {
-      accessToken,
-    };
   }
 
   @Get('github')
@@ -334,16 +316,27 @@ export class AuthController {
   async githubAuthCallback(
     @Req() req: any,
     @Res({ passthrough: true }) res: Response
-  ) {
-    const { accessToken, refreshToken } = await this.commandBus.execute(
+  ): Promise<{ accessToken: string }> {
+    return await this.login(
+      res,
       new SocialLoginCommand(req.user, {
         ip: req.ip,
         deviceName: req.headers['user-agent'],
       })
     );
+  }
+
+  private async login(
+    res: Response,
+    command: any
+  ): Promise<{ accessToken: string }> {
+    const { accessToken, refreshToken } = await this.commandBus.execute(
+      command
+    );
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true, //todo => if developing secure false otherwise true
+      secure: this.configService.get('NODE_ENV') === 'production',
       maxAge: 180 * 24 * 60 * 60 * 1000,
       sameSite: 'none',
     });
