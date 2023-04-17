@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
+import { TrollMiddleware } from './trololo';
 
 @Module({
   imports: [
@@ -53,7 +54,11 @@ import { PostsModule } from './modules/posts/posts.module';
     FilesModule,
     PostsModule,
   ],
-  controllers: [TestingController],
+  controllers: [TestingController, TrollMiddleware],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TrollMiddleware).forRoutes('*');
+  }
+}
