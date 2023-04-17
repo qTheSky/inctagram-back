@@ -54,8 +54,8 @@ import { TrollMiddleware } from './trololo';
     FilesModule,
     PostsModule,
   ],
-  controllers: [TestingController, TrollMiddleware],
-  providers: [],
+  controllers: [TestingController],
+  providers: [TrollMiddleware],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
