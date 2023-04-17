@@ -21,23 +21,16 @@ export const validationErrorsMapper = {
 export const pipesSetup = (app: INestApplication) => {
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, //forbid extra fields in body
+      whitelist: true,
       transform: true,
-      forbidUnknownValues: false,
-      stopAtFirstError: true,
-      exceptionFactory: (errors) => {
-        const errorsForResponse = [];
 
-        errors.forEach((e) => {
-          const constraintsKeys = Object.keys(e.constraints);
-          constraintsKeys.forEach((ckey) => {
-            errorsForResponse.push({
-              message: e.constraints[ckey],
-              field: e.property,
-            });
-          });
-        });
-        throw new BadRequestException(errorsForResponse);
+      stopAtFirstError: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        const err =
+          validationErrorsMapper.mapValidationErrorArrayToValidationPipeErrorTypeArray(
+            errors
+          );
+        throw new BadRequestException(err);
       },
     })
   );
@@ -49,19 +42,3 @@ export type ValidationPipeErrorType = {
 };
 
 // Old pipes
-
-// app.useGlobalPipes(
-//   new ValidationPipe({
-//     whitelist: true,
-//     transform: true,
-//
-//     stopAtFirstError: true,
-//     exceptionFactory: (errors: ValidationError[]) => {
-//       const err =
-//         validationErrorsMapper.mapValidationErrorArrayToValidationPipeErrorTypeArray(
-//           errors
-//         );
-//       throw new BadRequestException(err);
-//     },
-//   })
-// );

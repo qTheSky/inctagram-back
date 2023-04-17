@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,11 +11,12 @@ import {
   Post,
   Put,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { CreatePostDto } from './dto/input/create-post.dto';
 import { CommandBus } from '@nestjs/cqrs';
@@ -55,14 +57,30 @@ export class PostsController {
   @ApiResponse(apiResponse('Returns created post', PostViewModel, 201))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FilesInterceptor(
+      'files' /*, 10, {
+      limits: {
+        fileSize: 1024 * 1024,
+      },
+    }*/
+    )
+  )
   async createPost(
-    @UploadedFile() photo: Express.Multer.File,
+    @UploadedFiles() photos: Array<Express.Multer.File>,
     @Body() dto: CreatePostDto,
     @CurrentUserId() currentUserId: string
-  ): Promise<PostViewModel> {
+  ): Promise<Array<PostViewModel>> {
+    if (photos.length > 10) {
+      throw new BadRequestException([
+        {
+          message: 'Many photos',
+          field: 'files',
+        },
+      ]);
+    }
     return await this.commandBus.execute(
-      new CreatePostCommand({ ...dto, file: photo }, currentUserId)
+      new CreatePostCommand({ ...dto, files: photos }, currentUserId)
     );
   }
 

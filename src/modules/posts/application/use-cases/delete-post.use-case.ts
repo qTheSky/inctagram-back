@@ -24,7 +24,11 @@ export class DeletePostUseCase implements ICommandHandler<DeletePostCommand> {
     if (post.userId !== currentUserId) {
       throw new ForbiddenException();
     }
-    await this.filesManager.deleteFile(post.photoPath);
+
+    for (const photo of post.photos) {
+      await this.filesManager.deleteFile(photo.photoPath);
+    }
+
     await this.postsRepository.delete(post.id);
   }
 }

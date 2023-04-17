@@ -32,7 +32,7 @@ export class UserEntity extends BaseEntity {
   profile: UserProfileEntity;
 
   @OneToMany(() => PostEntity, (post) => post.user)
-  posts: PostEntity;
+  posts: PostEntity[];
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;

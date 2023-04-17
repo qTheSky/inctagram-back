@@ -1,5 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class PhotoViewModel {
+  photoUrl: string;
+}
+
 export class PostViewModel {
   @ApiProperty({
     description: 'id',
@@ -8,12 +12,12 @@ export class PostViewModel {
   })
   id: string;
   @ApiProperty({
-    description: 'photo url',
-    example: 'https://url.com/photo.jpg',
-    type: 'string',
+    description: 'photos url',
+    example: '[https://url.com/photo1.jpg, https://url.com/photo1.jpg]',
+    type: 'string[]',
     format: 'url',
   })
-  photoUrl: string;
+  photos: string[];
   @ApiProperty({
     description: 'post description',
     example: 'frontend noobs',

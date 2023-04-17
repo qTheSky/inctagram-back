@@ -1,14 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEntity } from '../../users/entities';
 import { randomUUID } from 'crypto';
+import { PostPhotoEntity } from './post.photo.entity';
 
 @Entity('posts')
 export class PostEntity extends BaseEntity {
   @Column()
   description: string;
-  @Column({ nullable: null })
-  photoPath: string | null;
 
   @ManyToOne(() => UserEntity, (u) => u.posts, { onDelete: 'CASCADE' })
   @JoinColumn()
@@ -16,12 +22,17 @@ export class PostEntity extends BaseEntity {
   @Column()
   userId: string;
 
+  @OneToMany(() => PostPhotoEntity, (p) => p.post, {
+    cascade: true,
+  })
+  photos: PostPhotoEntity[];
+
   static create(user: UserEntity, description: string): PostEntity {
     const post = new PostEntity();
     post.id = randomUUID();
     post.user = user;
     post.description = description;
-    post.photoPath = null;
+    post.photos = [];
     return post;
   }
 

@@ -12,9 +12,13 @@ export class PostsQueryRepository {
   ) {}
 
   buildResponsePosts(post: PostEntity): PostViewModel {
+    console.log(post.photos);
     return {
       id: post.id,
-      photoUrl: this.configService.get('FILES_URL') + post.photoPath,
+      //photoUrl: this.configService.get("FILES_URL") + post.photoPath,
+      photos: post.photos.map(
+        (photo) => this.configService.get('FILES_URL') + photo.photoPath
+      ),
       description: post.description,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
@@ -22,6 +26,9 @@ export class PostsQueryRepository {
   }
 
   async findPostById(id: string): Promise<PostEntity> {
-    return await this.postsQueryRepository.findOneBy({ id });
+    return await this.postsQueryRepository.findOne({
+      where: { id },
+      relations: { photos: true },
+    });
   }
 }

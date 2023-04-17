@@ -15,5 +15,5 @@ export class CreatePostDto {
     example: 'MULTIPART FORM DATA',
     format: 'binary',
   })
-  file: Express.Multer.File;
+  files: Array<Express.Multer.File>;
 }
