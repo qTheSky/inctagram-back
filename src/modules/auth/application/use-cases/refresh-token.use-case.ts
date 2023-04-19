@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AuthService } from '../auth.service';
 import { SessionsService } from '../../../security/application/sessions.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 export class RefreshTokenCommand {
   constructor(public refreshToken: string) {}
@@ -11,8 +12,9 @@ export class RefreshTokenUseCase
   implements ICommandHandler<RefreshTokenCommand>
 {
   constructor(
-    private authService: AuthService,
-    private sessionsService: SessionsService
+    @Inject(forwardRef(() => SessionsService))
+    private sessionsService: SessionsService,
+    private authService: AuthService
   ) {}
 
   async execute(

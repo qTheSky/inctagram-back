@@ -406,6 +406,87 @@ window.onload = function() {
           ]
         }
       },
+      "/security/devices": {
+        "get": {
+          "operationId": "SessionsController_getSessionsOfUser",
+          "summary": "Returns all devices with active sessions for current user",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": [
+                      {
+                        "ip": "string",
+                        "title": "string",
+                        "lastActiveDate": "string",
+                        "deviceId": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
+            }
+          },
+          "tags": [
+            "SecurityDevices"
+          ]
+        },
+        "delete": {
+          "operationId": "SessionsController_deleteSessionExceptCurrent",
+          "summary": "Terminate all other (exclude current) device's sessions",
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "No content"
+            },
+            "401": {
+              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
+            }
+          },
+          "tags": [
+            "SecurityDevices"
+          ]
+        }
+      },
+      "/security/devices/{deviceId}": {
+        "delete": {
+          "operationId": "SessionsController_deleteSessionByDeviceId",
+          "summary": "Terminate specified device session",
+          "parameters": [
+            {
+              "name": "deviceId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "No Content"
+            },
+            "401": {
+              "description": "If the JWT refreshToken inside cookie is missing, expired or incorrect"
+            },
+            "403": {
+              "description": "If try to delete the deviceId of other user"
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "tags": [
+            "SecurityDevices"
+          ]
+        }
+      },
       "/users/profile": {
         "put": {
           "operationId": "UsersController_updateUserProfile",
@@ -1009,16 +1090,19 @@ window.onload = function() {
               "description": "description",
               "example": "some post description"
             },
-            "file": {
-              "type": "object",
+            "files": {
               "description": "FILE!!",
               "example": "MULTIPART FORM DATA",
-              "format": "binary"
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "binary"
+              }
             }
           },
           "required": [
             "description",
-            "file"
+            "files"
           ]
         },
         "PostViewModel": {
@@ -1029,10 +1113,10 @@ window.onload = function() {
               "description": "id",
               "example": "3123213123"
             },
-            "photoUrl": {
-              "type": "string",
-              "description": "photo url",
-              "example": "https://url.com/photo.jpg",
+            "photos": {
+              "type": "string[]",
+              "description": "photos url",
+              "example": "[https://url.com/photo1.jpg, https://url.com/photo1.jpg]",
               "format": "url"
             },
             "description": {
@@ -1053,7 +1137,7 @@ window.onload = function() {
           },
           "required": [
             "id",
-            "photoUrl",
+            "photos",
             "description",
             "createdAt",
             "updatedAt"

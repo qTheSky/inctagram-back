@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AuthController } from './api/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { IsEmailOrUserNameUniqueConstraint } from './api/dto/input';
@@ -89,5 +89,6 @@ const authStrategies = [
     ...authStrategies,
   ],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}

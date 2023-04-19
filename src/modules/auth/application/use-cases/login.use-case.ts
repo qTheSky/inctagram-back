@@ -4,6 +4,7 @@ import { AuthService } from '../auth.service';
 import { SessionsService } from '../../../security/application/sessions.service';
 import { ISessionMetaData } from '../../../security/interfaces/session-metadata.interface';
 import { ILoginTokens } from '../../interfaces/login-tokens.interface';
+import { Inject, forwardRef } from '@nestjs/common';
 
 export class LoginCommand {
   constructor(
@@ -15,8 +16,9 @@ export class LoginCommand {
 @CommandHandler(LoginCommand)
 export class LoginUseCase implements ICommandHandler<LoginCommand> {
   constructor(
-    private authService: AuthService,
-    private sessionsService: SessionsService
+    @Inject(forwardRef(() => SessionsService))
+    private sessionsService: SessionsService,
+    private authService: AuthService
   ) {}
 
   async execute(command: LoginCommand): Promise<ILoginTokens> {

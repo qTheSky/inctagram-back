@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-import { UserEntity } from '../../users/entities/user.entity';
-import { RefreshPayload } from '../../auth/interfaces/jwt.payloads.interface';
 import { SessionEntity } from '../entities/session.entity';
 import { AbstractRepository } from '../../shared/classes/abstract.repository';
 
@@ -14,28 +12,8 @@ export class SessionsRepository extends AbstractRepository<SessionEntity> {
   ) {
     super(sessionsRepository);
   }
-  async create(
-    user: UserEntity,
-    dto: {
-      decodedRefreshToken: RefreshPayload;
-      ip: string;
-      deviceName: string;
-      refreshToken: string;
-    }
-  ): Promise<SessionEntity> {
-    const session = new SessionEntity();
-    session.issuedAt = new Date(dto.decodedRefreshToken.iat * 1000);
-    session.expiresIn = new Date(dto.decodedRefreshToken.exp * 1000);
-    session.ip = dto.ip;
-    session.deviceName = dto.deviceName;
-    session.deviceId = dto.decodedRefreshToken.deviceId;
-    session.refreshToken = dto.refreshToken;
-    session.user = user;
 
-    return await this.save(session);
-  }
-
-  async deleteAllSessionsOfUser(userId: number) {
+  async deleteAllSessionsOfUser(userId: string) {
     return this.sessionsRepository.delete({ userId });
   }
 
@@ -43,18 +21,10 @@ export class SessionsRepository extends AbstractRepository<SessionEntity> {
     return this.sessionsRepository.delete({ deviceId });
   }
 
-  async deleteSessionsExceptCurrent(userId: number, currentDeviceId: string) {
+  async deleteSessionsExceptCurrent(userId: string, currentDeviceId: string) {
     return this.sessionsRepository.delete({
       userId,
       deviceId: Not(currentDeviceId),
     });
-  }
-
-  async findAllSessionsOfUser(userId: number): Promise<SessionEntity[]> {
-    return this.sessionsRepository.findBy({ userId });
-  }
-
-  async findSessionByDeviceId(deviceId: string): Promise<SessionEntity> {
-    return this.sessionsRepository.findOneBy({ deviceId });
   }
 }
