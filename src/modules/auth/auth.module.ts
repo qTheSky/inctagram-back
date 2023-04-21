@@ -1,32 +1,35 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AuthController } from './api/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
-import { IsEmailOrUserNameUniqueConstraint } from './api/dto/input';
+import {
+  IsCheckIsEmailConfirmedConstraint,
+  IsConfirmationCodeValidConstraint,
+  IsEmailOrUserNameUniqueConstraint,
+} from './api/dto/input';
 import { UsersModule } from '../users/users.module';
-import { RegistrationUseCase } from './application/use-cases';
+import {
+  ConfirmEmailUseCase,
+  GetAuthUserDataUseCase,
+  LoginUseCase,
+  LogoutUseCase,
+  NewPasswordUseCase,
+  PasswordRecoveryUseCase,
+  RefreshTokenUseCase,
+  RegistrationEmailResendingUseCase,
+  RegistrationUseCase,
+} from './application/use-cases';
 import { AuthService } from './application/auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import * as Joi from 'joi';
-import { LoginUseCase } from './application/use-cases';
 import { NotificationModule } from '../notification/notification.module';
-import { IsConfirmationCodeValidConstraint } from './api/dto/input';
-import { ConfirmEmailUseCase } from './application/use-cases';
-import { RefreshTokenUseCase } from './application/use-cases';
 import { SecurityModule } from '../security/security.module';
-import { LogoutUseCase } from './application/use-cases';
-import { GetAuthUserDataUseCase } from './application/use-cases';
-import {
-  NewPasswordUseCase,
-  PasswordRecoveryUseCase,
-  RegistrationEmailResendingUseCase,
-} from './application/use-cases';
-import { IsCheckIsEmailConfirmedConstraint } from './api/dto/input';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
 import { SocialLoginUseCase } from './application/use-cases/social-login.use-case';
+import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -72,6 +75,14 @@ const authStrategies = [
         GITHUB_CLIENT_ID: Joi.string().required(),
         GITHUB_CLIENT_SECRET: Joi.string().required(),
         GITHUB_CALLBACK_URL: Joi.string().required(),
+        RECAPTCHA_SECRET_KEY: Joi.string().required(),
+      }),
+    }),
+    GoogleRecaptchaModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        response: (req) => req.body.recaptcha,
+        secretKey: configService.get('RECAPTCHA_SECRET_KEY'),
       }),
     }),
     JwtModule.registerAsync({

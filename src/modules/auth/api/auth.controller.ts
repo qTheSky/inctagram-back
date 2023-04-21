@@ -68,6 +68,7 @@ export class AuthController {
   ) {}
 
   @Post('registration')
+  // @Recaptcha()
   @ApiOperation({
     summary:
       'Registration in the system. Email with confirmation code will be send to passed email address.',
@@ -86,6 +87,7 @@ export class AuthController {
   }
 
   @Post('login')
+  // @Recaptcha()
   @ApiOperation({ summary: 'Try login user to the system' })
   @ApiBody(apiBody(LoginDto))
   @ApiResponse({
@@ -185,6 +187,7 @@ export class AuthController {
   }
 
   @Post('registration-email-resending')
+  // @Recaptcha()
   @HttpCode(204)
   @ApiOperation({
     summary: 'Resend confirmation registration Email if user exists',
@@ -211,6 +214,7 @@ export class AuthController {
   }
 
   @Post('password-recovery')
+  // @Recaptcha()
   @ApiOperation({
     summary:
       'Password recovery via Email confirmation. Email should be sent with RecoveryCode inside',
