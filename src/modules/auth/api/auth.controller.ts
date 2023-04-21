@@ -68,7 +68,6 @@ export class AuthController {
   ) {}
 
   @Post('registration')
-  // @Recaptcha()
   @ApiOperation({
     summary:
       'Registration in the system. Email with confirmation code will be send to passed email address.',
@@ -87,7 +86,7 @@ export class AuthController {
   }
 
   @Post('login')
-  // @Recaptcha()
+  // @UseGuards(RecaptchaGuard)
   @ApiOperation({ summary: 'Try login user to the system' })
   @ApiBody(apiBody(LoginDto))
   @ApiResponse({

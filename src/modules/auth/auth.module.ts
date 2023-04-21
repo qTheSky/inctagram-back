@@ -29,7 +29,6 @@ import { SecurityModule } from '../security/security.module';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { GitHubStrategy } from './strategies/github.strategy';
 import { SocialLoginUseCase } from './application/use-cases/social-login.use-case';
-import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha';
 
 const validationConstraints = [
   IsEmailOrUserNameUniqueConstraint,
@@ -76,13 +75,6 @@ const authStrategies = [
         GITHUB_CLIENT_SECRET: Joi.string().required(),
         GITHUB_CALLBACK_URL: Joi.string().required(),
         RECAPTCHA_SECRET_KEY: Joi.string().required(),
-      }),
-    }),
-    GoogleRecaptchaModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        response: (req) => req.body.recaptcha,
-        secretKey: configService.get('RECAPTCHA_SECRET_KEY'),
       }),
     }),
     JwtModule.registerAsync({
