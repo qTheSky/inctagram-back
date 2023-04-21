@@ -10,7 +10,7 @@ import axios from 'axios';
 export class RecaptchaGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { body } = context.switchToHttp().getRequest();
-    if (!body.recaptchaValue) throw new ForbiddenException('');
+    if (!body.recaptchaValue) throw new ForbiddenException('No recaptchaValue');
     const { data } = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?response=${body.recaptchaValue}&secret=${process.env.RECAPTCHA_SECRET}`
     );
