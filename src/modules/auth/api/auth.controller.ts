@@ -79,7 +79,7 @@ export class AuthController {
   })
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiTooManyRequestsResponse({ description: tooManyRequestsMessage })
-  @Throttle(1, 5) // 1 request per 5 seconds
+  @Throttle(1, 5) // 1 request per 5  seconds
   @HttpCode(HttpStatus.NO_CONTENT)
   async registration(@Body() dto: RegisterDto): Promise<void> {
     await this.commandBus.execute(new RegistrationCommand(dto));
