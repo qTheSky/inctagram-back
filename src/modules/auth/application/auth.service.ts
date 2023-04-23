@@ -7,6 +7,7 @@ import { RefreshPayload } from '../interfaces/jwt.payloads.interface';
 import { UsersRepository } from '../../users/infrastructure';
 import { BadRefreshTokensRepository } from '../../security/infrastructure/bad-refresh-tokens.repository';
 import { ILoginTokens } from '../interfaces/login-tokens.interface';
+import { BadRefreshTokenEntity } from '../../security/entities/bad-refresh-token.entity';
 
 @Injectable()
 export class AuthService {
@@ -40,14 +41,13 @@ export class AuthService {
   }
 
   async checkIsRefreshTokenInBlackList(
-    userId: number,
+    userId: string,
     refreshToken: string
   ): Promise<boolean> {
-    const foundRefreshToken =
-      await this.badRefreshTokensRepository.findRefreshToken(
-        userId,
-        refreshToken
-      );
+    const foundRefreshToken = await this.badRefreshTokensRepository.findOne({
+      userId: userId,
+      refreshToken,
+    });
     if (foundRefreshToken) throw new UnauthorizedException();
     return !!foundRefreshToken;
   }
@@ -59,12 +59,12 @@ export class AuthService {
       refreshToken
     ) as RefreshPayload;
     const user = await this.usersRepository.findOne({ id: userId });
-    await this.badRefreshTokensRepository.create(
+    const badToken = await BadRefreshTokenEntity.create(
       user,
       refreshToken,
-      +userId,
       exp
     );
+    await this.badRefreshTokensRepository.save(badToken);
     return { iat, exp, userId, deviceId };
   }
 

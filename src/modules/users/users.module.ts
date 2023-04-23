@@ -16,6 +16,7 @@ import {
 } from './entities';
 import { UploadUserAvatarUseCase } from './application/use-cases/upload-user-avatar.use-case';
 import { FilesModule } from '../files/files.module';
+import { SharedModule } from '../shared/shared.module';
 
 const adapters = [
   UsersRepository,
@@ -29,6 +30,7 @@ const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
   imports: [
     CqrsModule,
     FilesModule,
+    SharedModule,
     TypeOrmModule.forFeature([
       UserEntity,
       UserEmailConfirmation,

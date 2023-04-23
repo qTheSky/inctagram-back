@@ -11,6 +11,7 @@ import { PostsQueryRepository } from './infrastructure/posts.query.repository';
 import { UpdatePostUseCase } from './application/use-cases/update-post.use-case';
 import { DeletePostUseCase } from './application/use-cases/delete-post.use-case';
 import { PostPhotoEntity } from './entities/post.photo.entity';
+import { SharedModule } from '../shared/shared.module';
 
 const useCases = [CreatePostUseCase, UpdatePostUseCase, DeletePostUseCase];
 const adapters = [PostsRepository, PostsQueryRepository];
@@ -18,6 +19,7 @@ const adapters = [PostsRepository, PostsQueryRepository];
 @Module({
   imports: [
     CqrsModule,
+    SharedModule,
     FilesModule,
     UsersModule,
     TypeOrmModule.forFeature([PostEntity, PostPhotoEntity]),

@@ -2,33 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BadRefreshTokenEntity } from '../entities/bad-refresh-token.entity';
-import { UserEntity } from '../../users/entities/user.entity';
+import { AbstractRepository } from '../../shared/classes/abstract.repository';
 
 @Injectable()
-export class BadRefreshTokensRepository {
+export class BadRefreshTokensRepository extends AbstractRepository<BadRefreshTokenEntity> {
   constructor(
     @InjectRepository(BadRefreshTokenEntity)
-    private readonly repo: Repository<BadRefreshTokenEntity>
-  ) {}
-  async create(
-    user: UserEntity,
-    refreshToken: string,
-    userId: number,
-    exp: number
+    private readonly badRefreshTokenRepository: Repository<BadRefreshTokenEntity>
   ) {
-    const newDocument = new BadRefreshTokenEntity();
-    newDocument.refreshToken = refreshToken;
-    newDocument.userId = userId;
-    newDocument.expiresIn = exp;
-
-    newDocument.user = user;
-    return this.repo.save(newDocument);
-  }
-
-  async findRefreshToken(
-    userId: number,
-    refreshToken: string
-  ): Promise<BadRefreshTokenEntity | null> {
-    return this.repo.findOneBy({ userId, refreshToken });
+    super(badRefreshTokenRepository);
   }
 }

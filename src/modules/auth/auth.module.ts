@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { SharedModule } from '../shared/shared.module';
 import { AuthController } from './api/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import {
@@ -58,9 +59,10 @@ const authStrategies = [
 
 @Module({
   imports: [
+    CqrsModule,
+    SharedModule,
     SecurityModule,
     NotificationModule,
-    CqrsModule,
     UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,

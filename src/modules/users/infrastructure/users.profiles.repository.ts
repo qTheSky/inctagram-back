@@ -16,12 +16,6 @@ export class UsersProfilesRepository extends AbstractRepository<UserProfileEntit
     super(userProfileRepository);
   }
 
-  async getUserProfile(userId: string): Promise<UserProfileEntity | null> {
-    return await this.userProfileRepository.findOne({
-      where: { userId },
-    });
-  }
-
   async buildProfileViewModel(
     profile: UserProfileEntity
   ): Promise<UserProfileViewModel> {

@@ -58,9 +58,9 @@ export class UsersController {
     @Body() dto: UserProfileDto
   ): Promise<UserProfileViewModel> {
     await this.commandBus.execute(new UpdateProfileCommand(currentUserId, dto));
-    const updatedProfile = await this.usersProfilesRepository.getUserProfile(
-      currentUserId
-    );
+    const updatedProfile = await this.usersProfilesRepository.findOne({
+      userId: currentUserId,
+    });
     return this.usersProfilesRepository.buildProfileViewModel(updatedProfile);
   }
 
@@ -71,7 +71,7 @@ export class UsersController {
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
-    const profile = await this.usersProfilesRepository.getUserProfile(userId);
+    const profile = await this.usersProfilesRepository.findOne({ userId });
     if (!profile) throw new NotFoundException('Profile not found');
     return this.usersProfilesRepository.buildProfileViewModel(profile);
   }

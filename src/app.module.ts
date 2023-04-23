@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
+import { SharedModule } from './modules/shared/shared.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getTypeOrmConfig } from './config';
-import { SharedModule } from './modules/shared/shared.module';
 import * as Joi from 'joi';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { NotificationModule } from './modules/notification/notification.module';
@@ -14,6 +14,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
+import { AuditLogRepository } from './modules/shared/infrastructure/auditLog.repository';
+import { AuditLogEntity } from './modules/shared/entity/audit-log.entity';
 
 @Module({
   imports: [
@@ -52,8 +54,15 @@ import { PostsModule } from './modules/posts/posts.module';
     SecurityModule,
     FilesModule,
     PostsModule,
+    TypeOrmModule.forFeature([AuditLogEntity]),
   ],
   controllers: [TestingController],
-  providers: [],
+  providers: [
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransactionInterceptor,
+    // },
+    AuditLogRepository,
+  ],
 })
 export class AppModule {}

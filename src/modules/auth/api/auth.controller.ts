@@ -63,7 +63,7 @@ import { apiResponse } from '../../../config/swagger/constants/api-response/api-
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly commandBus: CommandBus,
+    private commandBus: CommandBus,
     private configService: ConfigService
   ) {}
 

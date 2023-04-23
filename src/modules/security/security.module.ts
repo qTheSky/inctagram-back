@@ -13,6 +13,7 @@ import { SessionsQueryRepository } from './infrastructure/sessions.query.reposit
 import { DeleteSessionByDeviceIdUseCase } from './application/useCases/delete-session-by-device-id-use.case';
 import { DeleteSessionsExceptCurrentUseCase } from './application/useCases/delete-sessions-except-current.use-case';
 import { AuthModule } from '../auth/auth.module';
+import { SharedModule } from '../shared/shared.module';
 
 const useCases = [
   DeleteSessionsExceptCurrentUseCase,
@@ -27,6 +28,7 @@ const adapters = [
 @Module({
   imports: [
     forwardRef(() => AuthModule),
+    SharedModule,
     CqrsModule,
     JwtModule,
     TypeOrmModule.forFeature([SessionEntity, BadRefreshTokenEntity]),

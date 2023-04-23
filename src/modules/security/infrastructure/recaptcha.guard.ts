@@ -14,9 +14,7 @@ export class RecaptchaGuard implements CanActivate {
     const { data } = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?response=${body.recaptchaValue}&secret=${process.env.RECAPTCHA_SECRET}`
     );
-
     if (!data.success) throw new ForbiddenException();
-
     return true;
   }
 }

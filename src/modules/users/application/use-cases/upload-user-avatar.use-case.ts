@@ -18,9 +18,9 @@ export class UploadUserAvatarUseCase
     private usersProfilesRepository: UsersProfilesRepository
   ) {}
   async execute({ avatar, currentUserId }: UploadUserAvatarCommand) {
-    const profile = await this.usersProfilesRepository.getUserProfile(
-      currentUserId
-    );
+    const profile = await this.usersProfilesRepository.findOne({
+      userId: currentUserId,
+    });
     const { validatedImage } = await validateImage(avatar, {
       maxFileSizeKB: 1000,
     });
