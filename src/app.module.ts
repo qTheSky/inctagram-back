@@ -14,8 +14,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
-import { AuditLogRepository } from './modules/shared/infrastructure/auditLog.repository';
-import { AuditLogEntity } from './modules/shared/entity/audit-log.entity';
 
 @Module({
   imports: [
@@ -54,15 +52,8 @@ import { AuditLogEntity } from './modules/shared/entity/audit-log.entity';
     SecurityModule,
     FilesModule,
     PostsModule,
-    TypeOrmModule.forFeature([AuditLogEntity]),
   ],
   controllers: [TestingController],
-  providers: [
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: TransactionInterceptor,
-    // },
-    AuditLogRepository,
-  ],
+  providers: [],
 })
 export class AppModule {}

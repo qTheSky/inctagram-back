@@ -3,14 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { SessionEntity } from '../entities/session.entity';
 import { AbstractRepository } from '../../shared/classes/abstract.repository';
+import { EntityManagerContext } from '../../shared/interceptors/transactions/entityManager.context';
 
 @Injectable()
 export class SessionsRepository extends AbstractRepository<SessionEntity> {
   constructor(
     @InjectRepository(SessionEntity)
-    private readonly sessionsRepository: Repository<SessionEntity>
+    private readonly sessionsRepository: Repository<SessionEntity>,
+    private readonly entityManagerContext: EntityManagerContext
   ) {
-    super(sessionsRepository);
+    super(sessionsRepository, entityManagerContext);
   }
 
   async deleteAllSessionsOfUser(userId: string) {
