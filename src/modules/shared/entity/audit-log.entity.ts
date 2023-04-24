@@ -3,6 +3,7 @@ import { BaseEntity } from '../classes/base.entity';
 
 @Entity('audit_logs')
 export class AuditLogEntity extends BaseEntity {
+  //todo add IP and DEVICE NAME( user-agent )
   @Column({ nullable: true })
   userId: string;
   @Column()
