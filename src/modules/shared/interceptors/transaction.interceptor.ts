@@ -9,6 +9,7 @@ import { lastValueFrom } from 'rxjs';
 import { AuditLogEntity } from '../entity/audit-log.entity';
 import { AuditLogRepository } from '../infrastructure/auditLog.repository';
 
+// @Injectable({ scope: Scope.REQUEST }) it doesnt work with CQRS
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
   constructor(
