@@ -20,9 +20,8 @@ export class TransactionInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
     const request = context.switchToHttp().getRequest();
 
-    if (request.method === 'GET') {
-      return next.handle();
-    }
+    if (request.method === 'GET') return next.handle();
+
     //metadata for create audit log
     const userId = request.user?.id;
     const endpoint = request.originalUrl;
