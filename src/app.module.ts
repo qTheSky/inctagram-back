@@ -14,6 +14,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
+import { RedisCacheModule } from './modules/redis/redisCacheModule';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { PostsModule } from './modules/posts/posts.module';
     SecurityModule,
     FilesModule,
     PostsModule,
+    RedisCacheModule,
   ],
   controllers: [TestingController],
   providers: [],

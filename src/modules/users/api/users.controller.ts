@@ -36,13 +36,15 @@ import { apiBadRequestResponse } from '../../../config/swagger/constants/api-bad
 import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-unauthorized-response/api-unauthorized-response';
 import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
 import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/api-not-found-response/api-not-found-response-message';
+import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersProfilesRepository: UsersProfilesRepository,
-    private readonly commandBus: CommandBus
+    private readonly commandBus: CommandBus,
+    @InjectRedis() private readonly redis: Redis
   ) {}
 
   @Put('profile')
@@ -57,11 +59,19 @@ export class UsersController {
     @CurrentUserId() currentUserId: string,
     @Body() dto: UserProfileDto
   ): Promise<UserProfileViewModel> {
-    await this.commandBus.execute(new UpdateProfileCommand(currentUserId, dto));
-    const updatedProfile = await this.usersProfilesRepository.findOne({
-      userId: currentUserId,
-    });
-    return this.usersProfilesRepository.buildProfileViewModel(updatedProfile);
+    const updatedProfile = await this.commandBus.execute(
+      new UpdateProfileCommand(currentUserId, dto)
+    );
+    const profileViewModel =
+      this.usersProfilesRepository.buildProfileViewModel(updatedProfile);
+    await this.redis.del(`profile${currentUserId}`);
+    await this.redis.set(
+      `profile${currentUserId}`,
+      JSON.stringify(profileViewModel),
+      'EX',
+      60 * 10 //10 min
+    );
+    return profileViewModel;
   }
 
   @Get(':userId/profile')
@@ -71,9 +81,20 @@ export class UsersController {
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
+    await this.redis.del(`profile${userId}`);
+    const cachedProfile = await this.redis.get(`profile${userId}`);
+    if (cachedProfile) return JSON.parse(cachedProfile);
     const profile = await this.usersProfilesRepository.findOne({ userId });
     if (!profile) throw new NotFoundException('Profile not found');
-    return this.usersProfilesRepository.buildProfileViewModel(profile);
+    const profileViewModel =
+      await this.usersProfilesRepository.buildProfileViewModel(profile);
+    await this.redis.set(
+      `profile${userId}`,
+      JSON.stringify(profileViewModel),
+      'EX',
+      60 * 10 //10 min
+    );
+    return profileViewModel;
   }
 
   @Post('avatar')

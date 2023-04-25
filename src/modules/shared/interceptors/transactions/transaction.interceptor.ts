@@ -27,7 +27,7 @@ export class TransactionInterceptor implements NestInterceptor {
   ): Promise<Observable<any>> {
     if (this.configService.get('DATABASE_TRANSACTIONS_AND_LOGS') !== 'true') {
       //skip
-      return of(await lastValueFrom(next.handle()));
+      return next.handle();
     }
 
     const request = context.switchToHttp().getRequest();
