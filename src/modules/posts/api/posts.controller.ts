@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,13 +9,12 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { CreatePostDto } from './dto/input/create-post.dto';
 import { CommandBus } from '@nestjs/cqrs';
@@ -40,6 +38,7 @@ import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-u
 import { apiBody } from '../../../config/swagger/constants/api-body/api-body';
 import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
 import { apiNoContentResponse } from '../../../config/swagger/constants/api-response/api-no-content-response';
+import { badRequestException } from '../../shared/utils/bad-request.exception';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -71,14 +70,7 @@ export class PostsController {
     @Body() dto: CreatePostDto,
     @CurrentUserId() currentUserId: string
   ): Promise<Array<PostViewModel>> {
-    if (photos.length > 10) {
-      throw new BadRequestException([
-        {
-          message: 'Many photos',
-          field: 'files',
-        },
-      ]);
-    }
+    if (photos.length > 10) badRequestException('files', 'Too many photos');
     return await this.commandBus.execute(
       new CreatePostCommand({ ...dto, files: photos }, currentUserId)
     );
