@@ -23,9 +23,10 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
   ) {}
 
   async execute(command: CreatePostCommand): Promise<PostViewModel> {
-    const user = await this.usersQueryRepository.findUserById(
-      command.currentUserId
-    );
+    const user =
+      await this.usersQueryRepository.findUserByIdWithEmailConfirmation(
+        command.currentUserId
+      );
     const { files } = command.dto;
     const post = PostEntity.create(user, command.dto.description);
 

@@ -10,7 +10,9 @@ export class UsersQueryRepository {
     private readonly usersQueryRepository: Repository<UserEntity>
   ) {}
 
-  async findUserById(id: string): Promise<UserEntity | null> {
+  async findUserByIdWithEmailConfirmation(
+    id: string
+  ): Promise<UserEntity | null> {
     return await this.usersQueryRepository.findOne({
       where: { id },
       relations: { emailConfirmation: true },

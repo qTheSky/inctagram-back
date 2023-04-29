@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   UploadedFile,
@@ -37,6 +38,7 @@ import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-u
 import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
 import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/api-not-found-response/api-not-found-response-message';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
+import { SubscribeToUserCommand } from '../application/use-cases/subscribe-to-user.use-case';
 
 @ApiTags('Users')
 @Controller('users')
@@ -112,6 +114,25 @@ export class UsersController {
   ): Promise<UserProfileViewModel> {
     return this.commandBus.execute(
       new UploadUserAvatarCommand(avatar, currentUserId)
+    );
+  }
+
+  @Patch(':userId/subscribe')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Subscribe to user or unsubscribe' })
+  @ApiResponse({
+    description: 'true if subscribed. false if unsubscribed',
+    type: Boolean,
+    status: 200,
+  })
+  @ApiBearerAuth()
+  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  async subscribeToUser(
+    @CurrentUserId() currentUserId: string,
+    @Param('userId') userIdForSubscribe: string
+  ): Promise<boolean> {
+    return this.commandBus.execute(
+      new SubscribeToUserCommand(userIdForSubscribe, currentUserId)
     );
   }
 }

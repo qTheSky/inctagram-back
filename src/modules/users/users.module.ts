@@ -17,14 +17,22 @@ import {
 import { UploadUserAvatarUseCase } from './application/use-cases/upload-user-avatar.use-case';
 import { FilesModule } from '../files/files.module';
 import { SharedModule } from '../shared/shared.module';
+import { SubscribeToUserUseCase } from './application/use-cases/subscribe-to-user.use-case';
+import { UserSubscriptionsRepository } from './infrastructure/user.subscriptions.repository';
+import { UserSubscriptionEntity } from './entities/user-subscription.entity';
 
 const adapters = [
   UsersRepository,
   UsersProfilesRepository,
   UsersQueryRepository,
+  UserSubscriptionsRepository,
 ];
 
-const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
+const useCases = [
+  UpdateProfileUseCase,
+  UploadUserAvatarUseCase,
+  SubscribeToUserUseCase,
+];
 
 @Module({
   imports: [
@@ -36,6 +44,7 @@ const useCases = [UpdateProfileUseCase, UploadUserAvatarUseCase];
       UserEmailConfirmation,
       UserProfileEntity,
       UserPasswordRecoveryEntity,
+      UserSubscriptionEntity,
     ]),
   ],
   controllers: [UsersController],
