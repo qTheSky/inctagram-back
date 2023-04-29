@@ -5,6 +5,7 @@ interface DefaultPayload {
 
 export interface AccessPayload extends DefaultPayload {
   userId: string;
+  login: string;
 }
 export interface RefreshPayload extends AccessPayload {
   deviceId: string;

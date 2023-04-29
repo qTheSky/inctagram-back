@@ -23,7 +23,7 @@ export class LoginUseCase implements ICommandHandler<LoginCommand> {
 
   async execute(command: LoginCommand): Promise<ILoginTokens> {
     const { refreshToken, accessToken } = await this.authService.generateTokens(
-      command.user.id
+      command.user
     );
     await this.sessionsService.createSession(
       command.user,

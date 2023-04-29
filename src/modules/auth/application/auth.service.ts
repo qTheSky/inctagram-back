@@ -3,11 +3,15 @@ import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { RefreshPayload } from '../interfaces/jwt.payloads.interface';
+import {
+  AccessPayload,
+  RefreshPayload,
+} from '../interfaces/jwt.payloads.interface';
 import { UsersRepository } from '../../users/infrastructure';
 import { BadRefreshTokensRepository } from '../../security/infrastructure/bad-refresh-tokens.repository';
 import { ILoginTokens } from '../interfaces/login-tokens.interface';
 import { BadRefreshTokenEntity } from '../../security/entities/bad-refresh-token.entity';
+import { UserEntity } from '../../users/entities';
 
 @Injectable()
 export class AuthService {
@@ -19,15 +23,30 @@ export class AuthService {
   ) {}
 
   async generateTokens(
-    userId: string,
+    user: UserEntity,
     deviceId?: string
   ): Promise<ILoginTokens> {
-    const accessToken = this.jwtService.sign({ userId });
+    const accessToken = this.jwtService.sign({
+      userId: user.id,
+      login: user.login,
+    });
     const refreshToken = this.jwtService.sign(
-      { userId, deviceId: deviceId || randomUUID() },
+      { userId: user.id, deviceId: deviceId || randomUUID() },
       { expiresIn: this.configService.get('REFRESH_TOKEN_TIME') }
     );
     return { accessToken, refreshToken };
+  }
+
+  /**
+   * this method is used in websocket connections
+   */
+  validateToken(accessToken?: string): AccessPayload | null {
+    try {
+      const payload: AccessPayload = this.jwtService.verify(accessToken);
+      return payload;
+    } catch (e) {
+      return null;
+    }
   }
 
   getUserIdByTokenOrThrow(token: string) {
@@ -55,7 +74,7 @@ export class AuthService {
   async putRefreshTokenToBlackList(
     refreshToken: string
   ): Promise<RefreshPayload> {
-    const { exp, userId, deviceId, iat } = this.jwtService.decode(
+    const { exp, userId, deviceId, iat, login } = this.jwtService.decode(
       refreshToken
     ) as RefreshPayload;
     const user = await this.usersRepository.findOne({ id: userId });
@@ -65,7 +84,7 @@ export class AuthService {
       exp
     );
     await this.badRefreshTokensRepository.save(badToken);
-    return { iat, exp, userId, deviceId };
+    return { iat, exp, userId, deviceId, login };
   }
 
   async generatePasswordHash(password: string): Promise<string> {
