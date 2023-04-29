@@ -15,6 +15,7 @@ import { FilesModule } from './modules/files/files.module';
 import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
 import { RedisCacheModule } from './modules/redis/redisCacheModule';
+import { CommonChatModule } from './modules/common-chat/common-chat.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { RedisCacheModule } from './modules/redis/redisCacheModule';
     FilesModule,
     PostsModule,
     RedisCacheModule,
+    CommonChatModule,
   ],
   controllers: [TestingController],
   providers: [],

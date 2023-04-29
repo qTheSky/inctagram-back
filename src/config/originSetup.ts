@@ -3,8 +3,10 @@ import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.int
 
 const origin = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://inctagram.online',
   'http://localhost:6006',
+  '*',
 ];
 
 const getCorsOptions = (origin: string[]): CorsOptions => ({
