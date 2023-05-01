@@ -9,6 +9,10 @@ export class PostPhotoEntity extends BaseEntity {
   postId: string;
   @Column({ nullable: true })
   photoPath: string | null;
+  @Column()
+  mimetype: string;
+  @Column()
+  size: number;
 
   @ManyToOne(() => PostEntity, (p) => p.photos, { onDelete: 'CASCADE' })
   @JoinColumn()

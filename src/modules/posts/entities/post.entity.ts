@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -26,6 +27,9 @@ export class PostEntity extends BaseEntity {
     cascade: true,
   })
   photos: PostPhotoEntity[];
+
+  @ManyToMany(() => UserEntity, (users) => users.favoritePosts)
+  users: UserEntity[];
 
   static create(user: UserEntity, description: string): PostEntity {
     const post = new PostEntity();

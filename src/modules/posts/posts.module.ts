@@ -12,8 +12,19 @@ import { UpdatePostUseCase } from './application/use-cases/update-post.use-case'
 import { DeletePostUseCase } from './application/use-cases/delete-post.use-case';
 import { PostPhotoEntity } from './entities/post.photo.entity';
 import { SharedModule } from '../shared/shared.module';
+import { DeleteFavoritePostUseCase } from './application/use-cases/delete-favorite-post.use-case';
+import { DeleteAllFavoritePostUseCase } from './application/use-cases/delete-all-favorite-post.use-case';
+import { AddFavoritePostUseCase } from './application/use-cases/add-favorite-post.use-case';
+import { UsersPostsController } from './api/users.posts.controller';
 
-const useCases = [CreatePostUseCase, UpdatePostUseCase, DeletePostUseCase];
+const useCases = [
+  CreatePostUseCase,
+  UpdatePostUseCase,
+  DeletePostUseCase,
+  AddFavoritePostUseCase,
+  DeleteAllFavoritePostUseCase,
+  DeleteFavoritePostUseCase,
+];
 const adapters = [PostsRepository, PostsQueryRepository];
 
 @Module({
@@ -25,6 +36,6 @@ const adapters = [PostsRepository, PostsQueryRepository];
     TypeOrmModule.forFeature([PostEntity, PostPhotoEntity]),
   ],
   providers: [...useCases, ...adapters],
-  controllers: [PostsController],
+  controllers: [PostsController, UsersPostsController],
 })
 export class PostsModule {}

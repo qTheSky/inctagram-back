@@ -12,7 +12,6 @@ export class PostsQueryRepository {
   ) {}
 
   buildResponsePosts(post: PostEntity): PostViewModel {
-    console.log(post.photos);
     return {
       id: post.id,
       //photoUrl: this.configService.get("FILES_URL") + post.photoPath,

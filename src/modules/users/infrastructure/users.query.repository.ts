@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PostEntity } from 'src/modules/posts/entities/post.entity';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -41,6 +42,13 @@ export class UsersQueryRepository {
     return await this.usersQueryRepository.findOneBy({ email });
   }
 
+  async findUserById(userId: string): Promise<UserEntity | null> {
+    return await this.usersQueryRepository.findOne({
+      where: { id: userId },
+      relations: { favoritePosts: true },
+    });
+  }
+
   async findUserByRecoveryCode(
     recoveryCode: string
   ): Promise<UserEntity | null> {
@@ -48,5 +56,22 @@ export class UsersQueryRepository {
       where: { passwordRecovery: { recoveryCode } },
       relations: { passwordRecovery: true },
     });
+  }
+
+  async findUserPostById(userId: string, postId: string): Promise<PostEntity> {
+    const user = await this.usersQueryRepository.findOne({
+      where: { id: userId },
+      relations: { favoritePosts: { photos: true } },
+    });
+    return user.favoritePosts.find((post) => post.id === postId);
+  }
+
+  async findAllUserPosts(userId: string): Promise<PostEntity[]> {
+    const user = await this.usersQueryRepository.findOne({
+      where: { id: userId },
+      relations: { favoritePosts: { photos: true } },
+    });
+    console.log(user);
+    return user.favoritePosts;
   }
 }

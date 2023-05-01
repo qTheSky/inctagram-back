@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEmailConfirmation } from './user-email-confirmation.entity';
 import { randomUUID } from 'crypto';
@@ -46,6 +53,10 @@ export class UserEntity extends BaseEntity {
     (subscription) => subscription.subscribeFrom
   )
   subscribers: UserSubscriptionEntity[];
+
+  @ManyToMany(() => PostEntity, (posts) => posts.users)
+  @JoinTable()
+  favoritePosts: PostEntity[];
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;
@@ -133,5 +144,19 @@ export class UserEntity extends BaseEntity {
     user.createProfile();
 
     return user;
+  }
+
+  addFavoritePost(post: PostEntity): void {
+    this.favoritePosts.push(post);
+  }
+
+  deleteFavoritePost(postId: string): void {
+    this.favoritePosts = this.favoritePosts.filter(
+      (favoritePost) => favoritePost.id !== postId
+    );
+  }
+
+  deleteAllFavoritePost(): void {
+    this.favoritePosts = [];
   }
 }

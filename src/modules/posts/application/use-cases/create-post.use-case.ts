@@ -42,6 +42,9 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       );
 
       newPhoto.photoPath = url;
+      newPhoto.mimetype = file.mimetype;
+      newPhoto.size = file.size;
+
       post.photos.push(newPhoto);
     }
 
