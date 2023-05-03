@@ -43,6 +43,7 @@ export class SubscribeToUserUseCase
       subscription.subscribeTo = userForSubscribe;
       subscription.subscribeFrom = userWhoWantsToSubscribe;
       await this.userSubscriptionsRepository.save(subscription);
+      return true;
     }
   }
 }
