@@ -2,10 +2,10 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   NotFoundException,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -13,7 +13,6 @@ import { PostViewModel } from './dto/view/PostViewModel';
 import { AddFavoritePostCommand } from '../application/use-cases/add-favorite-post.use-case';
 import { CurrentUserId } from '../../../modules/shared/decorators/current-user-id.decorator';
 import { PostsQueryRepository } from '../infrastructure/posts.query.repository';
-import { UsersQueryRepository } from '../../../modules/users/infrastructure';
 import { DeleteFavoritePostCommand } from '../application/use-cases/delete-favorite-post.use-case';
 import { DeleteAllFavoritePostCommand } from '../application/use-cases/delete-all-favorite-post.use-case';
 import {
@@ -28,14 +27,15 @@ import { JwtAuthGuard } from '../../../modules/shared/guards/jwt-auth.guard';
 import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-unauthorized-response/api-unauthorized-response';
 import { apiBadRequestResponse } from '../../../config/swagger/constants/api-bad-request-response/api-bad-request-response';
 import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
+import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
+import { Paginated } from '../../../modules/shared/pagination/paginator';
 
 @ApiTags('Users-posts')
 @Controller('users-posts')
 export class UsersPostsController {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly postsQueryRepository: PostsQueryRepository,
-    private readonly usersQueryRepository: UsersQueryRepository
+    private readonly postsQueryRepository: PostsQueryRepository
   ) {}
 
   @ApiOperation({ summary: 'add favorite post' })
@@ -67,7 +67,7 @@ export class UsersPostsController {
     @Param('postId') postId: string,
     @CurrentUserId() userId: string
   ): Promise<PostViewModel> {
-    const post = await this.usersQueryRepository.findUserPostById(
+    const post = await this.postsQueryRepository.findFavoritePostByUserId(
       userId,
       postId
     );
@@ -85,12 +85,14 @@ export class UsersPostsController {
   @ApiBadRequestResponse(apiBadRequestResponse)
   @Get()
   async getAllFavoritePosts(
+    @Query() query: PaginatorInputModel,
     @CurrentUserId() userId: string
-  ): Promise<PostViewModel[]> {
-    const posts = await this.usersQueryRepository.findAllUserPosts(userId);
-    return posts.map((post) =>
-      this.postsQueryRepository.buildResponsePosts(post)
+  ): Promise<Paginated<PostViewModel[]>> {
+    const posts = await this.postsQueryRepository.findAllFavoriteUserPosts(
+      userId,
+      query
     );
+    return posts;
   }
 
   @ApiOperation({ summary: 'delete favorite post' })

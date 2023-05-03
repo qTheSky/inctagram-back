@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostEntity } from 'src/modules/posts/entities/post.entity';
+import { PostEntity } from '../../../modules/posts/entities/post.entity';
+import { orderSort } from '../../shared/pagination/create.order';
+import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
 
 @Injectable()
 export class UsersQueryRepository {
@@ -56,22 +58,5 @@ export class UsersQueryRepository {
       where: { passwordRecovery: { recoveryCode } },
       relations: { passwordRecovery: true },
     });
-  }
-
-  async findUserPostById(userId: string, postId: string): Promise<PostEntity> {
-    const user = await this.usersQueryRepository.findOne({
-      where: { id: userId },
-      relations: { favoritePosts: { photos: true } },
-    });
-    return user.favoritePosts.find((post) => post.id === postId);
-  }
-
-  async findAllUserPosts(userId: string): Promise<PostEntity[]> {
-    const user = await this.usersQueryRepository.findOne({
-      where: { id: userId },
-      relations: { favoritePosts: { photos: true } },
-    });
-    console.log(user);
-    return user.favoritePosts;
   }
 }

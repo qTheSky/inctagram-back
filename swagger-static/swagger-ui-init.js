@@ -1056,7 +1056,26 @@ window.onload = function() {
         "get": {
           "operationId": "UsersPostsController_getAllFavoritePosts",
           "summary": "get all favorite posts",
-          "parameters": [],
+          "parameters": [
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": 10,
+                "type": "number"
+              }
+            }
+          ],
           "responses": {
             "200": {
               "description": "Returns all user posts",

@@ -16,6 +16,7 @@ import { DeleteFavoritePostUseCase } from './application/use-cases/delete-favori
 import { DeleteAllFavoritePostUseCase } from './application/use-cases/delete-all-favorite-post.use-case';
 import { AddFavoritePostUseCase } from './application/use-cases/add-favorite-post.use-case';
 import { UsersPostsController } from './api/users.posts.controller';
+import { UserEntity } from '../users/entities';
 
 const useCases = [
   CreatePostUseCase,
@@ -33,7 +34,7 @@ const adapters = [PostsRepository, PostsQueryRepository];
     SharedModule,
     FilesModule,
     UsersModule,
-    TypeOrmModule.forFeature([PostEntity, PostPhotoEntity]),
+    TypeOrmModule.forFeature([PostEntity, PostPhotoEntity, UserEntity]),
   ],
   providers: [...useCases, ...adapters],
   controllers: [PostsController, UsersPostsController],
