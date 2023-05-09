@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
 import { orderSort } from '../../../modules/shared/pagination/create.order';
 import { UserEntity } from '../../../modules/users/entities';
-import { Paginated } from 'src/modules/shared/pagination/paginator';
+import { Paginated } from '../../../modules/shared/pagination/paginator';
 
 export class PostsQueryRepository {
   constructor(
