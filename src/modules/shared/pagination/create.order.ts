@@ -1,5 +1,3 @@
-import { PaginatorInputModel } from './paginator.model';
-
 type DIRECTION = 'ASC' | 'DESC';
 type ORDER = { [index: string]: DIRECTION };
 

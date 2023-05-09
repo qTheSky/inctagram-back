@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { UserEntity } from '../entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostEntity } from '../../../modules/posts/entities/post.entity';
-import { orderSort } from '../../shared/pagination/create.order';
-import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
 
 @Injectable()
 export class UsersQueryRepository {
