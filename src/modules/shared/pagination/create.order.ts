@@ -30,9 +30,10 @@ export const orderSort = (sorts?: string | Array<string>): ORDER => {
     order = createSort(order, sorts);
   }
 
-  if (Object.keys(order).length === 0){
+  if (Object.keys(order).length === 0) {
     order = {
-      createdAt: "desc"
-    }
-  } return order;
+      createdAt: 'desc',
+    };
+  }
+  return order;
 };

@@ -11,14 +11,14 @@ import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEntity } from '../../users/entities';
 import { randomUUID } from 'crypto';
 import { PostPhotoEntity } from './post.photo.entity';
-import { CommentEntity } from 'src/modules/comments/entities/comment.entity';
+import { CommentEntity } from '../../../modules/comments/entities/comment.entity';
 
-@Entity("posts")
+@Entity('posts')
 export class PostEntity extends BaseEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => UserEntity, (u) => u.posts, { onDelete: "CASCADE" })
+  @ManyToOne(() => UserEntity, (u) => u.posts, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
   @Column()

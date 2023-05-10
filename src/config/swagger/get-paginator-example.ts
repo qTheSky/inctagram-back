@@ -1,4 +1,4 @@
-import { Paginated } from "../../modules/shared/pagination/paginator";
+import { Paginated } from '../../modules/shared/pagination/paginator';
 
 export const getPaginatorExample = <VM>(subject: VM): Paginated<VM[]> => ({
   pagesCount: 0,

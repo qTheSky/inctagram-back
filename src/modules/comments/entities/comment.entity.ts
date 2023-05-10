@@ -1,22 +1,22 @@
-import { PostEntity } from "../../../modules/posts/entities/post.entity";
-import { UserEntity } from "../../../modules/users/entities";
-import { BaseEntity } from "../../../modules/shared/classes/base.entity";
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { randomUUID } from "crypto";
+import { PostEntity } from '../../../modules/posts/entities/post.entity';
+import { UserEntity } from '../../../modules/users/entities';
+import { BaseEntity } from '../../../modules/shared/classes/base.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { randomUUID } from 'crypto';
 
-@Entity("comments")
+@Entity('comments')
 export class CommentEntity extends BaseEntity {
   @ManyToOne(() => PostEntity, (post) => post.comments, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   post: PostEntity;
-  @Column("uuid")
+  @Column('uuid')
   postId: string;
-  @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
-  @Column("uuid")
+  @Column('uuid')
   userId: string;
 
   @Column()

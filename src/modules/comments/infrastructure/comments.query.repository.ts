@@ -1,11 +1,11 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { CommentEntity } from "../entities/comment.entity";
-import { CommentViewModel } from "../api/models/view/comment.view.model";
-import { Paginated } from "../../../modules/shared/pagination/paginator";
-import { PaginatorInputModel } from "../../../modules/shared/pagination/paginator.model";
-import { orderSort } from "../../../modules/shared/pagination/create.order";
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CommentEntity } from '../entities/comment.entity';
+import { CommentViewModel } from '../api/models/view/comment.view.model';
+import { Paginated } from '../../../modules/shared/pagination/paginator';
+import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
+import { orderSort } from '../../../modules/shared/pagination/create.order';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -56,7 +56,7 @@ export class CommentsQueryRepository {
 
   async getComments(
     query: PaginatorInputModel,
-    postId: string,
+    postId: string
   ): Promise<Paginated<CommentViewModel[]>> {
     const order = orderSort(query.sort);
     const page = query.pageNumber;
@@ -66,14 +66,12 @@ export class CommentsQueryRepository {
     const [items, totalCount] = await this.commentsQueryRepository.findAndCount(
       {
         where: { postId: postId },
-        relations: ["user", "post"],
+        relations: ['user', 'post'],
         take: size,
         skip,
         order,
       }
     );
-
-
 
     const paginatedComments = Paginated.getPaginated<CommentViewModel[]>({
       items: items.map((comment) => this.buildResponseComment(comment)),

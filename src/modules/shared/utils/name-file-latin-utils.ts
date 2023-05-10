@@ -75,5 +75,5 @@ export const latinTranslateName = (nameFile: string) => {
       return SYMBOLS[char] || char;
     })
     .join('');
-    return newName;
+  return newName;
 };
