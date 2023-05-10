@@ -49,6 +49,6 @@ const useCases = [
   ],
   controllers: [UsersController],
   providers: [...adapters, ...useCases],
-  exports: [UsersRepository, UsersQueryRepository, UsersProfilesRepository],
+  exports: [...adapters],
 })
 export class UsersModule {}

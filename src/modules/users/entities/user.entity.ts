@@ -5,18 +5,19 @@ import {
   ManyToMany,
   OneToMany,
   OneToOne,
-} from 'typeorm';
-import { BaseEntity } from '../../shared/classes/base.entity';
-import { UserEmailConfirmation } from './user-email-confirmation.entity';
-import { randomUUID } from 'crypto';
-import { add } from 'date-fns';
-import { UserProfileEntity } from './user-profile.entity';
-import { UserPasswordRecoveryEntity } from './user-password-recovery.entity';
-import { InternalServerErrorException } from '@nestjs/common';
-import { PostEntity } from '../../posts/entities/post.entity';
-import { UserSubscriptionEntity } from './user-subscription.entity';
+} from "typeorm";
+import { BaseEntity } from "../../shared/classes/base.entity";
+import { UserEmailConfirmation } from "./user-email-confirmation.entity";
+import { randomUUID } from "crypto";
+import { add } from "date-fns";
+import { UserProfileEntity } from "./user-profile.entity";
+import { UserPasswordRecoveryEntity } from "./user-password-recovery.entity";
+import { InternalServerErrorException } from "@nestjs/common";
+import { PostEntity } from "../../posts/entities/post.entity";
+import { UserSubscriptionEntity } from "./user-subscription.entity";
+import { CommentEntity } from "../../../modules/comments/entities/comment.entity";
 
-@Entity('users')
+@Entity("users")
 export class UserEntity extends BaseEntity {
   @Column()
   email: string;
@@ -39,8 +40,13 @@ export class UserEntity extends BaseEntity {
   })
   profile: UserProfileEntity;
 
-  @OneToMany(() => PostEntity, (post) => post.user)
+  @OneToMany(() => PostEntity, (post) => post.user, {cascade: true})
   posts: PostEntity[];
+
+  @OneToMany(() => CommentEntity, (comments) => comments.user, {
+    cascade: true,
+  })
+  comments: CommentEntity[];
 
   @OneToMany(
     () => UserSubscriptionEntity,
@@ -66,7 +72,7 @@ export class UserEntity extends BaseEntity {
   }
 
   confirmEmail(code: string) {
-    if (!this.isEmailCanBeConfirmed(code)) throw new Error('cant be confirmed');
+    if (!this.isEmailCanBeConfirmed(code)) throw new Error("cant be confirmed");
     this.emailConfirmation.isConfirmed = true;
   }
 

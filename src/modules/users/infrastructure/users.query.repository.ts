@@ -44,7 +44,7 @@ export class UsersQueryRepository {
   async findUserById(userId: string): Promise<UserEntity | null> {
     return await this.usersQueryRepository.findOne({
       where: { id: userId },
-      relations: { favoritePosts: true },
+      relations: { favoritePosts: true, comments: true },
     });
   }
 

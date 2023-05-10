@@ -29,7 +29,6 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       );
     const { files } = command.dto;
     const post = PostEntity.create(user, command.dto.description);
-
     for (const file of files) {
       const { validatedImage } = await validateImage(file, {
         maxFileSizeKB: 1000,
@@ -44,11 +43,11 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       newPhoto.photoPath = url;
       newPhoto.mimetype = file.mimetype;
       newPhoto.size = file.size;
-
       post.photos.push(newPhoto);
     }
 
     const savedPost = await this.postsRepository.save(post);
+    //console.log(savedPost);
     return this.postsQueryRepository.buildResponsePosts(savedPost);
   }
 }

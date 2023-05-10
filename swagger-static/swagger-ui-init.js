@@ -888,6 +888,149 @@ window.onload = function() {
           ]
         }
       },
+      "/posts/{postId}/comments": {
+        "get": {
+          "operationId": "PostsController_findCommentsOfPost",
+          "summary": "Returns comments for specified post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "pageNumber",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": 1,
+                "type": "number"
+              }
+            },
+            {
+              "name": "pageSize",
+              "required": false,
+              "in": "query",
+              "schema": {
+                "default": 10,
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "pagesCount": 0,
+                      "page": 0,
+                      "pageSize": 0,
+                      "totalCount": 0,
+                      "items": [
+                        {
+                          "id": "string",
+                          "content": "string",
+                          "commentatorInfo": {
+                            "userId": "string",
+                            "userLogin": "string"
+                          },
+                          "createdAt": "2023-03-13T12:42:19.885Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "If post for passed postId doesn't exist"
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        },
+        "post": {
+          "operationId": "PostsController_createComment",
+          "summary": "Create new comment",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCommentModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "id": "string",
+                      "content": "string",
+                      "commentatorInfo": {
+                        "userId": "string",
+                        "userLogin": "string"
+                      },
+                      "createdAt": "2023-03-13T12:42:19.885Z"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "If post with specified id doesn't exists"
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
       "/users-posts/{postId}": {
         "post": {
           "operationId": "UsersPostsController_addFavoritePost",
@@ -1160,6 +1303,147 @@ window.onload = function() {
             {
               "bearer": []
             }
+          ]
+        }
+      },
+      "/comments/{commentId}": {
+        "put": {
+          "operationId": "CommentsController_updateComment",
+          "summary": "Update existing comment by id with InputModel",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCommentModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "No content"
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If try edit the comment that is not your own"
+            },
+            "404": {
+              "description": "If comment not found"
+            }
+          },
+          "tags": [
+            "Comments"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "delete": {
+          "operationId": "CommentsController_deleteComment",
+          "summary": "Delete specified comment by id",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "No content"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "403": {
+              "description": "If try delete the comment that is not your own"
+            },
+            "404": {
+              "description": "If comment not found"
+            }
+          },
+          "tags": [
+            "Comments"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        },
+        "get": {
+          "operationId": "CommentsController_getCommentById",
+          "summary": "Return comment by id",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "id": "string",
+                      "content": "string",
+                      "commentatorInfo": {
+                        "userId": "string",
+                        "userLogin": "string"
+                      },
+                      "createdAt": "2023-03-13T12:42:19.885Z"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found"
+            }
+          },
+          "tags": [
+            "Comments"
           ]
         }
       }
@@ -1468,6 +1752,33 @@ window.onload = function() {
           },
           "required": [
             "description"
+          ]
+        },
+        "CreateCommentModel": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "minLength": 20,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "content"
+          ]
+        },
+        "UpdateCommentModel": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Data for updating",
+              "minLength": 20,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "content"
           ]
         }
       }

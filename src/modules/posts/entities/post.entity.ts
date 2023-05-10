@@ -11,13 +11,14 @@ import { BaseEntity } from '../../shared/classes/base.entity';
 import { UserEntity } from '../../users/entities';
 import { randomUUID } from 'crypto';
 import { PostPhotoEntity } from './post.photo.entity';
+import { CommentEntity } from 'src/modules/comments/entities/comment.entity';
 
-@Entity('posts')
+@Entity("posts")
 export class PostEntity extends BaseEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => UserEntity, (u) => u.posts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (u) => u.posts, { onDelete: "CASCADE" })
   @JoinColumn()
   user: UserEntity;
   @Column()
@@ -30,6 +31,11 @@ export class PostEntity extends BaseEntity {
 
   @ManyToMany(() => UserEntity, (users) => users.favoritePosts)
   users: UserEntity[];
+
+  @OneToMany(() => CommentEntity, (comments) => comments.post, {
+    cascade: true,
+  })
+  comments: CommentEntity[];
 
   static create(user: UserEntity, description: string): PostEntity {
     const post = new PostEntity();

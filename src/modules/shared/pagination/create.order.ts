@@ -29,5 +29,10 @@ export const orderSort = (sorts?: string | Array<string>): ORDER => {
   if (sorts && isString(sorts)) {
     order = createSort(order, sorts);
   }
-  return order;
+
+  if (Object.keys(order).length === 0){
+    order = {
+      createdAt: "desc"
+    }
+  } return order;
 };

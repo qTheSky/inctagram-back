@@ -33,7 +33,7 @@ export class PostsQueryRepository {
   async findPostById(id: string): Promise<PostEntity> {
     return await this.postsQueryRepository.findOne({
       where: { id },
-      relations: { photos: true },
+      relations: { photos: true, comments: true },
     });
   }
 
@@ -71,7 +71,7 @@ export class PostsQueryRepository {
     const [items] = await this.postsQueryRepository.findAndCount({
       where: { id: In(postsIds) },
       relations: ['photos'],
-      take: page,
+      take: size,
       skip,
       order,
     });
