@@ -3,6 +3,7 @@ import { S3StorageAdapter } from './infrastructure/s3-storage.adapter';
 import { FilesManager } from './application/files.manager';
 import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
+import { S3MinioStorageAdapter } from './infrastructure/s3-minio.adapter';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import Joi from 'joi';
       }),
     }),
   ],
-  providers: [S3StorageAdapter, FilesManager],
+  providers: [S3StorageAdapter, S3MinioStorageAdapter, FilesManager],
   exports: [FilesManager],
 })
 export class FilesModule {}
