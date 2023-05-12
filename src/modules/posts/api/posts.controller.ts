@@ -23,6 +23,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -113,16 +114,13 @@ export class PostsController {
   @ApiOperation({ summary: 'get post' })
   @ApiResponse(apiResponse('get post by id', PostViewModel))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
-  @ApiBadRequestResponse(apiBadRequestResponse)
   @Get(':postId')
   @HttpCode(200)
   async getPost(
     @Param('postId', ParseUUIDPipe) postId: string
   ): Promise<PostViewModel> {
     const post = await this.postsQueryRepository.findPostById(postId);
-    if (!post) {
-      throw new NotFoundException();
-    }
+    if (!post) throw new NotFoundException();
     return this.postsQueryRepository.buildResponsePosts(post);
   }
 }

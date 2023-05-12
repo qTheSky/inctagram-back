@@ -862,29 +862,107 @@ window.onload = function() {
                 }
               }
             },
-            "400": {
-              "description": "If the inputModel has incorrect values",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "example": {
-                      "errorsMessages": [
-                        {
-                          "message": "string",
-                          "field": "string"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            },
             "401": {
               "description": "Unauthorized"
             }
           },
           "tags": [
             "Posts"
+          ]
+        }
+      },
+      "/orders/my": {
+        "get": {
+          "operationId": "OrdersController_getOrdersOfUser",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Orders"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/paid-subscriptions/my": {
+        "get": {
+          "operationId": "PaidSubscriptionsController_getMyPaidSubscriptions",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Paid subscriptions"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/products": {
+        "get": {
+          "operationId": "ProductsController_getProducts",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Products"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/products/{productId}/make-paid-subscribe": {
+        "post": {
+          "operationId": "ProductsController_buyProduct",
+          "parameters": [
+            {
+              "name": "productId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MakePaidSubscriptionDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": ""
+            }
+          },
+          "tags": [
+            "Products"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
           ]
         }
       }
@@ -1193,6 +1271,22 @@ window.onload = function() {
           },
           "required": [
             "description"
+          ]
+        },
+        "MakePaidSubscriptionDto": {
+          "type": "object",
+          "properties": {
+            "paymentSystem": {
+              "type": "string",
+              "description": "payment system which user wishes to make payment",
+              "example": "stripe",
+              "enum": [
+                "stripe"
+              ]
+            }
+          },
+          "required": [
+            "paymentSystem"
           ]
         }
       }

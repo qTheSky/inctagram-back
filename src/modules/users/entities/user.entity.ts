@@ -8,6 +8,8 @@ import { UserPasswordRecoveryEntity } from './user-password-recovery.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 import { PostEntity } from '../../posts/entities/post.entity';
 import { UserSubscriptionEntity } from './user-subscription.entity';
+import { OrderEntity } from '../../products/entities/order.entity';
+import { PaidSubscriptionEntity } from '../../products/entities/paid-subscription.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -39,13 +41,22 @@ export class UserEntity extends BaseEntity {
     () => UserSubscriptionEntity,
     (subscription) => subscription.subscribeTo
   )
-  subscriptions: UserSubscriptionEntity[];
+  subscriptionsToUsers: UserSubscriptionEntity[];
 
   @OneToMany(
     () => UserSubscriptionEntity,
     (subscription) => subscription.subscribeFrom
   )
   subscribers: UserSubscriptionEntity[];
+
+  @OneToMany(() => OrderEntity, (order) => order.user)
+  orders: OrderEntity[];
+
+  @OneToMany(
+    () => PaidSubscriptionEntity,
+    (paidSubscription) => paidSubscription.user
+  )
+  paidSubscriptions: PaidSubscriptionEntity[];
 
   isEmailCanBeConfirmed(code: string): boolean {
     if (this.emailConfirmation.isConfirmed) return false;

@@ -16,6 +16,7 @@ import { TestingController } from '../test/testing.controller';
 import { PostsModule } from './modules/posts/posts.module';
 import { RedisCacheModule } from './modules/redis/redisCacheModule';
 import { CommonChatModule } from './modules/common-chat/common-chat.module';
+import { ProductsModule } from './modules/products/products.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { CommonChatModule } from './modules/common-chat/common-chat.module';
     PostsModule,
     RedisCacheModule,
     CommonChatModule,
+    ProductsModule,
   ],
   controllers: [TestingController],
   providers: [],

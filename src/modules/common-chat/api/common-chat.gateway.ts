@@ -22,6 +22,7 @@ export class CommonChatGateway implements OnGatewayConnection {
         message: 'You are unauthorized',
       });
     };
+
     const token =
       socket.handshake.query.token || socket.handshake.headers.authorization;
     if (!token) {
@@ -30,9 +31,11 @@ export class CommonChatGateway implements OnGatewayConnection {
       return;
     }
     try {
-      const user = await this.authService.validateToken(token as string);
-      if (user) {
-        socket.user = user;
+      const userTokenPayload = await this.authService.validateToken(
+        token as string
+      );
+      if (userTokenPayload) {
+        socket.user = userTokenPayload;
       } else {
         unauthorizedEvent();
         socket.disconnect();

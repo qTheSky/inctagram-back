@@ -9,7 +9,10 @@ import { DataSource } from 'typeorm';
 import { lastValueFrom, Observable, of } from 'rxjs';
 import { AuditLogEntity } from '../../entity/audit-log.entity';
 import { AuditLogRepository } from '../../infrastructure/auditLog.repository';
-import { EntityManagerContext } from './entityManager.context';
+import {
+  asyncLocalStorage,
+  EntityManagerContext,
+} from './entityManager.context';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable({ scope: Scope.REQUEST })
@@ -21,6 +24,9 @@ export class TransactionInterceptor implements NestInterceptor {
     private readonly entityManagerContext: EntityManagerContext
   ) {}
 
+  /**
+   * v2.0
+   */
   async intercept(
     context: ExecutionContext,
     next: CallHandler
@@ -44,19 +50,22 @@ export class TransactionInterceptor implements NestInterceptor {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
-    this.entityManagerContext.manager = queryRunner.manager;
+    // Wrap the call inside asyncLocalStorage.run()
+    return asyncLocalStorage.run({ manager: queryRunner.manager }, async () => {
+      this.entityManagerContext.manager = queryRunner.manager;
 
-    try {
-      const responseFromEndPoint = await lastValueFrom(next.handle());
-      await queryRunner.commitTransaction();
-      await this.createAuditLog({ body, method, userId, endpoint });
-      return of(responseFromEndPoint);
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+      try {
+        const responseFromEndPoint = await lastValueFrom(next.handle());
+        await queryRunner.commitTransaction();
+        await this.createAuditLog({ body, method, userId, endpoint });
+        return of(responseFromEndPoint);
+      } catch (err) {
+        await queryRunner.rollbackTransaction();
+        throw err;
+      } finally {
+        await queryRunner.release();
+      }
+    });
   }
 
   async createAuditLog(
@@ -78,4 +87,45 @@ export class TransactionInterceptor implements NestInterceptor {
       await this.auditLogRepository.save(log);
     }
   }
+
+  /**
+   * v.1.0
+   */
+  // async intercept(
+  //   context: ExecutionContext,
+  //   next: CallHandler
+  // ): Promise<Observable<any>> {
+  //   if (this.configService.get('DATABASE_TRANSACTIONS_AND_LOGS') !== 'true') {
+  //     //skip
+  //     return next.handle();
+  //   }
+  //
+  //   const request = context.switchToHttp().getRequest();
+  //
+  //   if (request.method === 'GET') return next.handle();
+  //
+  //   //metadata for create audit log
+  //   const userId = request.user?.id;
+  //   const endpoint = request.originalUrl;
+  //   const body = request.body;
+  //   const method = request.method;
+  //   //metadata for create audit log
+  //   const queryRunner = this.dataSource.createQueryRunner();
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
+  //
+  //   this.entityManagerContext.manager = queryRunner.manager;
+  //
+  //   try {
+  //     const responseFromEndPoint = await lastValueFrom(next.handle());
+  //     await queryRunner.commitTransaction();
+  //     await this.createAuditLog({ body, method, userId, endpoint });
+  //     return of(responseFromEndPoint);
+  //   } catch (err) {
+  //     await queryRunner.rollbackTransaction();
+  //     throw err;
+  //   } finally {
+  //     await queryRunner.release();
+  //   }
+  // }
 }

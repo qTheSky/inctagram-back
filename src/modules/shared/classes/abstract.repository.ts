@@ -13,8 +13,8 @@ export abstract class AbstractRepository<ENTITY> {
       : this.repository.save(entity);
   }
 
-  async findOne(where: FindOptionsWhere<ENTITY>) {
-    return await this.repository.findOne({ where });
+  async findOne(where: FindOptionsWhere<ENTITY>, relations?: string[]) {
+    return await this.repository.findOne({ where, relations });
   }
 
   async delete(entity: ENTITY): Promise<void> {

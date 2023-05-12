@@ -4,7 +4,7 @@ import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('users_subscriptions')
 export class UserSubscriptionEntity extends BaseEntity {
-  @ManyToOne(() => UserEntity, (user) => user.subscriptions, {
+  @ManyToOne(() => UserEntity, (user) => user.subscriptionsToUsers, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'subscribeFromId' })
