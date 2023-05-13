@@ -20,7 +20,7 @@ import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { CreatePostDto } from './dto/input/create-post.dto';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreatePostCommand } from '../application/use-cases/create-post.use-case';
 import {
   ApiBadRequestResponse,
@@ -54,12 +54,18 @@ import { Paginated } from '../../../modules/shared/pagination/paginator';
 import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
 import { getPaginatorExample } from '../../../config/swagger/get-paginator-example';
 import { latinTranslateName } from '../../../modules/files/utils/latin-translate-name';
+import {
+  NewPagination,
+  NewPaginationPipe,
+} from '../../shared/new-pagination/newPagination';
+import { GetPostsOfUserQuery } from '../application/queries/get-posts-of-user.query';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly postsQueryRepository: PostsQueryRepository,
     @Inject(forwardRef(() => CommentsQueryRepository))
     private readonly commentsQueryRepository: CommentsQueryRepository
@@ -87,7 +93,7 @@ export class PostsController {
     @Body() dto: CreatePostDto,
     @CurrentUserId() currentUserId: string
   ): Promise<Array<PostViewModel>> {
-    if (photos.length > 10) badRequestException('files', 'Too many photos');
+    if (photos?.length > 10) badRequestException('files', 'Too many photos');
     return await this.commandBus.execute(
       new CreatePostCommand({ ...dto, files: photos }, currentUserId)
     );
@@ -125,6 +131,14 @@ export class PostsController {
     @CurrentUserId() currentUserId: string
   ): Promise<void> {
     await this.commandBus.execute(new DeletePostCommand(currentUserId, postId));
+  }
+
+  @Get(':userId')
+  async getPostsOfUser(
+    @Query(NewPaginationPipe) query: NewPagination,
+    @Param('userId', ParseUUIDPipe) userId: string
+  ) {
+    return this.queryBus.execute(new GetPostsOfUserQuery(userId, query));
   }
 
   @ApiOperation({ summary: 'get post' })

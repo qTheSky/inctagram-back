@@ -29,21 +29,23 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
       );
     const { files } = command.dto;
     const post = PostEntity.create(user, command.dto.description);
-    for (const file of files) {
-      const { validatedImage } = await validateImage(file, {
-        maxFileSizeKB: 1000,
-      });
+    if (files) {
+      for (const file of files) {
+        const { validatedImage } = await validateImage(file, {
+          maxFileSizeKB: 1000,
+        });
 
-      const newPhoto = PostPhotoEntity.create(post);
-      const { url } = await this.filesManager.uploadFile(
-        `content/posts/${post.id}/photo/${newPhoto.id}`,
-        validatedImage
-      );
+        const newPhoto = PostPhotoEntity.create(post);
+        const { url } = await this.filesManager.uploadFile(
+          `content/posts/${post.id}/photo/${newPhoto.id}`,
+          validatedImage
+        );
 
-      newPhoto.photoPath = url;
-      newPhoto.mimetype = file.mimetype;
-      newPhoto.size = file.size;
-      post.photos.push(newPhoto);
+        newPhoto.photoPath = url;
+        newPhoto.mimetype = file.mimetype;
+        newPhoto.size = file.size;
+        post.photos.push(newPhoto);
+      }
     }
 
     const savedPost = await this.postsRepository.save(post);

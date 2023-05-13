@@ -18,6 +18,7 @@ import { AddFavoritePostUseCase } from './application/use-cases/add-favorite-pos
 import { UsersPostsController } from './api/users.posts.controller';
 import { UserEntity } from '../users/entities';
 import { CommentsModule } from '../comments/comments.module';
+import { GetPostsOfUserQueryHandler } from './application/queries/get-posts-of-user.query';
 
 const useCases = [
   CreatePostUseCase,
@@ -27,18 +28,20 @@ const useCases = [
   DeleteAllFavoritePostUseCase,
   DeleteFavoritePostUseCase,
 ];
+
+const queries = [GetPostsOfUserQueryHandler];
 const adapters = [PostsRepository, PostsQueryRepository];
 
 @Module({
   imports: [
-    CommentsModule,
     CqrsModule,
+    CommentsModule,
     SharedModule,
     FilesModule,
     UsersModule,
     TypeOrmModule.forFeature([PostEntity, PostPhotoEntity, UserEntity]),
   ],
-  providers: [...useCases, ...adapters],
+  providers: [...useCases, ...adapters, ...queries],
   controllers: [PostsController, UsersPostsController],
   exports: [...adapters],
 })

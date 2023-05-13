@@ -18,14 +18,13 @@ import { UploadUserAvatarUseCase } from './application/use-cases/upload-user-ava
 import { FilesModule } from '../files/files.module';
 import { SharedModule } from '../shared/shared.module';
 import { SubscribeToUserUseCase } from './application/use-cases/subscribe-to-user.use-case';
-import { UserSubscriptionsRepository } from './infrastructure/user.subscriptions.repository';
 import { UserSubscriptionEntity } from './entities/user-subscription.entity';
+import { GetUserProfileQueryHandler } from './application/queries/get-user-profile.query';
 
 const adapters = [
   UsersRepository,
   UsersProfilesRepository,
   UsersQueryRepository,
-  UserSubscriptionsRepository,
 ];
 
 const useCases = [
@@ -33,6 +32,8 @@ const useCases = [
   UploadUserAvatarUseCase,
   SubscribeToUserUseCase,
 ];
+
+const queries = [GetUserProfileQueryHandler];
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ const useCases = [
     ]),
   ],
   controllers: [UsersController],
-  providers: [...adapters, ...useCases],
+  providers: [...adapters, ...useCases, ...queries],
   exports: [...adapters],
 })
 export class UsersModule {}

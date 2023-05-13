@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  NotFoundException,
   Param,
-  Patch,
   Post,
   Put,
   UploadedFile,
@@ -15,7 +13,7 @@ import { UsersProfilesRepository } from '../infrastructure';
 import { CurrentUserId } from '../../shared/decorators/current-user-id.decorator';
 import { UserProfileDto } from './dto/input/user-profile.dto';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UpdateProfileCommand } from '../application/use-cases/update-profile.use-case';
 import {
   ApiBadRequestResponse,
@@ -38,7 +36,7 @@ import { apiUnauthorizedResponse } from '../../../config/swagger/constants/api-u
 import { apiResponse } from '../../../config/swagger/constants/api-response/api-response';
 import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/api-not-found-response/api-not-found-response-message';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
-import { SubscribeToUserCommand } from '../application/use-cases/subscribe-to-user.use-case';
+import { GetUserProfileQuery } from '../application/queries/get-user-profile.query';
 
 @ApiTags('Users')
 @Controller('users')
@@ -46,6 +44,7 @@ export class UsersController {
   constructor(
     private readonly usersProfilesRepository: UsersProfilesRepository,
     private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     @InjectRedis() private readonly redis: Redis
   ) {}
 
@@ -83,19 +82,7 @@ export class UsersController {
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
-    const cachedProfile = await this.redis.get(`profile${userId}`);
-    if (cachedProfile) return JSON.parse(cachedProfile);
-    const profile = await this.usersProfilesRepository.findOne({ userId });
-    if (!profile) throw new NotFoundException('Profile not found');
-    const profileViewModel =
-      await this.usersProfilesRepository.buildProfileViewModel(profile);
-    await this.redis.set(
-      `profile${userId}`,
-      JSON.stringify(profileViewModel),
-      'EX',
-      60 * 10 //10 min
-    );
-    return profileViewModel;
+    return await this.queryBus.execute(new GetUserProfileQuery(userId));
   }
 
   @Post('avatar')
@@ -117,22 +104,22 @@ export class UsersController {
     );
   }
 
-  @Patch(':userId/subscribe')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Subscribe to user or unsubscribe' })
-  @ApiResponse({
-    description: 'true if subscribed. false if unsubscribed',
-    type: Boolean,
-    status: 200,
-  })
-  @ApiBearerAuth()
-  @ApiUnauthorizedResponse(apiUnauthorizedResponse)
-  async subscribeToUser(
-    @CurrentUserId() currentUserId: string,
-    @Param('userId') userIdForSubscribe: string
-  ): Promise<boolean> {
-    return this.commandBus.execute(
-      new SubscribeToUserCommand(userIdForSubscribe, currentUserId)
-    );
-  }
+  // @Patch(':userId/subscribe')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiOperation({ summary: 'Subscribe to user or unsubscribe' })
+  // @ApiResponse({
+  //   description: 'true if subscribed. false if unsubscribed',
+  //   type: Boolean,
+  //   status: 200,
+  // })
+  // @ApiBearerAuth()
+  // @ApiUnauthorizedResponse(apiUnauthorizedResponse)
+  // async subscribeToUser(
+  //   @CurrentUserId() currentUserId: string,
+  //   @Param('userId') userIdForSubscribe: string
+  // ): Promise<boolean> {
+  //   return this.commandBus.execute(
+  //     new SubscribeToUserCommand(userIdForSubscribe, currentUserId)
+  //   );
+  // }
 }

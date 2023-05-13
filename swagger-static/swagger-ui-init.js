@@ -642,45 +642,6 @@ window.onload = function() {
           ]
         }
       },
-      "/users/{userId}/subscribe": {
-        "patch": {
-          "operationId": "UsersController_subscribeToUser",
-          "summary": "Subscribe to user or unsubscribe",
-          "parameters": [
-            {
-              "name": "userId",
-              "required": true,
-              "in": "path",
-              "schema": {
-                "type": "string"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "true if subscribed. false if unsubscribed",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            },
-            "401": {
-              "description": "Unauthorized"
-            }
-          },
-          "tags": [
-            "Users"
-          ],
-          "security": [
-            {
-              "bearer": []
-            }
-          ]
-        }
-      },
       "/posts": {
         "post": {
           "operationId": "PostsController_createPost",
@@ -881,6 +842,29 @@ window.onload = function() {
             },
             "401": {
               "description": "Unauthorized"
+            }
+          },
+          "tags": [
+            "Posts"
+          ]
+        }
+      },
+      "/posts/{userId}": {
+        "get": {
+          "operationId": "PostsController_getPostsOfUser",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": ""
             }
           },
           "tags": [
