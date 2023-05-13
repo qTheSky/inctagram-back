@@ -15,7 +15,7 @@ export const swaggerSetup = (app: INestApplication) => {
   //swagger
 
   //for swagger and vercel
-  const serverUrl = 'http://localhost:3000';
+  const serverUrl = `http://localhost:${process.env.LOCALPORT}`;
   // get the swagger json file (if app is running in development mode)
   if (process.env.NODE_ENV === 'development') {
     // write swagger ui files
