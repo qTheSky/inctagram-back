@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install any needed packages specified in package.json
-RUN npm install
+RUN yarn
 
 # Bundle app source inside the Docker image
 # by copying everything from the current directory
@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run the application
-CMD [ "npm", "run", "start" ]
+CMD [ "yarn", "start" ]
