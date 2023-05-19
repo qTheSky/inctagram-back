@@ -40,8 +40,8 @@ import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/ap
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { SubscribeToUserCommand } from '../application/use-cases/subscribe-to-user.use-case';
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags("Users")
+@Controller("users")
 export class UsersController {
   constructor(
     private readonly usersProfilesRepository: UsersProfilesRepository,
@@ -49,10 +49,10 @@ export class UsersController {
     @InjectRedis() private readonly redis: Redis
   ) {}
 
-  @Put('profile')
-  @ApiOperation({ summary: 'Update current user profile' })
+  @Put("profile")
+  @ApiOperation({ summary: "Update current user profile" })
   @ApiBody(apiBody(UserProfileDto))
-  @ApiResponse(apiResponse('Returns updated profile', UserProfileViewModel))
+  @ApiResponse(apiResponse("Returns updated profile", UserProfileViewModel))
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
@@ -70,44 +70,45 @@ export class UsersController {
     await this.redis.set(
       `profile${currentUserId}`,
       JSON.stringify(profileViewModel),
-      'EX',
+      "EX",
       60 * 10 //10 min
     );
     return profileViewModel;
   }
 
-  @Get(':userId/profile')
-  @ApiOperation({ summary: 'Get user profile by id of user' })
-  @ApiResponse(apiResponse('Returns user profile', UserProfileViewModel))
+  @Get(":userId/profile")
+  @ApiOperation({ summary: "Get user profile by id of user" })
+  @ApiResponse(apiResponse("Returns user profile", UserProfileViewModel))
   @ApiNotFoundResponse(apiNotFoundResponseMessage)
   async getUserProfile(
-    @Param('userId') userId: string
+    @Param("userId") userId: string
   ): Promise<UserProfileViewModel> {
-    const cachedProfile = await this.redis.get(`profile${userId}`);
-    if (cachedProfile) return JSON.parse(cachedProfile);
+    console.log(1)
+   // const cachedProfile = await this.redis.get(`profile${userId}`);
+   // if (cachedProfile) return JSON.parse(cachedProfile);
     const profile = await this.usersProfilesRepository.findOne({ userId });
-    if (!profile) throw new NotFoundException('Profile not found');
+    if (!profile) throw new NotFoundException("Profile not found");
     const profileViewModel =
       await this.usersProfilesRepository.buildProfileViewModel(profile);
     await this.redis.set(
       `profile${userId}`,
       JSON.stringify(profileViewModel),
-      'EX',
+      "EX",
       60 * 10 //10 min
     );
     return profileViewModel;
   }
 
-  @Post('avatar')
-  @ApiOperation({ summary: 'Upload user avatar (1mb)' })
-  @ApiConsumes('multipart/form-data')
+  @Post("avatar")
+  @ApiOperation({ summary: "Upload user avatar (1mb)" })
+  @ApiConsumes("multipart/form-data")
   @ApiBody({ schema: fileSchemaExample })
-  @ApiResponse(apiResponse('Returns user profile', UserProfileViewModel))
+  @ApiResponse(apiResponse("Returns user profile", UserProfileViewModel))
   @ApiBadRequestResponse(apiBadRequestResponse)
   @ApiBearerAuth()
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor("file"))
   async uploadMainBlogImage(
     @UploadedFile() avatar: Express.Multer.File,
     @CurrentUserId() currentUserId: string
@@ -117,11 +118,11 @@ export class UsersController {
     );
   }
 
-  @Patch(':userId/subscribe')
+  @Patch(":userId/subscribe")
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Subscribe to user or unsubscribe' })
+  @ApiOperation({ summary: "Subscribe to user or unsubscribe" })
   @ApiResponse({
-    description: 'true if subscribed. false if unsubscribed',
+    description: "true if subscribed. false if unsubscribed",
     type: Boolean,
     status: 200,
   })
@@ -129,7 +130,7 @@ export class UsersController {
   @ApiUnauthorizedResponse(apiUnauthorizedResponse)
   async subscribeToUser(
     @CurrentUserId() currentUserId: string,
-    @Param('userId') userIdForSubscribe: string
+    @Param("userId") userIdForSubscribe: string
   ): Promise<boolean> {
     return this.commandBus.execute(
       new SubscribeToUserCommand(userIdForSubscribe, currentUserId)
