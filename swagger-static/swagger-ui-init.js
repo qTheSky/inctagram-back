@@ -939,7 +939,8 @@ window.onload = function() {
                             "userId": "string",
                             "userLogin": "string"
                           },
-                          "createdAt": "2023-03-13T12:42:19.885Z"
+                          "createdAt": "2023-03-13T12:42:19.885Z",
+                          "likesInfo": {}
                         }
                       ]
                     }
@@ -991,7 +992,8 @@ window.onload = function() {
                         "userId": "string",
                         "userLogin": "string"
                       },
-                      "createdAt": "2023-03-13T12:42:19.885Z"
+                      "createdAt": "2023-03-13T12:42:19.885Z",
+                      "likesInfo": {}
                     }
                   }
                 }
@@ -1432,7 +1434,8 @@ window.onload = function() {
                         "userId": "string",
                         "userLogin": "string"
                       },
-                      "createdAt": "2023-03-13T12:42:19.885Z"
+                      "createdAt": "2023-03-13T12:42:19.885Z",
+                      "likesInfo": {}
                     }
                   }
                 }
@@ -1444,6 +1447,68 @@ window.onload = function() {
           },
           "tags": [
             "Comments"
+          ]
+        }
+      },
+      "/comments/{commentId}/like-status": {
+        "put": {
+          "operationId": "CommentsController_updateCommentLikeStatus",
+          "summary": "Update like status comment",
+          "parameters": [
+            {
+              "name": "commentId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LikeInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "No content"
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "If comment not found"
+            }
+          },
+          "tags": [
+            "Comments"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
           ]
         }
       }
@@ -1780,6 +1845,10 @@ window.onload = function() {
           "required": [
             "content"
           ]
+        },
+        "LikeInputModel": {
+          "type": "object",
+          "properties": {}
         }
       }
     }

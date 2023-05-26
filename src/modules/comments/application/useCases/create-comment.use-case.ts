@@ -35,6 +35,9 @@ export class CreateCommentUseCase
     const user = await this.usersQueryRepository.findUserById(userId);
     const newComment = CommentEntity.create(user, post, content);
     await this.commentsRepository.save(newComment);
-    return this.commentsQueryRepository.buildResponseComment(newComment);
+    return this.commentsQueryRepository.buildResponseComment(
+      newComment,
+      userId
+    );
   }
 }

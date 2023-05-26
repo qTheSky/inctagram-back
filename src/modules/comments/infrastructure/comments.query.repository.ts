@@ -1,11 +1,14 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CommentEntity } from '../entities/comment.entity';
-import { CommentViewModel } from '../api/models/view/comment.view.model';
-import { Paginated } from '../../../modules/shared/pagination/paginator';
-import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
-import { orderSort } from '../../../modules/shared/pagination/create.order';
+import {
+  ForbiddenException,
+  Injectable
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { CommentEntity } from "../entities/comment.entity";
+import { CommentViewModel } from "../api/models/view/comment.view.model";
+import { Paginated } from "../../../modules/shared/pagination/paginator";
+import { PaginatorInputModel } from "../../../modules/shared/pagination/paginator.model";
+import { orderSort } from "../../../modules/shared/pagination/create.order";
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -16,10 +19,11 @@ export class CommentsQueryRepository {
 
   async buildResponseCurrentUserComment(
     commentUser: CommentEntity,
-    userId: string
+    userId?: string
   ): Promise<CommentViewModel> {
     const comment = await this.commentsQueryRepository.findOne({
       where: { id: commentUser.id, userId: userId },
+      relations: { likeInfo: true, user: true},
     });
     if (!comment) {
       throw new ForbiddenException();
@@ -32,10 +36,11 @@ export class CommentsQueryRepository {
         userLogin: comment.user.login,
       },
       createdAt: comment.createdAt.toISOString(),
+      likesInfo: comment.getLikeStatus(userId)
     };
   }
 
-  buildResponseComment(comment: CommentEntity): CommentViewModel {
+  buildResponseComment(comment: CommentEntity, userId: string): CommentViewModel {
     return {
       id: comment.id,
       content: comment.content,
@@ -44,19 +49,21 @@ export class CommentsQueryRepository {
         userLogin: comment.user.login,
       },
       createdAt: comment.createdAt.toISOString(),
+      likesInfo: comment.getLikeStatus(userId),
     };
   }
 
   async getCommentById(commentId: string): Promise<CommentEntity> {
     return await this.commentsQueryRepository.findOne({
       where: { id: commentId },
-      relations: { post: true, user: true },
+      relations: { post: true, user: true, likeInfo: true },
     });
   }
 
   async getComments(
     query: PaginatorInputModel,
-    postId: string
+    postId: string,
+    userId: string
   ): Promise<Paginated<CommentViewModel[]>> {
     const order = orderSort(query.sort);
     const page = query.pageNumber;
@@ -66,7 +73,7 @@ export class CommentsQueryRepository {
     const [items, totalCount] = await this.commentsQueryRepository.findAndCount(
       {
         where: { postId: postId },
-        relations: ['user', 'post'],
+        relations: { post: true, user: true, likeInfo: true },
         take: size,
         skip,
         order,
@@ -74,7 +81,7 @@ export class CommentsQueryRepository {
     );
 
     const paginatedComments = Paginated.getPaginated<CommentViewModel[]>({
-      items: items.map((comment) => this.buildResponseComment(comment)),
+      items: items.map((comment) => this.buildResponseComment(comment, userId)),
       page: page,
       size: size,
       count: totalCount,
