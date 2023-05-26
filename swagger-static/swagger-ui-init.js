@@ -1848,7 +1848,19 @@ window.onload = function() {
         },
         "LikeInputModel": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "likeStatus": {
+              "type": "string",
+              "enum": [
+                "None",
+                "Like",
+                "Dislike"
+              ]
+            }
+          },
+          "required": [
+            "likeStatus"
+          ]
         }
       }
     }

@@ -13,7 +13,9 @@ export class EmailAdapter {
     // });
 
     const transport = nodemailer.createTransport({
-      service: 'yandex',
+      host: 'smtp.yandex.ru', // адрес SMTP-сервера яндекса
+      port: 465, // порт SMTP-сервера яндекса
+      secure: true,
       auth: {
         user: 'smirnov.mic@yandex.ru',
         pass: 'rlxgegvlikidlvhm',
