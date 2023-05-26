@@ -1,8 +1,9 @@
-import { IsEnum, IsString } from "class-validator";
-import { LikeStatus } from "../../../../../modules/shared/classes/abstract.like-info.class";
+import { LikeStatus } from '../../../../../modules/shared/classes/abstract.like-info.class';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class LikeInputModel {
-  @IsString()
-  @IsEnum(LikeStatus)
+  @ApiProperty({
+    enum: LikeStatus,
+  })
   likeStatus: LikeStatus;
 }

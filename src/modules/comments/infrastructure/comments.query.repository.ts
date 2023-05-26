@@ -1,14 +1,11 @@
-import {
-  ForbiddenException,
-  Injectable
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { CommentEntity } from "../entities/comment.entity";
-import { CommentViewModel } from "../api/models/view/comment.view.model";
-import { Paginated } from "../../../modules/shared/pagination/paginator";
-import { PaginatorInputModel } from "../../../modules/shared/pagination/paginator.model";
-import { orderSort } from "../../../modules/shared/pagination/create.order";
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CommentEntity } from '../entities/comment.entity';
+import { CommentViewModel } from '../api/models/view/comment.view.model';
+import { Paginated } from '../../../modules/shared/pagination/paginator';
+import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
+import { orderSort } from '../../../modules/shared/pagination/create.order';
 
 @Injectable()
 export class CommentsQueryRepository {
@@ -23,7 +20,7 @@ export class CommentsQueryRepository {
   ): Promise<CommentViewModel> {
     const comment = await this.commentsQueryRepository.findOne({
       where: { id: commentUser.id, userId: userId },
-      relations: { likeInfo: true, user: true},
+      relations: { likeInfo: true, user: true },
     });
     if (!comment) {
       throw new ForbiddenException();
@@ -36,11 +33,14 @@ export class CommentsQueryRepository {
         userLogin: comment.user.login,
       },
       createdAt: comment.createdAt.toISOString(),
-      likesInfo: comment.getLikeStatus(userId)
+      likesInfo: comment.getLikeStatus(userId),
     };
   }
 
-  buildResponseComment(comment: CommentEntity, userId: string): CommentViewModel {
+  buildResponseComment(
+    comment: CommentEntity,
+    userId: string
+  ): CommentViewModel {
     return {
       id: comment.id,
       content: comment.content,

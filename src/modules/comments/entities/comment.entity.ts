@@ -1,11 +1,11 @@
-import { PostEntity } from "../../../modules/posts/entities/post.entity";
-import { UserEntity } from "../../../modules/users/entities";
-import { BaseEntity } from "../../../modules/shared/classes/base.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
-import { randomUUID } from "crypto";
+import { PostEntity } from '../../../modules/posts/entities/post.entity';
+import { UserEntity } from '../../../modules/users/entities';
+import { BaseEntity } from '../../../modules/shared/classes/base.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { randomUUID } from 'crypto';
 
-import { CommentLikeInfo } from "./comment.like-info.entity";
-import { LikeStatus } from "../../../modules/shared/classes/abstract.like-info.class";
+import { CommentLikeInfo } from './comment.like-info.entity';
+import { LikeStatus } from '../../../modules/shared/classes/abstract.like-info.class';
 
 export interface ILikeInfo {
   likesCount: number;
@@ -13,19 +13,19 @@ export interface ILikeInfo {
   myStatus: LikeStatus;
 }
 
-@Entity("comments")
+@Entity('comments')
 export class CommentEntity extends BaseEntity {
   @ManyToOne(() => PostEntity, (post) => post.comments, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   post: PostEntity;
-  @Column("uuid")
+  @Column('uuid')
   postId: string;
-  @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserEntity;
-  @Column("uuid")
+  @Column('uuid')
   userId: string;
 
   @Column()
@@ -34,7 +34,7 @@ export class CommentEntity extends BaseEntity {
   createdAt: Date;
 
   @Column()
-  isVisible: Boolean;
+  isVisible: boolean;
 
   @OneToMany(() => CommentLikeInfo, (likeInfo) => likeInfo.comment, {
     cascade: true,
@@ -80,7 +80,7 @@ export class CommentEntity extends BaseEntity {
   getLikeStatus(userId: string): ILikeInfo {
     let status;
     const myStatus = this.getUserLikeStatus(userId);
-    typeof myStatus !== "undefined"
+    typeof myStatus !== 'undefined'
       ? (status = myStatus.status)
       : (status = LikeStatus.NONE);
     return {

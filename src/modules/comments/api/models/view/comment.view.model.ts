@@ -1,7 +1,5 @@
-import { IsEnum, IsNumber, IsString } from "class-validator";
-import { LikeStatus } from "../../../../../modules/shared/classes/abstract.like-info.class";
-
-
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { LikeStatus } from '../../../../../modules/shared/classes/abstract.like-info.class';
 
 export class LikesInfoViewModel {
   @IsNumber()

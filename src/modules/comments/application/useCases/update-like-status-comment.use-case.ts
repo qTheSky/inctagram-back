@@ -1,9 +1,9 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CommentsRepository } from "../../infrastructure/comments.repository";
-import { CommentsQueryRepository } from "../../infrastructure/comments.query.repository";
-import { UsersQueryRepository } from "../../../../modules/users/infrastructure";
-import { NotFoundException } from "@nestjs/common";
-import { LikeStatus } from "../../../../modules/shared/classes/abstract.like-info.class";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommentsRepository } from '../../infrastructure/comments.repository';
+import { CommentsQueryRepository } from '../../infrastructure/comments.query.repository';
+import { UsersQueryRepository } from '../../../../modules/users/infrastructure';
+import { NotFoundException } from '@nestjs/common';
+import { LikeStatus } from '../../../../modules/shared/classes/abstract.like-info.class';
 
 export class UpdateLikeStatusCommand {
   constructor(

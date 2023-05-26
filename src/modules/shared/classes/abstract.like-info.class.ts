@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 export enum LikeStatus {
-  NONE = "None",
-  LIKE = "Like",
-  DISLIKE = "Dislike",
+  NONE = 'None',
+  LIKE = 'Like',
+  DISLIKE = 'Dislike',
 }
 
 @Entity()
