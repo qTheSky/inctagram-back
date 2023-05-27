@@ -1842,6 +1842,10 @@ window.onload = function() {
             "files"
           ]
         },
+        "ExtendedLikesInfoViewModel": {
+          "type": "object",
+          "properties": {}
+        },
         "PostViewModel": {
           "type": "object",
           "properties": {
@@ -1872,8 +1876,12 @@ window.onload = function() {
               "example": "2023-04-10T16:20:10.847Z"
             },
             "extendedLikesInfo": {
-              "type": "string",
-              "description": "post likes info"
+              "description": "post likes info",
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ExtendedLikesInfoViewModel"
+                }
+              ]
             }
           },
           "required": [
