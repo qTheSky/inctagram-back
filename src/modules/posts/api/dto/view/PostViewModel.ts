@@ -12,9 +12,28 @@ export class LikeDetailsViewModel {
 }
 
 export class ExtendedLikesInfoViewModel {
+  @ApiProperty({
+    description: 'likes count',
+    example: '2',
+    type: 'number',
+  })
   likesCount: number;
+  @ApiProperty({
+    description: 'dislikes count',
+    example: '3',
+    type: 'number',
+  })
   dislikesCount: number;
+  @ApiProperty({
+    description: 'my like status',
+    example: 'Like',
+    type: LikeStatus,
+  })
   myStatus: LikeStatus;
+  @ApiProperty({
+    description: 'last 3 likes',
+    type: Array<LikeDetailsViewModel>,
+  })
   newestLikes: Array<LikeDetailsViewModel>;
 }
 
