@@ -1842,9 +1842,42 @@ window.onload = function() {
             "files"
           ]
         },
-        "ExtendedLikesInfoViewModel": {
+        "LikeDetailsViewModel": {
           "type": "object",
           "properties": {}
+        },
+        "ExtendedLikesInfoViewModel": {
+          "type": "object",
+          "properties": {
+            "likesCount": {
+              "type": "number",
+              "description": "likes count",
+              "example": "2"
+            },
+            "dislikesCount": {
+              "type": "number",
+              "description": "dislikes count",
+              "example": "3"
+            },
+            "myStatus": {
+              "type": "string",
+              "description": "my like status",
+              "example": "Like"
+            },
+            "newestLikes": {
+              "description": "last 3 likes",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/LikeDetailsViewModel"
+              }
+            }
+          },
+          "required": [
+            "likesCount",
+            "dislikesCount",
+            "myStatus",
+            "newestLikes"
+          ]
         },
         "PostViewModel": {
           "type": "object",
