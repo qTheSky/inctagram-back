@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -53,13 +54,17 @@ import { CommentsQueryRepository } from '../../../modules/comments/infrastructur
 import { Paginated } from '../../../modules/shared/pagination/paginator';
 import { PaginatorInputModel } from '../../../modules/shared/pagination/paginator.model';
 import { getPaginatorExample } from '../../../config/swagger/get-paginator-example';
-import { latinTranslateName } from '../../../modules/files/utils/latin-translate-name';
+import { Request } from 'express';
+import { UpdateExtendedLikeStausCommand } from '../application/use-cases/update-like-status-post.use-case';
+import { AuthService } from '../../../modules/auth/application/auth.service';
+import { LikeInputModel } from '../../../modules/shared/classes/like.model';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(
     private commandBus: CommandBus,
+    private readonly authService: AuthService,
     private readonly postsQueryRepository: PostsQueryRepository,
     @Inject(forwardRef(() => CommentsQueryRepository))
     private readonly commentsQueryRepository: CommentsQueryRepository
@@ -134,13 +139,17 @@ export class PostsController {
   @Get(':postId')
   @HttpCode(200)
   async getPost(
+    @Req() req: Request,
     @Param('postId', ParseUUIDPipe) postId: string
   ): Promise<PostViewModel> {
+    const userId = this.authService.getUserIdByTokenOrThrow(
+      req.cookies.refreshToken
+    );
     const post = await this.postsQueryRepository.findPostById(postId);
     if (!post) {
       throw new NotFoundException();
     }
-    return this.postsQueryRepository.buildResponsePosts(post);
+    return this.postsQueryRepository.buildResponsePosts(post, userId);
   }
 
   @Get(':postId/comments')
@@ -195,6 +204,32 @@ export class PostsController {
         currentUserId,
         createCommentModel.content
       )
+    );
+  }
+
+  @ApiOperation({ summary: 'Update like status post' })
+  @ApiParam({ name: 'postId', type: 'string' })
+  @ApiResponse({ status: 204, description: 'No content' })
+  @ApiBadRequestResponse({
+    schema: BadRequestApiExample,
+    description: 'If the inputModel has incorrect values',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  // @ApiForbiddenResponse({
+  //   description: "If try edit the comment that is not your own",
+  // })
+  @ApiNotFoundResponse({ description: 'If post not found' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
+  @Put(':postId/like-status')
+  async updateCommentLikeStatus(
+    @CurrentUserId() currentUserId: string,
+    @Param('postId') postId: string,
+    @Body() { likeStatus }: LikeInputModel
+  ): Promise<void> {
+    await this.commandBus.execute(
+      new UpdateExtendedLikeStausCommand(postId, likeStatus, currentUserId)
     );
   }
 }

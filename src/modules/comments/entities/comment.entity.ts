@@ -5,7 +5,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { randomUUID } from 'crypto';
 
 import { CommentLikeInfo } from './comment.like-info.entity';
-import { LikeStatus } from '../../../modules/shared/classes/abstract.like-info.class';
+import { LikeStatus } from '../../../modules/shared/classes/like.model';
 
 export interface ILikeInfo {
   likesCount: number;

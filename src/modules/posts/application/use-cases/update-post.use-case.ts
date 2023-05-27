@@ -32,6 +32,6 @@ export class UpdatePostUseCase implements ICommandHandler<UpdatePostCommand> {
     }
     post.description = dto.description;
     await this.postsRepository.save(post);
-    return this.postsQueryRepository.buildResponsePosts(post);
+    return this.postsQueryRepository.buildResponsePosts(post, currentUserId);
   }
 }

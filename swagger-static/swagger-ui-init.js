@@ -940,7 +940,11 @@ window.onload = function() {
                             "userLogin": "string"
                           },
                           "createdAt": "2023-03-13T12:42:19.885Z",
-                          "likesInfo": {}
+                          "likesInfo": {
+                            "likesCount": 0,
+                            "dislikesCount": 0,
+                            "myStatus": "None"
+                          }
                         }
                       ]
                     }
@@ -993,7 +997,11 @@ window.onload = function() {
                         "userLogin": "string"
                       },
                       "createdAt": "2023-03-13T12:42:19.885Z",
-                      "likesInfo": {}
+                      "likesInfo": {
+                        "likesCount": 0,
+                        "dislikesCount": 0,
+                        "myStatus": "None"
+                      }
                     }
                   }
                 }
@@ -1021,6 +1029,68 @@ window.onload = function() {
             },
             "404": {
               "description": "If post with specified id doesn't exists"
+            }
+          },
+          "tags": [
+            "Posts"
+          ],
+          "security": [
+            {
+              "bearer": []
+            }
+          ]
+        }
+      },
+      "/posts/{postId}/like-status": {
+        "put": {
+          "operationId": "PostsController_updateCommentLikeStatus",
+          "summary": "Update like status post",
+          "parameters": [
+            {
+              "name": "postId",
+              "required": true,
+              "in": "path",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LikeInputModel"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "No content"
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "example": {
+                      "errorsMessages": [
+                        {
+                          "message": "string",
+                          "field": "string"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "If post not found"
             }
           },
           "tags": [
@@ -1435,7 +1505,11 @@ window.onload = function() {
                         "userLogin": "string"
                       },
                       "createdAt": "2023-03-13T12:42:19.885Z",
-                      "likesInfo": {}
+                      "likesInfo": {
+                        "likesCount": 0,
+                        "dislikesCount": 0,
+                        "myStatus": "None"
+                      }
                     }
                   }
                 }
@@ -1796,6 +1870,10 @@ window.onload = function() {
               "type": "string",
               "description": "date when post was created",
               "example": "2023-04-10T16:20:10.847Z"
+            },
+            "extendedLikesInfo": {
+              "type": "string",
+              "description": "post likes info"
             }
           },
           "required": [
@@ -1803,7 +1881,8 @@ window.onload = function() {
             "photos",
             "description",
             "createdAt",
-            "updatedAt"
+            "updatedAt",
+            "extendedLikesInfo"
           ]
         },
         "UpdatePostDto": {
@@ -1832,20 +1911,6 @@ window.onload = function() {
             "content"
           ]
         },
-        "UpdateCommentModel": {
-          "type": "object",
-          "properties": {
-            "content": {
-              "type": "string",
-              "description": "Data for updating",
-              "minLength": 20,
-              "maxLength": 300
-            }
-          },
-          "required": [
-            "content"
-          ]
-        },
         "LikeInputModel": {
           "type": "object",
           "properties": {
@@ -1860,6 +1925,20 @@ window.onload = function() {
           },
           "required": [
             "likeStatus"
+          ]
+        },
+        "UpdateCommentModel": {
+          "type": "object",
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "Data for updating",
+              "minLength": 20,
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "content"
           ]
         }
       }

@@ -32,10 +32,10 @@ import { UpdateCommentCommand } from '../application/useCases/update-comment.use
 import { UpdateCommentModel } from './models/input/update.comment.input.model';
 import { CommentViewModel } from './models/view/comment.view.model';
 import { commentViewModelExample } from '../../../config/swagger/constants/comment/comment-view-model-example';
-import { LikeInputModel } from './models/input/comment-like.model';
 import { UpdateLikeStatusCommand } from '../application/useCases/update-like-status-comment.use-case';
 import { Request } from 'express';
 import { AuthService } from '../../../modules/auth/application/auth.service';
+import { LikeInputModel } from '../../../modules/shared/classes/like.model';
 
 @ApiTags('Comments')
 @Controller('comments')

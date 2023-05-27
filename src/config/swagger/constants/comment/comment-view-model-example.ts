@@ -1,4 +1,4 @@
-import { LikeStatus } from '../../../../modules/shared/classes/abstract.like-info.class';
+import { LikeStatus } from '../../../../modules/shared/classes/like.model';
 import { CommentViewModel } from '../../../../modules/comments/api/models/view/comment.view.model';
 
 export const commentViewModelExample: CommentViewModel = {

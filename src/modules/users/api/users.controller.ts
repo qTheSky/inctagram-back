@@ -83,7 +83,6 @@ export class UsersController {
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileViewModel> {
-    console.log(1);
     // const cachedProfile = await this.redis.get(`profile${userId}`);
     // if (cachedProfile) return JSON.parse(cachedProfile);
     const profile = await this.usersProfilesRepository.findOne({ userId });

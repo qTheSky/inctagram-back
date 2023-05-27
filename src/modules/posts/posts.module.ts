@@ -18,6 +18,9 @@ import { AddFavoritePostUseCase } from './application/use-cases/add-favorite-pos
 import { UsersPostsController } from './api/users.posts.controller';
 import { UserEntity } from '../users/entities';
 import { CommentsModule } from '../comments/comments.module';
+import { UpdateExtendedLikeStausUseCase } from './application/use-cases/update-like-status-post.use-case';
+import { PostLikeInfo } from './entities/post.like-info.entity';
+import { AuthModule } from '../auth/auth.module';
 
 const useCases = [
   CreatePostUseCase,
@@ -26,17 +29,24 @@ const useCases = [
   AddFavoritePostUseCase,
   DeleteAllFavoritePostUseCase,
   DeleteFavoritePostUseCase,
+  UpdateExtendedLikeStausUseCase,
 ];
 const adapters = [PostsRepository, PostsQueryRepository];
 
 @Module({
   imports: [
+    AuthModule,
     CommentsModule,
     CqrsModule,
     SharedModule,
     FilesModule,
     UsersModule,
-    TypeOrmModule.forFeature([PostEntity, PostPhotoEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      PostEntity,
+      PostPhotoEntity,
+      UserEntity,
+      PostLikeInfo,
+    ]),
   ],
   providers: [...useCases, ...adapters],
   controllers: [PostsController, UsersPostsController],

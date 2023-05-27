@@ -47,7 +47,9 @@ export class CreatePostUseCase implements ICommandHandler<CreatePostCommand> {
     }
 
     const savedPost = await this.postsRepository.save(post);
-    //console.log(savedPost);
-    return this.postsQueryRepository.buildResponsePosts(savedPost);
+    return this.postsQueryRepository.buildResponsePosts(
+      savedPost,
+      command.currentUserId
+    );
   }
 }

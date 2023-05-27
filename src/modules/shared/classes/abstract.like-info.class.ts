@@ -1,10 +1,5 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-
-export enum LikeStatus {
-  NONE = 'None',
-  LIKE = 'Like',
-  DISLIKE = 'Dislike',
-}
+import { LikeStatus } from './like.model';
 
 @Entity()
 export abstract class AbstractLikeInfo {

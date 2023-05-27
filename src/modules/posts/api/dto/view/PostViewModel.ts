@@ -1,7 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LikeStatus } from '../../../../../modules/shared/classes/like.model';
 
 export class PhotoViewModel {
   photoUrl: string;
+}
+
+export class LikeDetailsViewModel {
+  userId: string;
+  login: string;
+  addedAt: string;
+}
+
+export class ExtendedLikesInfoViewModel {
+  likesCount: number;
+  dislikesCount: number;
+  myStatus: LikeStatus;
+  newestLikes: Array<LikeDetailsViewModel>;
 }
 
 export class PostViewModel {
@@ -36,4 +50,9 @@ export class PostViewModel {
     type: 'string',
   })
   updatedAt: Date;
+  @ApiProperty({
+    description: 'post likes info',
+    type: 'string',
+  })
+  extendedLikesInfo: ExtendedLikesInfoViewModel;
 }

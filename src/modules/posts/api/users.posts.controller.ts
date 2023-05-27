@@ -51,7 +51,7 @@ export class UsersPostsController {
   ): Promise<PostViewModel> {
     await this.commandBus.execute(new AddFavoritePostCommand(userId, postId));
     const post = await this.postsQueryRepository.findPostById(postId);
-    return this.postsQueryRepository.buildResponsePosts(post);
+    return this.postsQueryRepository.buildResponsePosts(post, userId);
   }
 
   @ApiOperation({ summary: 'get favorite post' })
@@ -74,7 +74,7 @@ export class UsersPostsController {
     if (!post) {
       throw new NotFoundException();
     }
-    return this.postsQueryRepository.buildResponsePosts(post);
+    return this.postsQueryRepository.buildResponsePosts(post, userId);
   }
 
   @ApiOperation({ summary: 'get all favorite posts' })

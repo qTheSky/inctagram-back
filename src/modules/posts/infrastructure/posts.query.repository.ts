@@ -17,23 +17,23 @@ export class PostsQueryRepository {
     private readonly configService: ConfigService
   ) {}
 
-  buildResponsePosts(post: PostEntity): PostViewModel {
+  buildResponsePosts(post: PostEntity, userId: string): PostViewModel {
     return {
       id: post.id,
-      //photoUrl: this.configService.get("FILES_URL") + post.photoPath,
       photos: post.photos.map(
         (photo) => this.configService.get('FILES_URL') + photo.photoPath
       ),
       description: post.description,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
+      extendedLikesInfo: post.getLikeStatus(userId),
     };
   }
 
   async findPostById(id: string): Promise<PostEntity> {
     return await this.postsQueryRepository.findOne({
       where: { id },
-      relations: { photos: true, comments: true },
+      relations: { photos: true, comments: true, extendedLikesInfo: true },
     });
   }
 
@@ -43,7 +43,7 @@ export class PostsQueryRepository {
   ): Promise<PostEntity> {
     const post = await this.postsQueryRepository.findOne({
       where: { id: postId },
-      relations: { photos: true, users: true },
+      relations: { photos: true, users: true, extendedLikesInfo: true },
     });
     if (post.users.find((user) => user.id === userId)) return post;
     return null;
@@ -70,14 +70,14 @@ export class PostsQueryRepository {
 
     const [items] = await this.postsQueryRepository.findAndCount({
       where: { id: In(postsIds) },
-      relations: ['photos'],
+      relations: { photos: true, extendedLikesInfo: true },
       take: size,
       skip,
       order,
     });
 
     const paginatedPosts = Paginated.getPaginated<PostViewModel[]>({
-      items: items.map((post) => this.buildResponsePosts(post)),
+      items: items.map((post) => this.buildResponsePosts(post, userId)),
       page: page,
       size: size,
       count: totalCount,
