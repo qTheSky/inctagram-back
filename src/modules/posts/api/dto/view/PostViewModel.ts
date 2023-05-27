@@ -6,8 +6,17 @@ export class PhotoViewModel {
 }
 
 export class LikeDetailsViewModel {
+  @ApiProperty({
+    type: 'string',
+  })
   userId: string;
+  @ApiProperty({
+    type: 'string',
+  })
   login: string;
+  @ApiProperty({
+    type: 'string',
+  })
   addedAt: string;
 }
 
