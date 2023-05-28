@@ -24,11 +24,11 @@ export class PasswordRecoveryUseCase
     email,
     frontendUrl,
   }: PasswordRecoveryCommand): Promise<void> {
+    console.log(email);
     const user = await this.usersQueryRepository.findUserByLoginOrEmail(email);
     if (!user) {
       throw new NotFoundException();
     }
-
     const recoveryCode = user.createPasswordRecovery();
     this.emailsManager.sendPasswordRecoveryCode(
       user.email,

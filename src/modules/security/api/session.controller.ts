@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, HttpCode, Param, Req } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Req,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   ApiTags,
@@ -40,6 +48,9 @@ export class SessionsController {
       'If the JWT refreshToken inside cookie is missing, expired or incorrect',
   })
   async getSessionsOfUser(@Req() req: Request): Promise<SessionViewModel[]> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     const userId = this.authService.getUserIdByTokenOrThrow(
       req.cookies.refreshToken
     );
@@ -62,6 +73,9 @@ export class SessionsController {
   })
   @HttpCode(204)
   async deleteSessionExceptCurrent(@Req() req: Request): Promise<void> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     await this.commandBus.execute<DeleteSessionsExceptCurrentCommand, void>(
       new DeleteSessionsExceptCurrentCommand(req.cookies.refreshToken)
     );
@@ -84,6 +98,9 @@ export class SessionsController {
     @Param('deviceId') deviceId: string,
     @Req() req: Request
   ): Promise<void> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     await this.commandBus.execute<DeleteSessionByDeviceIdCommand, void>(
       new DeleteSessionByDeviceIdCommand(req.cookies.refreshToken, deviceId)
     );

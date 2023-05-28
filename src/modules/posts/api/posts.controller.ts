@@ -12,6 +12,7 @@ import {
   Put,
   Query,
   Req,
+  UnauthorizedException,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -142,6 +143,9 @@ export class PostsController {
     @Req() req: Request,
     @Param('postId', ParseUUIDPipe) postId: string
   ): Promise<PostViewModel> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     const userId = this.authService.getUserIdByTokenOrThrow(
       req.cookies.refreshToken
     );

@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -148,6 +149,9 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ): Promise<{ accessToken: string }> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     return await this.loginOrRefreshToken(
       res,
       new RefreshTokenCommand(req.cookies.refreshToken)
@@ -169,6 +173,9 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request
   ): Promise<void> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     await this.commandBus.execute(new LogoutCommand(req.cookies.refreshToken));
     res.clearCookie('refreshToken');
   }

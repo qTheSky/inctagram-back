@@ -1844,7 +1844,22 @@ window.onload = function() {
         },
         "LikeDetailsViewModel": {
           "type": "object",
-          "properties": {}
+          "properties": {
+            "userId": {
+              "type": "string"
+            },
+            "login": {
+              "type": "string"
+            },
+            "addedAt": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "userId",
+            "login",
+            "addedAt"
+          ]
         },
         "ExtendedLikesInfoViewModel": {
           "type": "object",

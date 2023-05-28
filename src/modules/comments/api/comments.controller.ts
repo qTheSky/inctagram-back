@@ -8,6 +8,7 @@ import {
   Param,
   Put,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
@@ -106,6 +107,9 @@ export class CommentsController {
     @Param('commentId') id: string,
     @Req() req: Request
   ): Promise<CommentViewModel> {
+    if (typeof req.cookies.refreshToken === 'undefined') {
+      throw new UnauthorizedException();
+    }
     const userId = this.authService.getUserIdByTokenOrThrow(
       req.cookies.refreshToken
     );
