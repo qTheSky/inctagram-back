@@ -59,12 +59,8 @@ export class AuthService {
     }
   }
 
-  async checkIsRefreshTokenInBlackList(
-    userId: string,
-    refreshToken: string
-  ): Promise<boolean> {
+  async checkIsRefreshTokenInBlackList(refreshToken: string): Promise<boolean> {
     const foundRefreshToken = await this.badRefreshTokensRepository.findOne({
-      userId: userId,
       refreshToken,
     });
     if (foundRefreshToken) throw new UnauthorizedException();

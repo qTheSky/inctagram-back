@@ -16,11 +16,9 @@ export class LogoutUseCase implements ICommandHandler<LogoutCommand> {
   ) {}
 
   async execute(command: LogoutCommand): Promise<void> {
+    await this.authService.checkIsRefreshTokenInBlackList(command.refreshToken);
+
     const userId = this.authService.getUserIdByTokenOrThrow(
-      command.refreshToken
-    );
-    await this.authService.checkIsRefreshTokenInBlackList(
-      userId,
       command.refreshToken
     );
     const refreshPayload = await this.authService.putRefreshTokenToBlackList(
