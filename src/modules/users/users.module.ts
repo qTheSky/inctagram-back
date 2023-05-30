@@ -20,6 +20,7 @@ import { SharedModule } from '../shared/shared.module';
 import { SubscribeToUserUseCase } from './application/use-cases/subscribe-to-user.use-case';
 import { UserSubscriptionsRepository } from './infrastructure/user.subscriptions.repository';
 import { UserSubscriptionEntity } from './entities/user-subscription.entity';
+import { DeleteUserUseCase } from './application/use-cases/delete-user.use-case';
 
 const adapters = [
   UsersRepository,
@@ -32,6 +33,7 @@ const useCases = [
   UpdateProfileUseCase,
   UploadUserAvatarUseCase,
   SubscribeToUserUseCase,
+  DeleteUserUseCase,
 ];
 
 @Module({

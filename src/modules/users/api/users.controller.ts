@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -39,6 +40,8 @@ import { apiResponse } from '../../../config/swagger/constants/api-response/api-
 import { apiNotFoundResponseMessage } from '../../../config/swagger/constants/api-not-found-response/api-not-found-response-message';
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis';
 import { SubscribeToUserCommand } from '../application/use-cases/subscribe-to-user.use-case';
+import { DeleteUserCommand } from '../application/use-cases/delete-user.use-case';
+import { EmailDto } from '../../../modules/auth/api/dto/input';
 
 @ApiTags('Users')
 @Controller('users')
@@ -134,5 +137,16 @@ export class UsersController {
     return this.commandBus.execute(
       new SubscribeToUserCommand(userIdForSubscribe, currentUserId)
     );
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Delete user by email' })
+  @ApiResponse({
+    description: 'public method delete user by email',
+    status: 204,
+  })
+  @ApiBadRequestResponse(apiBadRequestResponse)
+  async DeleteUserByEmail(@Body() { email }: EmailDto): Promise<boolean> {
+    return this.commandBus.execute(new DeleteUserCommand(email));
   }
 }
