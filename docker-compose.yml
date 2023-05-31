@@ -1,25 +1,12 @@
-version: '3'
-
+version: "3.8"
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    environment:
-      HOST: db
-      PORT: 5432
-      DATABASEUSERNAME: postgres
-      PASSWORD: password
-      DATABASE: postgres
-  db:
-    image: postgres:13
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
 
-volumes:
-  postgres_data:
+  server:
+    build: ./
+    container_name: inctogram
+    ports:
+      - "3000:3000"
+    command: node src/main
+    restart: unless-stopped
+    env_file:
+      - ./.env
