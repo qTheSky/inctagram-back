@@ -2198,6 +2198,11 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/swagger-ui-dist@^3.30.1":
+  version "3.30.1"
+  resolved "https://registry.yarnpkg.com/@types/swagger-ui-dist/-/swagger-ui-dist-3.30.1.tgz#8ad3370dfce23bf73144bd9c5560afe2b5ccbd18"
+  integrity sha512-wWojDensMF33dSrhak4iWSPOsWBbvf+rSJ6VWQ7ohQbGdKAiT2IwUexrDZkMvf3+vVAPVnNFDRDtxADFszbh+Q==
+
 "@types/validator@^13.7.10":
   version "13.7.14"
   resolved "https://registry.npmjs.org/@types/validator/-/validator-13.7.14.tgz"
@@ -6795,6 +6800,11 @@ swagger-ui-dist@4.18.2, swagger-ui-dist@>=4.11.0:
   version "4.18.2"
   resolved "https://registry.npmjs.org/swagger-ui-dist/-/swagger-ui-dist-4.18.2.tgz"
   integrity sha512-oVBoBl9Dg+VJw8uRWDxlyUyHoNEDC0c1ysT6+Boy6CTgr2rUcLcfPon4RvxgS2/taNW6O0+US+Z/dlAsWFjOAQ==
+
+swagger-ui-dist@^4.19.0:
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-4.19.0.tgz#33c927f36ccac20fcfb5f0f70ad422ab0ee9e3c3"
+  integrity sha512-9C9fJGI18gK5AhaU5YRyPY1lXJH4lmWh8h9zFMrJBkYzdRjCbAzYl1ayWPYgwFvag/Luqi3Co599OK/39IS2QQ==
 
 swagger-ui-express@^4.6.2:
   version "4.6.2"
