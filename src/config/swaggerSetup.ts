@@ -9,6 +9,7 @@ export const swaggerSetup = (app: INestApplication) => {
     .setTitle('INCTAGRAM API')
     .setDescription('here will be some description')
     .setVersion('1.0')
+    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
