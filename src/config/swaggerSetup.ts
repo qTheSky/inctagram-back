@@ -11,12 +11,7 @@ export const swaggerSetup = (app: INestApplication) => {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document, {
-    swaggerOptions: {
-      customJs:
-        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.0.0/swagger-ui-bundle.js',
-    },
-  });
+  SwaggerModule.setup('swagger', app, document);
   //swagger
 
   //for swagger and vercel
