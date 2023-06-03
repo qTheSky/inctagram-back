@@ -9,16 +9,20 @@ export const swaggerSetup = (app: INestApplication) => {
     .setTitle('INCTAGRAM API')
     .setDescription('here will be some description')
     .setVersion('1.0')
-    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('swagger', app, document);
+  SwaggerModule.setup('swagger', app, document, {
+    swaggerOptions: {
+      customJs:
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.0.0/swagger-ui-bundle.js',
+    },
+  });
   //swagger
 
   //for swagger and vercel
   const serverUrl = `http://localhost:${process.env.LOCALPORT}`;
   // get the swagger json file (if app is running in development mode)
-  /*if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     // write swagger ui files
     get(`${serverUrl}/swagger/swagger-ui-bundle.js`, function (response) {
       response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
@@ -40,7 +44,7 @@ export const swaggerSetup = (app: INestApplication) => {
     get(`${serverUrl}/swagger/swagger-ui.css`, function (response) {
       response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
     });
-  }*/
+  }
   //for swagger
   //for swagger and vercel
 };
